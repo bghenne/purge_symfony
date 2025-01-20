@@ -1,0 +1,10 @@
+host gitlab.gfptech.fr
+    HostName gitlab.gfptech.fr
+    User git
+    UserKnownHostsFile /root/.ssh/known_hosts
+    PreferredAuthentications publickey
+    IdentityFile /root/.ssh/gitlab.gfptech.id_rsa
+    PasswordAuthentication no
+    PubkeyAcceptedKeyTypes +ssh-rsa
+    ForwardAgent yes
+    AddKeysToAgent yes
