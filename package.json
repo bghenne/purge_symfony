@@ -1,12 +1,11 @@
 {
     "devDependencies": {
+        "@tsconfig/recommended": "^1.0.8",
         "@babel/core": "^7.17.0",
         "@babel/preset-env": "^7.16.0",
         "@hotwired/stimulus": "^3.0.0",
         "@hotwired/turbo": "^7.1.1 || ^8.0",
         "@symfony/stimulus-bridge": "^3.2.0",
-        "@symfony/ux-turbo": "file:vendor/symfony/ux-turbo/assets",
-        "@symfony/ux-vue": "file:vendor/symfony/ux-vue/assets",
         "@symfony/webpack-encore": "^5.0.0",
         "@vue/compiler-sfc": "^3.5.13",
         "autoprefixer": "^10.4.20",
@@ -17,9 +16,12 @@
         "tailwindcss": "^3.4.17",
         "vue": "^3.5.13",
         "vue-loader": "^17.4.2",
+        "vue-template-compiler": "^2.7.16",
         "webpack": "^5.74.0",
         "webpack-cli": "^5.1.0",
-        "webpack-notifier": "^1.15.0"
+        "webpack-notifier": "^1.15.0",
+        "ts-loader": "^9.5.2",
+        "typescript": "^5.7.3"
     },
     "license": "UNLICENSED",
     "private": true,
