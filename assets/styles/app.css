@@ -1,7 +1,4 @@
+/* the real css will be content in modules */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-body {
-    background-color: skyblue;
-}

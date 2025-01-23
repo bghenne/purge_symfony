@@ -17,13 +17,13 @@ import { createApp } from 'vue'
 
 // Internal components
 import App from './App.vue'
-//import router from './router'
+import router from './vue/router'
 
 // CSS
 //import './assets/css/main.css'
 
 createApp(App)
     //.directive('autofocus', autofocus)
-    //.use(router)
+    .use(router)
     //.use(i18n, translations)
     .mount('#app');
