@@ -1,13 +1,12 @@
 <script setup lang="ts">
-    import MainMenu from "./vue/components/MainMenu.vue";
     import Header from "./vue/components/Header.vue";
-
+    import Navigation from "./vue/components/Navigation.vue";
 </script>
 
 <template>
   <Header />
-  <MainMenu />
-  <router-view></router-view>
+  <Navigation />
+  <RouterView></RouterView>
 </template>
 
 <style scoped>

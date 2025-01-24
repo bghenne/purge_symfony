@@ -1,16 +1,13 @@
-import { createMemoryHistory, createRouter } from 'vue-router'
+import {createRouter, createWebHistory, Router, RouteRecordRaw} from 'vue-router'
 
 import EligibleObject from "./components/EligibleObject.vue";
 import ExcludedObject from "./components/ExcludedObject.vue";
 import PurgedObject from "./components/PurgedObject.vue";
 import ControlAlert from "./components/ControlAlert.vue";
 import PurgeReport from "./components/PurgeReport.vue";
-import MainMenu from "./components/MainMenu.vue";
-import App from "../App.vue";
+import Navigation from "./components/Navigation.vue";
 
-const routes = [
-    { path: '/', component: App },
-    { path: '/main', component: MainMenu },
+const routes : Array<RouteRecordRaw> = [
     { path: '/eligible-object', component: EligibleObject },
     { path: '/excluded-object', component: ExcludedObject },
     { path: '/purged-object', component: PurgedObject },
@@ -18,8 +15,8 @@ const routes = [
     { path: '/purge-report', component: PurgeReport }
 ]
 
-const router = createRouter({
-    history: createMemoryHistory(),
+const router: Router = createRouter({
+    history: createWebHistory(),
     routes,
 })
 
