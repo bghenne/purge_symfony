@@ -5,7 +5,6 @@ import ExcludedObject from "./components/ExcludedObject.vue";
 import PurgedObject from "./components/PurgedObject.vue";
 import ControlAlert from "./components/ControlAlert.vue";
 import PurgeReport from "./components/PurgeReport.vue";
-import Navigation from "./components/Navigation.vue";
 
 const routes : Array<RouteRecordRaw> = [
     { path: '/eligible-object', component: EligibleObject },
