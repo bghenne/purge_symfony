@@ -6,9 +6,8 @@
 <template>
   <Header />
   <Navigation />
-  <RouterView></RouterView>
+
+  <main>
+    <router-view></router-view>
+  </main>
 </template>
-
-<style scoped>
-
-</style>

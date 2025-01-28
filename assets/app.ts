@@ -1,29 +1,14 @@
 /*
- * Welcome to your app's main JavaScript file!
- *
- * This file will be included onto the page via the importmap() Twig function,
- * which should already be in your base.html.twig.
+ * JavaScript and CSS entry points.
+ * Both are included in the base layout (base.html.twig) by calling Twig helpers from the Encore bundle.
  */
-import './styles/app.css';
 
 import { createApp } from 'vue'
-
-// Plugins
-//import i18n from './plugins/i18n'
-//import translations from './i18n.json'
-
-// Directives
-//import { autofocus } from './directives/autofocus'
-
-// Internal components
-import App from './App.vue'
 import router from './vue/router'
 
-// CSS
-//import './assets/css/main.css'
+import ApplicationShell from './ApplicationShell.vue'
+import './styles/app.css';
 
-createApp(App)
-    //.directive('autofocus', autofocus)
+createApp(ApplicationShell)
     .use(router)
-    //.use(i18n, translations)
     .mount('#app');

@@ -15,13 +15,7 @@ use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 /**
- * Class Client
- *
- * @package App\Http\Client
- * @category
  * @author Benjamin Ghenne <benjamin.ghenne@gfptech.fr>
- * @license
- * @copyright GFP Tech 2024
  */
 class Client
 {
@@ -33,9 +27,7 @@ class Client
         private readonly string                $baseUrl,
         private readonly TokenStorageInterface $tokenStorage,
         private readonly OidcClientInterface   $oidcClient
-    )
-    {
-    }
+    ) {}
 
     /**
      * @throws TransportExceptionInterface

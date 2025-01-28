@@ -14,13 +14,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**
- * Class AuthenticationController
- *
- * @package App\Controller
- * @category Controller
  * @author Benjamin Ghenne <benjamin.ghenne@gfptech.fr>
- * @license Open Web Purge
- * @copyright GFP Tech 2024
  */
 class AuthenticationController extends AbstractController
 {
@@ -41,5 +35,12 @@ class AuthenticationController extends AbstractController
     public function autoSignIn(Request $request): Response
     {
         return new Response('Une erreur s\'est produite : ' . $request->get('error'));
+    }
+
+    #[Route('/get-identity', name: 'get-identity')]
+    #[IsGranted('ROLE_USER')]
+    public function getIdentity(Request $request): string
+    {
+        return json_encode($request->getUser());
     }
 }

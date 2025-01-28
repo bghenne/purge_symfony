@@ -54,11 +54,14 @@ Encore
     })
 
     // enables Sass/SCSS support
-    //.enableSassLoader()
+    .enableSassLoader()
 
     // uncomment if you use TypeScript
     .enableVueLoader(() => {}, { runtimeCompilerBuild: false })
+
     .enableTypeScriptLoader()
+
+    .enablePostCssLoader()
 
     // uncomment if you use React
     //.enableReactPreset()

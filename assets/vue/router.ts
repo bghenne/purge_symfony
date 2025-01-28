@@ -1,10 +1,10 @@
 import {createRouter, createWebHistory, Router, RouteRecordRaw} from 'vue-router'
 
-import EligibleObject from "./components/EligibleObject.vue";
-import ExcludedObject from "./components/ExcludedObject.vue";
-import PurgedObject from "./components/PurgedObject.vue";
-import ControlAlert from "./components/ControlAlert.vue";
-import PurgeReport from "./components/PurgeReport.vue";
+import EligibleObject from "./pages/EligibleObject.vue";
+import ExcludedObject from "./pages/ExcludedObject.vue";
+import PurgedObject from "./pages/PurgedObject.vue";
+import ControlAlert from "./pages/ControlAlert.vue";
+import PurgeReport from "./pages/PurgeReport.vue";
 
 const routes : Array<RouteRecordRaw> = [
     { path: '/eligible-object', component: EligibleObject },

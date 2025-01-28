@@ -2,17 +2,10 @@
 
 namespace App\Service;
 
-use App\Http\Client;
 use Symfony\Bundle\SecurityBundle\Security;
 
 /**
- * Class EnvironmentService
- *
- * @package App\Service
- * @category
  * @author Benjamin Ghenne <benjamin.ghenne@gfptech.fr>
- * @license
- * @copyright GFP Tech 2024
  */
 readonly class EnvironmentService
 {

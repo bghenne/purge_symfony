@@ -6,33 +6,24 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class User implements UserInterface
 {
-    /**
-     * @var string
-     */
     private string $username;
 
-    /**
-     * @var string
-     */
     private string $firstName;
 
-    /**
-     * @var string
-     */
     private string $lastName;
 
     /**
-     * @var list<string> The user roles
+     * @var list<string>
      */
     private array $roles = [];
 
     /**
-     * @var array|null
+     * @var list<string>|null
      */
     private ?array $environments = [];
 
     /**
-     * @var array|null
+     * @var list<string>|null
      */
     private ?array $visibilityUnits = [];
 

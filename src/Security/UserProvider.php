@@ -12,29 +12,18 @@ use Symfony\Component\Serializer\Encoder\DecoderInterface;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 
 /**
- * Class UserProvider
- *
- * @package App\Provider
- * @category Provider
  * @author Benjamin Ghenne <benjamin.ghenne@gfptech.fr>
- * @license BackOffice Team SQL
- * @copyright GFP Tech 2023
  */
 readonly class UserProvider implements OidcUserProviderInterface
 {
-    /**
-     * Constructor
-     */
-    public function __construct(private Client $client, private DecoderInterface $jsonDecode, private string $applicationName)
-    {
-    }
+    public function __construct(
+        private Client $client,
+        private DecoderInterface $jsonDecode,
+        private string $applicationName
+    ) {}
 
     /**
      * Check that user exists in database
-     *
-     * @param string $userIdentifier
-     * @param OidcUserData $userData
-     * @return mixed
      */
     public function ensureUserExists(string $userIdentifier, OidcUserData $userData): mixed
     {
@@ -43,9 +32,6 @@ readonly class UserProvider implements OidcUserProviderInterface
 
     /**
      * Same as loadUserByIdentifier but oidc specific
-     *
-     * @param string $userIdentifier
-     * @return UserInterface
      */
     public function loadOidcUser(string $userIdentifier): UserInterface
     {
@@ -54,9 +40,6 @@ readonly class UserProvider implements OidcUserProviderInterface
 
     /**
      * Refresh user based on identifier
-     *
-     * @param UserInterface $user
-     * @return UserInterface
      */
     public function refreshUser(UserInterface $user): UserInterface
     {
@@ -65,9 +48,6 @@ readonly class UserProvider implements OidcUserProviderInterface
 
     /**
      * All classes extending User are supported
-     *
-     * @param string $class
-     * @return bool
      */
     public function supportsClass(string $class): bool
     {
@@ -76,9 +56,6 @@ readonly class UserProvider implements OidcUserProviderInterface
 
     /**
      * Load user by calling doctrine repository
-     *
-     * @param string $identifier
-     * @return UserInterface
      */
     public function loadUserByIdentifier(string $identifier): UserInterface
     {

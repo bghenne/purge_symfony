@@ -1,4 +1,19 @@
-/* the real css will be content in modules */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "./themes/light.css";
+@import "./themes/dark.css";
+
+@import "tailwindcss";
+
+#app {
+    /* The application shell is two-dimensional, hence the Grid Layout model. */
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-rows: auto auto 1fr;
+}
+
+html,
+body,
+#app {
+    /* The grid should cover the whole viewport. */
+    /* The "minimum" ensures that the sticky containers (if any) remain sticky whatever the scrolling position. */
+    min-height: 100vh;
+}
