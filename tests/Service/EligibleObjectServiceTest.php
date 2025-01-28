@@ -32,7 +32,7 @@ class EligibleObjectServiceTest extends TestCase
                                  ->onlyMethods(['doRequest'])
                                  ->getMock();
 
-        $this->instance = new EligibleObjectService($this->clientMock);
+        $this->instance = new EligibleObjectService($this->clientMock, '/url');
     }
 
     /**
@@ -41,7 +41,7 @@ class EligibleObjectServiceTest extends TestCase
     public function testFindEligibleObjects(): void
     {
         $this->clientMock->expects($this->once())->method('doRequest')
-                         ->with('eligibles', [])
+                         ->with('/url/api-rgpd/v1/eligibles', [])
                          ->willReturn('');
 
         $this->assertIsArray($this->instance->findEligibleObjects([]));

@@ -24,7 +24,6 @@ class Client
 
     public function __construct(
         private HttpClientInterface            $httpClient,
-        private readonly string                $baseUrl,
         private readonly TokenStorageInterface $tokenStorage,
         private readonly OidcClientInterface   $oidcClient
     ) {}
@@ -61,9 +60,7 @@ class Client
 
     protected function createClient(?string $accessToken = null): void
     {;
-        $options = [
-            'base_uri' => $this->baseUrl
-        ];
+        $options = [];
 
         if (!empty($accessToken)) {
             $options['headers']['Authorization'] = 'Bearer ' . $accessToken;

@@ -33,7 +33,7 @@ class PurgeReportServiceTest extends TestCase
                                  ->onlyMethods(['doRequest'])
                                  ->getMock();
 
-        $this->instance = new PurgeReportService($this->clientMock);
+        $this->instance = new PurgeReportService($this->clientMock, '/url');
     }
 
     /**
@@ -42,7 +42,7 @@ class PurgeReportServiceTest extends TestCase
     public function testFindPurgeReport(): void
     {
         $this->clientMock->expects($this->once())->method('doRequest')
-                         ->with('compte-rendu', [])
+                         ->with('/url/api-rgpd/v1/compte-rendu', [])
                          ->willReturn('');
 
         $this->assertIsArray($this->instance->findPurgeReport([]));

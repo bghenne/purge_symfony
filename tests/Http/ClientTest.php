@@ -18,8 +18,6 @@ class ClientTest extends TestCase
 {
     private MockObject $clientMock;
 
-    private string $baseUrlFixture;
-
     private TokenStorage $tokenStorageMock;
 
     private OidcClient $oidcClientMock;
@@ -33,8 +31,6 @@ class ClientTest extends TestCase
             ->onlyMethods(['request', 'withOptions'])
             ->getMock();
 
-        $this->baseUrlFixture = 'https://devgfpapi.gfp2000.com:8443';
-
         $this->tokenStorageMock = $this->getMockBuilder(TokenStorage::class)
             ->disableOriginalConstructor()
             ->onlyMethods(['getToken'])
@@ -46,7 +42,7 @@ class ClientTest extends TestCase
             ->getMock();
 
         $this->instance = $this->getMockBuilder(Client::class)
-            ->setConstructorArgs([$this->clientMock, $this->baseUrlFixture, $this->tokenStorageMock, $this->oidcClientMock])
+            ->setConstructorArgs([$this->clientMock, $this->tokenStorageMock, $this->oidcClientMock])
             ->onlyMethods(['createClient'])
             ->getMock();
     }
@@ -187,7 +183,6 @@ class ClientTest extends TestCase
         $this->clientMock->expects($this->once())
             ->method('withOptions')
             ->with([
-                'base_uri' => $this->baseUrlFixture,
                 'headers' => [
                     'Authorization' => 'Bearer accessToken',
                 ]
@@ -204,7 +199,6 @@ class ClientTest extends TestCase
         $this->clientMock->expects($this->once())
             ->method('withOptions')
             ->with([
-                'base_uri' => $this->baseUrlFixture,
                 'headers' => [
                     'Authorization' => 'Bearer accessToken',
                 ]

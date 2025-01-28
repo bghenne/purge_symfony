@@ -15,13 +15,13 @@ use App\Http\Client;
  */
 readonly class PurgedObjectService
 {
-    public function __construct(private Client $client)
+    public function __construct(private Client $client, private readonly string $baseUrl)
     {
     }
 
     public function findPurgedObjects(array $criteria): array
     {
-        $responseContent = $this->client->doRequest('donnees-purgees', $criteria);
+        $responseContent = $this->client->doRequest($this->baseUrl . '/api-rgpd/v1/donnees-purgees', $criteria);
 
         return json_decode($responseContent, true)['xxx'];
     }

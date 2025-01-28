@@ -33,7 +33,7 @@ class PurgedObjectServiceTest extends TestCase
                                  ->onlyMethods(['doRequest'])
                                  ->getMock();
 
-        $this->instance = new PurgedObjectService($this->clientMock);
+        $this->instance = new PurgedObjectService($this->clientMock, '/url');
     }
 
     /**
@@ -42,7 +42,7 @@ class PurgedObjectServiceTest extends TestCase
     public function testFindPurgedObjects(): void
     {
         $this->clientMock->expects($this->once())->method('doRequest')
-                         ->with('donnees-purgees', [])
+                         ->with('/url/api-rgpd/v1/donnees-purgees', [])
                          ->willReturn('');
 
         $this->assertIsArray($this->instance->findPurgedObjects([]));

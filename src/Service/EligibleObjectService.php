@@ -15,7 +15,7 @@ use App\Http\Client;
  */
 readonly class EligibleObjectService
 {
-    public function __construct(private Client $client)
+    public function __construct(private Client $client, private readonly string $baseUrl)
     {
     }
 
@@ -26,7 +26,7 @@ readonly class EligibleObjectService
      */
     public function findEligibleObjects(array $criteria): array
     {
-        $responseContent = $this->client->doRequest('eligibles', $criteria);
+        $responseContent = $this->client->doRequest($this->baseUrl . '/api-rgpd/v1/eligibles', $criteria);
 
         return json_decode($responseContent, true)['xxx'];
     }

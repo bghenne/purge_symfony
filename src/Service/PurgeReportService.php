@@ -15,13 +15,13 @@ use App\Http\Client;
  */
 readonly class PurgeReportService
 {
-    public function __construct(private Client $client)
+    public function __construct(private Client $client, private readonly string $baseUrl)
     {
     }
 
     public function findPurgeReport(array $criteria): array
     {
-        $responseContent = $this->client->doRequest('compte-rendu', $criteria);
+        $responseContent = $this->client->doRequest($this->baseUrl . '/api-rgpd/v1/compte-rendu', $criteria);
 
         return json_decode($responseContent, true)['xxx'];
     }

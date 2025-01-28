@@ -19,7 +19,8 @@ readonly class UserProvider implements OidcUserProviderInterface
     public function __construct(
         private Client $client,
         private DecoderInterface $jsonDecode,
-        private string $applicationName
+        private string $applicationName,
+        private string $baseUrl
     ) {}
 
     /**
@@ -63,11 +64,11 @@ readonly class UserProvider implements OidcUserProviderInterface
 
         try {
 
-            $responseContent = $this->client->doRequest('/api-authorization-rest/1.0/users', ['user' => $identifier]);
+            $responseContent = $this->client->doRequest($this->baseUrl . '/api-authorization-rest/1.0/users', ['user' => $identifier]);
 
             $userData = $this->jsonDecode->decode($responseContent, JsonEncoder::FORMAT)['users'][0];
 
-            $responseContent = $this->client->doRequest('/api-authorization-rest/1.0/users/roles', ['application' => $this->applicationName, 'user' => $identifier]);
+            $responseContent = $this->client->doRequest($this->baseUrl . '/api-authorization-rest/1.0/users/roles', ['application' => $this->applicationName, 'user' => $identifier]);
 
             $userRoles = $this->jsonDecode->decode($responseContent, JsonEncoder::FORMAT)['userRoles'];
 
@@ -75,7 +76,7 @@ readonly class UserProvider implements OidcUserProviderInterface
                 $roles[] = $userRole['role'];
             }
 
-            $responseContent = $this->client->doRequest('/api-authorization-rest/1.0/users/environments', ['application' => $this->applicationName, 'user' => $identifier]);
+            $responseContent = $this->client->doRequest($this->baseUrl . '/api-authorization-rest/1.0/users/environments', ['application' => $this->applicationName, 'user' => $identifier]);
 
             $userEnvironments = $this->jsonDecode->decode($responseContent, JsonEncoder::FORMAT)['userEnvironments'];
 
@@ -83,7 +84,7 @@ readonly class UserProvider implements OidcUserProviderInterface
                 $environments[] = $userEnvironment['environment'];
             }
 
-            $responseContent = $this->client->doRequest('/api-referential-rest/2.0/environments');
+            $responseContent = $this->client->doRequest($this->baseUrl . '/api-referential-rest/2.0/environments');
 
             $databaseEnvironments = $this->jsonDecode->decode($responseContent, JsonEncoder::FORMAT)['environments'];
 
@@ -91,7 +92,7 @@ readonly class UserProvider implements OidcUserProviderInterface
                 $dbEnvironments[] = $databaseEnvironment['name'];
             }
 
-            $responseContent = $this->client->doRequest('/api-authorization-rest/1.0/users-visibilities-units', ['selected' => 'true', 'user' => $identifier]);
+            $responseContent = $this->client->doRequest($this->baseUrl . '/api-authorization-rest/1.0/users-visibilities-units', ['selected' => 'true', 'user' => $identifier]);
 
             $userVisibilityUnits = $this->jsonDecode->decode($responseContent, JsonEncoder::FORMAT)['visibilitiesUnits'];
 
