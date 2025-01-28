@@ -26,7 +26,7 @@ function logout(): void {
   </div>
 
   <div class="mr-2">
-    {{ identity.firstName }} {{  identity.surName }}
+    {{ identity.firstName }} {{  identity.lastName }}
   </div>
 
   <button @click="logout">

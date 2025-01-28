@@ -19,13 +19,15 @@ export async function doRequest(
         mode : 'cors'
     };
 
-    if (Methods.GET === method) {
-        // @ts-ignore The constructor of URLSearchParams *can* take a FormData object,
-        // despite a slight difference in their interface. No suitable workarounds.
-        url += '?' + new URLSearchParams(parameters).toString()
-    } else {
-        // need type casting
-        requestParameters.body = parameters as FormData;
+    if (0 < Object.keys(parameters).length) {
+        if (Methods.GET === method) {
+            // @ts-ignore The constructor of URLSearchParams *can* take a FormData object,
+            // despite a slight difference in their interface. No suitable workarounds.
+            url += '?' + new URLSearchParams(parameters).toString()
+        } else {
+            // need type casting
+            requestParameters.body = parameters as FormData;
+        }
     }
 
     let response: Response;

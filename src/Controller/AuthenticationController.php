@@ -2,11 +2,13 @@
 
 namespace App\Controller;
 
+use App\Security\User;
 use Drenso\OidcBundle\Exception\OidcCodeChallengeMethodNotSupportedException;
 use Drenso\OidcBundle\Exception\OidcConfigurationException;
 use Drenso\OidcBundle\Exception\OidcConfigurationResolveException;
 use Drenso\OidcBundle\OidcClientInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -39,8 +41,18 @@ class AuthenticationController extends AbstractController
 
     #[Route('/get-identity', name: 'get-identity')]
     #[IsGranted('ROLE_USER')]
-    public function getIdentity(Request $request): string
+    public function getIdentity(): JsonResponse
     {
-        return json_encode($request->getUser());
+        /** @var User $user */
+        $user = $this->getUser();
+
+        return new JsonResponse([
+            'username' => $user->getUsername(),
+            'firstName' => $user->getFirstName(),
+            'lastName' => $user->getLastName(),
+            'roles' => $user->getRoles(),
+            'environments' => $user->getEnvironments(),
+            'visibilityUnits' => $user->getVisibilityUnits(),
+        ]);
     }
 }
