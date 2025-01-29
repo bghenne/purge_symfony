@@ -16,17 +16,17 @@ doRequest('/get-identity', {}, 'GET')
 </script>
 
 <template>
-  <header class="col-start-1 col-span-2 flex items-center text-gray-800 border-b border-gray-200 py-4 px-8">
-    <div class="mr-auto">
-      <router-link to="/">Open Web <span class="font-bold">Purge</span></router-link>
-    </div>
+  <header class="col-span-2 flex text-gray-800 border-b border-gray-200 h-16 py-0 px-4">
+    <router-link to="/" class="flex items-center hover:bg-slate-200 px-4 mr-auto">
+      <span>Open Web <span class="font-bold">Purge</span></span>
+    </router-link>
 
-    <div class="flex items-center mr-5">
+    <div class="flex items-center mr-4">
       <span class="mr-1">{{ identity.firstName }}</span>
       <span class="bi-person text-2xl" aria-hidden="true"></span>
     </div>
 
-    <a href="/logout">
+    <a class="flex items-center px-4 hover:bg-slate-200" href="/logout">
       <span class="bi-box-arrow-in-left text-2xl"></span>
     </a>
   </header>

@@ -5,12 +5,15 @@ import Navigation from "./vue/components/Navigation.vue";
 </script>
 
 <template>
-  <Header/>
-  <div class="m-10">
+  <!-- row 1, column 1–2 -->
+  <Header />
+
+  <!-- row 3, column 1 -->
+  <div class="ml-8">
     <div class="p-5 pb-7 border border-gray-200">
-      <h2 class="text-2xl mb-5">
+      <h1 class="text-2xl mb-5">
         Règles de purge
-      </h2>
+      </h1>
       <div class="grid grid-cols-[auto auto] grid-rows-[auto auto] items-center">
         <span class="bi-filetype-pdf text-2xl text-red-700 mr-2" aria-hidden="true"></span>
         Règles générales de purge
@@ -20,11 +23,29 @@ import Navigation from "./vue/components/Navigation.vue";
         </a>
       </div>
     </div>
-    <AdvancedSearch/>
+    <AdvancedSearch v-if="'/' !== $route.path" />
   </div>
-  <Navigation/>
 
-  <main>
-    <router-view></router-view>
+  <!-- row 3, column 2 -->
+  <main class="p-5 pb-7 border border-gray-200 mr-8">
+    <Navigation />
   </main>
 </template>
+
+<style>
+#app {
+  /* The application shell is two-dimensional, hence the Grid Layout model. */
+  @apply grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto auto 1fr;
+  grid-gap: 2rem; /* gap-<number> does not compile (bug?) */
+}
+
+html,
+body,
+#app {
+  /* The grid should cover the whole viewport. The "minimum" ensures that
+     the sticky containers (if any) remain sticky whatever the scrolling position. */
+  @apply min-h-screen;
+}
+</style>
