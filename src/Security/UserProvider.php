@@ -113,7 +113,7 @@ readonly class UserProvider implements OidcUserProviderInterface
             ->setLastName($userData['surName'])
             ->setUsername($identifier)
             ->setRoles($roles)
-            ->setEnvironments(array_intersect($environments, $dbEnvironments)) // display only environments available for user and on the server
+            ->setEnvironments(array_values(array_intersect($environments, $dbEnvironments))) // display only environments available for user and on the server
             ->setVisibilityUnits($visibilityUnits);
 
         return $user;

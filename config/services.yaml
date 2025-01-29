@@ -26,12 +26,12 @@ services:
             $baseUrl: '%env(WEBSERVICES_AUTHENTICATION_BASE_URL)%'
     App\Service\EligibleObjectService:
         arguments:
-            $baseUrl: '%env(WEBSERVICES_GDPR_BASE_URL))%'
+            $baseUrl: '%env(WEBSERVICES_GDPR_BASE_URL)%'
     App\Service\PurgedObjectService:
         arguments:
-            $baseUrl: '%env(WEBSERVICES_GDPR_BASE_URL))%'
+            $baseUrl: '%env(WEBSERVICES_GDPR_BASE_URL)%'
     App\Service\PurgeReportService:
         arguments:
-            $baseUrl: '%env(WEBSERVICES_GDPR_BASE_URL))%'
+            $baseUrl: '%env(WEBSERVICES_GDPR_BASE_URL)%'
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
