@@ -28,7 +28,7 @@ import Navigation from "./vue/components/Navigation.vue";
 
   <!-- row 3, column 2 -->
   <main class="p-5 pb-7 border border-gray-200 mr-8">
-    <Navigation />
+    <RouterView></RouterView>
   </main>
 </template>
 

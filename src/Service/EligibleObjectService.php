@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Http\Client;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Class EligibleObjectService
@@ -26,8 +27,8 @@ readonly class EligibleObjectService
      */
     public function findEligibleObjects(array $criteria): array
     {
-        $responseContent = $this->client->doRequest($this->baseUrl . '/api-rgpd/v1/eligibles', $criteria);
+        $responseContent = $this->client->doRequest($this->baseUrl . '/api-rgpd/v1/eligibles', $criteria, Request::METHOD_POST);
 
-        return json_decode($responseContent, true)['xxx'];
+        return json_decode($responseContent, true)['cotisations'];
     }
 }
