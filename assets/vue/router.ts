@@ -13,8 +13,9 @@ const routes : Array<RouteRecordRaw> = [
     { path: '/excluded-object', component: ExcludedObject },
     { path: '/purged-object', component: PurgedObject },
     { path: '/control-alert', component: ControlAlert },
-    { path: '/purge-report', component: PurgeReport }
-]
+    { path: '/purge-report', component: PurgeReport },
+    { path: '/:pathMatch(.*)', redirect: '/' }
+];
 
 const router: Router = createRouter({
     history: createWebHistory(),
