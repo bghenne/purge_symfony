@@ -9,10 +9,13 @@ let identity: Ref<Identity> = ref({} as Identity);
 doRequest('/get-identity', {}, 'GET')
     .then((response): void => {
       identity.value = response as Identity;
+      localStorage.setItem('identity', JSON.stringify(identity.value));
     })
     .catch((error: Error): void => {
       alert(`${error.name}: ${error.message}`)
     })
+
+
 </script>
 
 <template>

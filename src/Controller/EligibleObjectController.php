@@ -28,7 +28,7 @@ class EligibleObjectController extends AbstractController
 
         try {
             $jsonResponse->setData([
-                'eligiblesObjects' => $this->eligibleObjectService->findEligibleObjects([])
+                'eligibleObjects' => $this->eligibleObjectService->findEligibleObjects([])
             ]);
         } catch (Throwable $e) {
             $jsonResponse->setData([
