@@ -184,6 +184,7 @@ class ClientTest extends TestCase
             ->method('withOptions')
             ->with([
                 'headers' => [
+                    'Content-Type' => 'application/json',
                     'Authorization' => 'Bearer accessToken',
                 ]
             ]);
@@ -200,6 +201,7 @@ class ClientTest extends TestCase
             ->method('withOptions')
             ->with([
                 'headers' => [
+                    'Content-Type' => 'application/json',
                     'Authorization' => 'Bearer accessToken',
                 ]
             ]);

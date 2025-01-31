@@ -10,6 +10,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 /**
  * @author Benjamin Ghenne <benjamin.ghenne@gfptech.fr>
  */
+#[IsGranted("IS_AUTHENTICATED_FULLY")]
 class HomeController extends AbstractController
 {
     #[Route('/{route}', requirements: ['route' => '.{0,999}+'], priority: -1)]

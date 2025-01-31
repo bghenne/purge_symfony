@@ -60,7 +60,9 @@ class Client
 
     protected function createClient(?string $accessToken = null): void
     {;
-        $options = [];
+        $options = [
+            'headers' => ['Content-Type' => 'application/json'],
+        ];
 
         if (!empty($accessToken)) {
             $options['headers']['Authorization'] = 'Bearer ' . $accessToken;
@@ -73,5 +75,4 @@ class Client
 
         $this->httpClient = $this->httpClient->withOptions($options);
     }
-
 }

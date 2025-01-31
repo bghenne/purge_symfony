@@ -2,8 +2,15 @@
 
 import {ref} from "vue";
 import {EligibleObject} from "../types/eligible-object";
+import {doRequest} from "../utilities/request";
+import {Methods} from "../enums/methods";
 
 const eligibleObjects = ref([] as EligibleObject[])
+
+doRequest('/api/eligible-object', {}, Methods.POST)
+    .then(() => {
+
+    })
 
 </script>
 
