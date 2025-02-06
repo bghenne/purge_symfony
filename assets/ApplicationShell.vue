@@ -22,7 +22,7 @@ import AdvancedSearch from "./vue/components/AdvancedSearch.vue";
         </a>
       </div>
     </div>
-    <AdvancedSearch v-if="'/' !== $route.path" />
+    <AdvancedSearch v-if="'/' !== $route.path" class="mt-4" />
   </div>
 
   <!-- row 3, column 2 -->

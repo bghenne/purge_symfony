@@ -1,18 +1,26 @@
-<script setup lang="ts">
-</script>
-
 <template>
-  <RouterLink to="" :class="$style.tiledLink">
-    <slot ></slot>
+  <RouterLink :class="$style.tiledLink" to="">
+    <slot></slot>
   </RouterLink>
 </template>
+
+<script lang="ts" setup></script>
 
 <style module>
 @reference "../../styles/app.css";
 
 .tiledLink {
   @apply
-    inline-flex justify-center items-center text-center text-base/5 w-50 min-h-20 bg-slate-300 hover:bg-slate-400 p-3
+    inline-flex
+    min-h-20
+    w-50
+    items-center
+    justify-center
+    bg-slate-300
+    p-3
+    text-center
+    text-base/5
+    hover:bg-slate-400
   ;
 }
 </style>
