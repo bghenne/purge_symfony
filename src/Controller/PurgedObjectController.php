@@ -12,7 +12,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/api')]
 #[IsGranted("IS_AUTHENTICATED_FULLY")]
-class PurgedObjectController extends AbstractController
+final class PurgedObjectController extends AbstractController
 {
     public function __construct(private readonly PurgedObjectService $purgedObjectService)
     {

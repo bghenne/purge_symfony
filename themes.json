@@ -1,0 +1,68 @@
+{
+  "ELIGIBLE": [
+    {
+      "code": "COTISATIONS_ELIGIBLE",
+      "label": "Cotisations éligibles"
+    },
+    {
+      "code": "PRESTATIONS_SANTE_ELIGIBLE",
+      "label": "Prestations santé éligibles"
+    },
+    {
+      "code": "PRESTATIONS_SANTE_ELIGIBLE",
+      "label": "Prestations prévoyance incapacité invalidité éligibles"
+    },
+    {
+      "code": "PRESTATIONS_SANTE_ELIGIBLE",
+      "label": "Contrat / Option / Lien salarial éligibles"
+    },
+    {
+      "code": "PRESTATIONS_SANTE_ELIGIBLE",
+      "label": "Individus éligibles (données signalétiques)"
+    }
+  ],
+  "PURGEE": [
+    {
+      "code": "COTISATIONS_PURGEE",
+      "label": "Cotisations purgées"
+    },
+    {
+      "code": "PRESTATIONS_SANTE_PURGEE",
+      "label": "Prestations santé purgées"
+    },
+    {
+      "code": "PRESTATIONS_PREVOYANCE_PURGEE",
+      "label": "Prestations prévoyance incapacité invalidité purgées"
+    },
+    {
+      "code": "CONTRATS_OPTIONS_LIEN_SALARIAL_PURGEE",
+      "label": "Contrat / Option / Lien salarial purgés"
+    },
+    {
+      "code": "INDIVIDUS_PURGEE",
+      "label": "Individus purgés"
+    }
+  ],
+  "ALERT": [
+    {
+      "code": "COTISATIONS_ALERTE",
+      "label": "Cotisations"
+    },
+    {
+      "code": "PRESTATIONS_SANTE_ALERTE",
+      "label": "Prestations santé"
+    },
+    {
+      "code": "PRESTATIONS_PREVOYANCE_ALERTE",
+      "label": "Prestations prévoyance incapacité invalidité"
+    },
+    {
+      "code": "CONTRATS_OPTIONS_LIEN_SALARIAL_ALERTE",
+      "label": "Contrat / Option / Lien salarial"
+    },
+    {
+      "code": "INDIVIDUS_ALERTE",
+      "label": "Individus (données signalétiques)"
+    }
+  ]
+}

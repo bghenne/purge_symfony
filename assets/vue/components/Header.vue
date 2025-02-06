@@ -3,10 +3,11 @@ import {ref, Ref} from "vue"
 
 import {Identity} from "../types/identity"
 import {doRequest} from "../utilities/request"
+import {Methods} from "../enums/methods";
 
 let identity: Ref<Identity> = ref({} as Identity);
 
-doRequest('/get-identity', {}, 'GET')
+doRequest('/get-identity', Methods.GET)
     .then((response): void => {
       identity.value = response as Identity;
       localStorage.setItem('identity', JSON.stringify(identity.value));

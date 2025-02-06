@@ -1,12 +1,10 @@
-import { Methods } from "../enums/methods";
-
 /**
  * Fetch wrapper.
  */
 export async function doRequest(
     url: string,
-    parameters: FormData|object,
-    method: string
+    method: string,
+    parameters ?: FormData|object,
 ): Promise<object|void> {
     // const loader: HTMLElement|null = document.getElementById(elementName + '_loader');
     //
@@ -34,6 +32,7 @@ export async function doRequest(
     let responseBody;
 
     try {
+
         // A Fetch promise rejects if the request cannot reach the server (network failure, CORS misconfiguration…).
         // It does not reject on HTTP errors, including 5xx status codes (exception thrown, timeout…).
         response = await fetch(url, requestParameters);
@@ -77,3 +76,5 @@ export async function doRequest(
 
     return responseBody;
 }
+
+import { Methods } from "../enums/methods";

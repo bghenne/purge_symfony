@@ -7,7 +7,7 @@
         "php": ">=8.4",
         "ext-ctype": "*",
         "ext-iconv": "*",
-        "drenso/symfony-oidc-bundle": "^3.5",
+        "drenso/symfony-oidc-bundle": "^3.6",
         "mouf/nodejs-installer": "^1.0.14",
         "pentatrion/vite-bundle": "^7.1",
         "phpdocumentor/reflection-docblock": "^5.6.1",
@@ -38,8 +38,8 @@
         "symfony/validator": "7.2.*",
         "symfony/web-link": "7.2.*",
         "symfony/yaml": "7.2.*",
-        "twig/extra-bundle": "^2.12|^3.18",
-        "twig/twig": "^2.12|^3.18"
+        "twig/extra-bundle": "^2.12|^3.19",
+        "twig/twig": "^2.12|^3.19"
     },
     "config": {
         "allow-plugins": {

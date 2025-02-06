@@ -2,21 +2,17 @@
 
 import {ref} from "vue";
 import {EligibleObject} from "../types/eligible-object";
-import {doRequest} from "../utilities/request";
-import {Methods} from "../enums/methods";
 import Environment from "../components/Environment.vue";
+import Theme from "../components/Theme.vue";
+import {ObjectType} from "../enums/object-type";
 
 const eligibleObjects = ref([] as EligibleObject[])
-
-doRequest('/api/eligible-object', {}, Methods.POST)
-    .then(() => {
-
-    })
 
 </script>
 
 <template>
-  <Environment />
+  <Environment/>
+  <Theme :object-type="ObjectType.ELIGIBLE"/>
   <div v-if="eligibleObjects.length > 0">
     <ul>
       <li v-for="eligibleObject in eligibleObjects">{{ eligibleObject }}</li>

@@ -13,7 +13,7 @@ use Throwable;
 
 #[Route('/api')]
 #[IsGranted("IS_AUTHENTICATED_FULLY")]
-class EligibleObjectController extends AbstractController
+final class EligibleObjectController extends AbstractController
 {
     public function __construct(private readonly EligibleObjectService $eligibleObjectService)
     {

@@ -18,7 +18,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 /**
  * @author Benjamin Ghenne <benjamin.ghenne@gfptech.fr>
  */
-class AuthenticationController extends AbstractController
+final class AuthenticationController extends AbstractController
 {
     /**
      * @throws OidcConfigurationException
