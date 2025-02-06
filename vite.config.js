@@ -7,7 +7,6 @@ import vuePlugin from "@vitejs/plugin-vue";
 
 export default defineConfig({
     plugins: [
-        /* react(), // if you're using React */
         symfonyPlugin(),
         vuePlugin()
     ],

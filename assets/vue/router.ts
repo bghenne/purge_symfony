@@ -5,10 +5,10 @@ import ExcludedObject from "./pages/ExcludedObject.vue";
 import PurgedObject from "./pages/PurgedObject.vue";
 import ControlAlert from "./pages/ControlAlert.vue";
 import PurgeReport from "./pages/PurgeReport.vue";
-import Navigation from "./components/Navigation.vue";
+import Home from "./pages/Home.vue";
 
 const routes : Array<RouteRecordRaw> = [
-    { path: '/', component: Navigation },
+    { path: '/', component: Home },
     { path: '/eligible-object', component: EligibleObject },
     { path: '/excluded-object', component: ExcludedObject },
     { path: '/purged-object', component: PurgedObject },

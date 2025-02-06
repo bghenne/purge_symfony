@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import Header from "./vue/components/Header.vue";
 import AdvancedSearch from "./vue/components/AdvancedSearch.vue";
-import Navigation from "./vue/components/Navigation.vue";
 </script>
 
 <template>
@@ -38,7 +37,7 @@ import Navigation from "./vue/components/Navigation.vue";
   @apply grid;
   grid-template-columns: auto 1fr;
   grid-template-rows: auto auto 1fr;
-  grid-gap: 2rem; /* gap-<number> does not compile (bug?) */
+  grid-gap: 2rem;
 }
 
 html,

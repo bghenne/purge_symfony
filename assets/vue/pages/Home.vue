@@ -1,5 +1,5 @@
 <script setup lang="ts">
-
+import TiledLink from "../components/TiledLink.vue";
 </script>
 
 <template>
@@ -11,9 +11,12 @@
     <h2 class="w-50 text-center uppercase border-b border-gray-200 p-2 my-4">
       Contrôler
     </h2>
-    <RouterLink to="/eligible-object" class="inline-flex justify-center items-center text-center text-base/5 w-50 min-h-20 bg-slate-300 hover:bg-slate-400 p-3">
+    <TiledLink to="/eligible-object">
       Liste des objects éligibles
-    </RouterLink>
+    </TiledLink>
+<!--    <RouterLink to="/eligible-object" class="inline-flex justify-center items-center text-center text-base/5 w-50 min-h-20 bg-slate-300 hover:bg-slate-400 p-3">-->
+<!--      Liste des objects éligibles-->
+<!--    </RouterLink>-->
     <h2 class="w-50 text-center uppercase border-b border-gray-200 p-2 my-4">
       Exclure
     </h2>

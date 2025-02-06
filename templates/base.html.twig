@@ -6,12 +6,8 @@
         <title>Open Web Purge</title>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
-        {% block stylesheets %}
-            {{ vite_entry_link_tags('app') }}
-        {% endblock %}
-        {% block javascripts %}
-            {{ vite_entry_script_tags('app') }}
-        {% endblock %}
+        {{ vite_entry_link_tags('app') }}
+        {{ vite_entry_script_tags('app') }}
     </head>
     <body data-route="/{{ route }}">
         <div id="app"></div>
