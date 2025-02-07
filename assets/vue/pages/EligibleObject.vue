@@ -8,10 +8,14 @@ import {ObjectType} from "../enums/object-type";
 
 const eligibleObjects = ref([] as EligibleObject[])
 
+const getSelectedEnvironment = (environment) => {
+  console.log(environment)
+}
+
 </script>
 
 <template>
-  <Environment/>
+  <Environment @updateEnvironment="(environment) => getSelectedEnvironment(environment)"/>
   <Theme :object-type="ObjectType.ELIGIBLE"/>
   <div v-if="eligibleObjects.length > 0">
     <ul>

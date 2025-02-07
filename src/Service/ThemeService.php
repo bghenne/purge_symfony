@@ -17,7 +17,7 @@ use LogicException;
  */
 readonly class ThemeService
 {
-    public function __construct(private readonly string $projectDir)
+    public function __construct(private string $projectDir)
     {
     }
 

@@ -21,10 +21,10 @@ onMounted(() => {
 </script>
 
 <template>
-  <div v-if="themesList">
+  <div v-if="Object.keys(themesList).length > 0">
     <label>Thème</label>
     <select>
-      <option v-for="theme in themesList">{{ theme }}</option>
+      <option :value="theme" v-for="theme in themesList">{{ theme }}</option>
     </select>
   </div>
 </template>

@@ -5,12 +5,12 @@ import {Identity} from "../types/identity"
 import {doRequest} from "../utilities/request"
 import {Methods} from "../enums/methods";
 
-let identity: Ref<Identity> = ref({} as Identity);
+let user: Ref<Identity> = ref({} as Identity);
 
-doRequest('/get-identity', Methods.GET)
-    .then((response): void => {
-      identity.value = response as Identity;
-      localStorage.setItem('identity', JSON.stringify(identity.value));
+doRequest('/api/get-identity', Methods.GET)
+    .then((identity : Identity): void => {
+      user.value = identity;
+      localStorage.setItem('identity', JSON.stringify(user.value));
     })
     .catch((error: Error): void => {
       alert(`${error.name}: ${error.message}`)
@@ -26,7 +26,7 @@ doRequest('/get-identity', Methods.GET)
     </router-link>
 
     <div class="flex items-center mr-4">
-      <span class="mr-1">{{ identity.firstName }}</span>
+      <span class="mr-1">{{ user.firstName }}</span>
       <span class="bi-person text-2xl" aria-hidden="true"></span>
     </div>
 

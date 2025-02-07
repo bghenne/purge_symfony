@@ -39,7 +39,7 @@ final class AuthenticationController extends AbstractController
         return new Response('Une erreur s\'est produite : ' . $request->get('error'));
     }
 
-    #[Route('/get-identity', name: 'get-identity')]
+    #[Route('/api/get-identity', name: 'api.get-identity')]
     #[IsGranted('ROLE_USER')]
     public function getIdentity(): JsonResponse
     {

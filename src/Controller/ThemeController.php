@@ -22,6 +22,7 @@ final class ThemeController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function getThemesByObjectType(string $objectType): JsonResponse
     {
+
         $jsonResponse = new JsonResponse();
 
         try {
