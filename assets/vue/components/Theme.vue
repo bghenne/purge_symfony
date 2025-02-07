@@ -10,7 +10,6 @@ const props = defineProps<{
 
 let themesList : Ref<Array<string>> = ref([]);
 
-
 onMounted(() => {
   doRequest(`/api/theme/${props.objectType}`, Methods.GET, {})
       .then((themes: Theme[]) => {
@@ -22,7 +21,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div v-if="themesList.length > 0">
+  <div v-if="themesList">
     <label>Thème</label>
     <select>
       <option v-for="theme in themesList">{{ theme }}</option>

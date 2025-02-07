@@ -21,7 +21,6 @@ readonly class ThemeService
     {
     }
 
-
     /**
      * @param string $objectType
      * @return array
@@ -41,7 +40,19 @@ readonly class ThemeService
             throw new LogicException('The themes.json file is not readable.');
         }
 
-        return json_decode(file_get_contents($themesJsonFile), true);
+        $themesJsonFileContent = json_decode(file_get_contents($themesJsonFile), true);
 
+        $themes = $themesJsonFileContent[$objectType];
+
+        if (empty($themes)) {
+            throw new InvalidArgumentException("No theme fond for $objectType");
+        }
+
+        $themesList = [];
+        foreach ($themes as $theme) {
+            $themesList[$theme['code']] = $theme['label'];
+        }
+
+        return $themesList;
     }
 }

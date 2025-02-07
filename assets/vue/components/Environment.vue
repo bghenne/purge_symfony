@@ -8,6 +8,7 @@
       const identity : Identity = JSON.parse(localStorage.getItem('identity') as string) as Identity;
       environmentsList.value = identity.environments;
     }
+
 </script>
 
 <template>

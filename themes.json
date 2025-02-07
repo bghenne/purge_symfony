@@ -9,15 +9,15 @@
       "label": "Prestations santé éligibles"
     },
     {
-      "code": "PRESTATIONS_SANTE_ELIGIBLE",
+      "code": "PRESTATIONS_PREVOYANCE_ELIGIBLE",
       "label": "Prestations prévoyance incapacité invalidité éligibles"
     },
     {
-      "code": "PRESTATIONS_SANTE_ELIGIBLE",
+      "code": "CONTRATS_OPTIONS_LIEN_SALARIAL_ELIGIBLE",
       "label": "Contrat / Option / Lien salarial éligibles"
     },
     {
-      "code": "PRESTATIONS_SANTE_ELIGIBLE",
+      "code": "INDIVIDUS_ELIGIBLE",
       "label": "Individus éligibles (données signalétiques)"
     }
   ],
