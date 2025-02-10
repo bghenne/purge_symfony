@@ -1,11 +1,13 @@
+import {Methods} from "../enums/methods";
+
 /**
  * Fetch wrapper.
  */
 export async function doRequest(
     url: string,
     method: string,
-    parameters ?: FormData|object = {},
-): Promise<object|void> {
+    parameters ?: FormData | object = {},
+): Promise<object | void> {
     // const loader: HTMLElement|null = document.getElementById(elementName + '_loader');
     //
     // if (null !== loader) {
@@ -14,19 +16,18 @@ export async function doRequest(
 
     const requestParameters: RequestInit = {
         method: method,
-        mode : 'cors'
+        mode: 'cors'
     };
 
-    if (0 < Object.keys(parameters).length) {
-        if (Methods.GET === method) {
-            // @ts-ignore The constructor of URLSearchParams *can* take a FormData object,
-            // despite a slight difference in their interface. No suitable workarounds.
-            url += '?' + new URLSearchParams(parameters).toString()
-        } else {
-            // need type casting
-            requestParameters.body = parameters as FormData;
-        }
+    if (Methods.GET === method) {
+        // @ts-ignore The constructor of URLSearchParams *can* take a FormData object,
+        // despite a slight difference in their interface. No suitable workarounds.
+        url += '?' + new URLSearchParams(parameters).toString()
+    } else {
+        // need type casting
+        requestParameters.body = parameters as FormData;
     }
+
 
     let response: Response;
     let responseBody;
@@ -43,7 +44,8 @@ export async function doRequest(
             location.reload();
 
             // The easiest way to handle that scenario is to let the function run until the redirect occurs.
-            await new Promise(() => {});
+            await new Promise(() => {
+            });
         }
 
         // By convention, the middle uses the 200 HTTP status code even when a request fails,
@@ -77,4 +79,3 @@ export async function doRequest(
     return responseBody;
 }
 
-import { Methods } from "../enums/methods";

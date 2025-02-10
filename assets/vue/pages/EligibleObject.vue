@@ -2,24 +2,22 @@
 
 import {ref} from "vue";
 import {EligibleObject} from "../types/eligible-object";
-import Environment from "../components/Environment.vue";
-import Theme from "../components/Theme.vue";
-import {ObjectType} from "../enums/object-type";
+import EligibleSearchForm from "../components/forms/EligibleSearchForm.vue";
+
 
 const eligibleObjects = ref([] as EligibleObject[])
 
-const getSelectedEnvironment = (environment) => {
-  console.log(environment)
+const updateEligibleObjects = (newEligibleObjects) => {
+  eligibleObjects.value = newEligibleObjects;
 }
 
 </script>
 
 <template>
-  <Environment @updateEnvironment="(environment) => getSelectedEnvironment(environment)"/>
-  <Theme :object-type="ObjectType.ELIGIBLE"/>
+  <EligibleSearchForm @update="(newEligibleObjects => updateEligibleObjects(newEligibleObjects))" />
   <div v-if="eligibleObjects.length > 0">
     <ul>
-      <li v-for="eligibleObject in eligibleObjects">{{ eligibleObject }}</li>
+      <li v-for="eligibleObject in newEligibleObjects">{{ eligibleObject }}</li>
     </ul>
   </div>
 </template>

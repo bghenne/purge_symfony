@@ -27,22 +27,8 @@ readonly class EligibleObjectService
      */
     public function findEligibleObjects(array $criteria): array
     {
-        $criteria = [
-            'environnement' => 'MERCERW2',
-            'theme' => 'COTISATIONS',
-            'debutPeriode' => '2018-01-01',
-            'finPeriode' => '2018-12-31',
-            'idFass' => 15,
-            'idPrestation' => 0,
-            'typePrestation' => 'string'
-
-        ];
-
-
         $responseContent = $this->client->doRequest($this->baseUrl . '/api-rgpd/v1/eligibles', $criteria, Request::METHOD_POST);
 
-
-
-        return json_decode($responseContent, true)['cotisations'];
+        return json_decode($responseContent, true)['cotisations']['content'];
     }
 }

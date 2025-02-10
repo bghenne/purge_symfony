@@ -10,6 +10,8 @@ const props = defineProps<{
 
 let themesList : Ref<Array<string>> = ref([]);
 
+const theme = defineModel();
+
 onMounted(() => {
   doRequest(`/api/theme/${props.objectType}`, Methods.GET, {})
       .then((themes: Theme[]) => {
@@ -23,8 +25,8 @@ onMounted(() => {
 <template>
   <div v-if="Object.keys(themesList).length > 0">
     <label>Thème</label>
-    <select>
-      <option :value="theme" v-for="theme in themesList">{{ theme }}</option>
+    <select v-model="theme" required="required">
+      <option :value="code" v-for="(theme, code) in themesList">{{ theme }}</option>
     </select>
   </div>
 </template>

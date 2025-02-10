@@ -9,19 +9,14 @@ if ((localStorage.getItem('identity') as string).length > 0) {
   environmentsList.value = identity.environments;
 }
 
-const environment = defineModel();
-const emit = defineEmits<{updateEnvironment: [value: string]}>()
-
-const updateEnvironment = (event) => {
-  emit('updateEnvironment', event.currentTarget.value)
-}
+const environmentValue = defineModel();
 
 </script>
 
 <template>
     <div v-if="environmentsList.length > 0">
       <label>Choisir un environnement</label>
-      <select @change="updateEnvironment">
+      <select v-model="environmentValue" required="required">
         <option :value="environment" v-for="environment in environmentsList">{{ environment }}</option>
       </select>
     </div>
