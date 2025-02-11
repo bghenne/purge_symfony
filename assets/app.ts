@@ -3,10 +3,12 @@
  * Both are included in the base layout (base.html.twig) by calling Twig helpers from the Vite bundle.
  */
 
-import { createApp } from 'vue'
-import router from './vue/router'
+import { createApp } from 'vue';
+import PrimeVue from 'primevue/config';
+import Nora from '@primevue/themes/nora';
+import router from './vue/router';
 
-import ApplicationShell from './ApplicationShell.vue'
+import ApplicationShell from './ApplicationShell.vue';
 import './styles/app.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
@@ -15,4 +17,9 @@ await router.replace({path: document.body.dataset.route as string});
 
 createApp(ApplicationShell)
     .use(router)
+    .use(PrimeVue, {
+        theme: {
+            preset: Nora,
+        },
+    })
     .mount('#app');

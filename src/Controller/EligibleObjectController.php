@@ -27,13 +27,13 @@ final class EligibleObjectController extends AbstractController
         $jsonResponse = new JsonResponse();
 
         try {
-            $jsonResponse->setData([
-                'eligibleObjects' => $this->eligibleObjectService->findEligibleObjects([
+            $jsonResponse->setData(
+                $this->eligibleObjectService->findEligibleObjects([
                     //'environment' => $request->get('environment'),
                     'environnement' => 'MERCERW2', // TODO remove
                     'theme' => $request->get('theme')
                 ])
-            ]);
+            );
         } catch (Throwable $e) {
             $this->logger->error($e->getMessage());
             $jsonResponse->setData([

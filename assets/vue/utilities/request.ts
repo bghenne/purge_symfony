@@ -6,7 +6,7 @@ import {Methods} from "../enums/methods";
 export async function doRequest(
     url: string,
     method: string,
-    parameters ?: FormData | object = {},
+    parameters: FormData | object = {},
 ): Promise<object | void> {
     // const loader: HTMLElement|null = document.getElementById(elementName + '_loader');
     //
