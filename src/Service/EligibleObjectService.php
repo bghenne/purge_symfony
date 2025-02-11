@@ -29,6 +29,6 @@ readonly class EligibleObjectService
     {
         $responseContent = $this->client->doRequest($this->baseUrl . '/api-rgpd/v1/eligibles', $criteria, Request::METHOD_POST);
 
-        return json_decode($responseContent, true)['cotisations']['content'];
+        return json_decode($responseContent, true)['content'];
     }
 }

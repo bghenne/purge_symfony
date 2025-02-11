@@ -4,7 +4,6 @@ import {ref} from "vue";
 import {EligibleObject} from "../types/eligible-object";
 import EligibleSearchForm from "../components/forms/EligibleSearchForm.vue";
 
-
 const eligibleObjects = ref([] as EligibleObject[])
 
 const updateEligibleObjects = (newEligibleObjects) => {
