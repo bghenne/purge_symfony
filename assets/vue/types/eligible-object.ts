@@ -4,8 +4,8 @@ export interface EligibleObject {
     clientName: string,
     environment: string,
     familyId: number,
-    beneficiaryName: string, // TODO: typo
-    beneficiaryFirstname : string, // TODO: typo
+    beneficiaryName: string
+    beneficiaryFirstname : string,
     beneficiaryBirthdate: string,
     details: {
         key: string,

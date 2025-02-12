@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Http\Client;
+use App\Trait\DateTrait;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -16,6 +17,8 @@ use Symfony\Component\HttpFoundation\Request;
  */
 readonly class EligibleObjectService
 {
+    use DateTrait;
+
     public function __construct(private Client $client, private readonly string $baseUrl)
     {
     }
@@ -36,17 +39,17 @@ readonly class EligibleObjectService
 
             $eligibleObjects[$key] = [
                 'key' => $key,
-                'campaignDate' => $result['dateCampagne'] ?? null,
+                'campaignDate' => $this->formatDate($result['dateCampagne'], 'Y-m-d', 'd/m/Y') ?? null,
                 'clientName' => $result['nomDuClient'] ?? null,
                 'environment' => $result['environnement'] ?? null,
                 'familyId' => $result['identifiantFamille'] ?? null,
                 'beneficiaryName' => $result['nomBeneficiaire'] ?? null,
                 'beneficiaryFirstname' => $result['prenomBeneficiaire'] ?? null,
-                'beneficiaryBirthdate' => $result['dateNaissanceBeneficiaire'] ?? null,
+                'beneficiaryBirthdate' => $this->formatDate($result['dateNaissanceBeneficiaire'], 'Y-m-d', 'd/m/Y') ?? null,
                 'socialSecurityNumber' => $result['numeroSecuriteSociale'] ?? null,
                 'details' => [
                     'key' => $key,
-                    'contributionPaymentDate' => $result['datePaiementCotisation'] ?? null,
+                    'contributionPaymentDate' => $this->formatDate($result['datePaiementCotisation'], 'Y-m-d', 'd/m/Y') ?? null,
                     'contributionCallPeriod' => $result['periodeAppelCotisation'] ?? null,
                     'contributionCallYear' => $result['anneeAppelCotisation'] ?? null,
                     'conservationTime' => $result['delaiConservation'] ?? null,

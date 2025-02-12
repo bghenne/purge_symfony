@@ -39,7 +39,6 @@ const updateEligibleObjects = (newEligibleObjects: EligibleObject[]) => {
         <p>Période d'appel de cotisation : {{ slotProps.data.details.contributionCallPeriod }}</p>
         <p>Année appel de cotisation : {{ slotProps.data.details.contributionCallYear }}</p>
         <p>Date paiement cotisation : {{ slotProps.data.details.contributionPaymentDate }}</p>
-        <p>Délai de conservation : {{ slotProps.data.details.contributionTime }}</p>
         <p>Libellé de la règle de purge : {{ slotProps.data.details.purgeRuleLabel }}</p>
       </div>
     </template>
