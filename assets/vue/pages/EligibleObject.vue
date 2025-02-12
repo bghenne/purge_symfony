@@ -5,26 +5,9 @@ import EligibleSearchForm from "../components/forms/EligibleSearchForm.vue";
 import { DataTable, Column } from "primevue";
 
 const eligibleObjects = ref([] as EligibleObject[]);
-const eligibleObjectsDetails = ref([] as EligibleObjectDetails[]);
 
 const updateEligibleObjects = (newEligibleObjects: EligibleObject[]) => {
-  for (const [key, newEligibleObject] of Object.entries(newEligibleObjects)) {
-    newEligibleObject['key'] = key;
-    newEligibleObject['details'] = {
-      key: key,
-      dateCampagne: newEligibleObject.dateCampagne,
-      nomDuClient: newEligibleObject.nomDuClient,
-      environnement: newEligibleObject.environnement,
-      datePaiementCotisation: newEligibleObject.datePaiementCotisation,
-      periodeAppelCotisation: newEligibleObject.periodeAppelCotisation,
-      anneeAppelCotisation: newEligibleObject.anneeAppelCotisation,
-      delaiConservation: newEligibleObject.delaiConservation,
-      libRegPurg: newEligibleObject.libRegPurg,
-    };
-  }
-  console.log(eligibleObjectsDetails.value);
   eligibleObjects.value = newEligibleObjects;
-  console.log(eligibleObjects.value);
 };
 </script>
 
@@ -35,7 +18,7 @@ const updateEligibleObjects = (newEligibleObjects: EligibleObject[]) => {
 
   <DataTable
     v-if="eligibleObjects.length > 0"
-    v-model:expandedRows="eligibleObjectsDetails"
+    v-model:expandedRows="eligibleObjects.details"
     dataKey="key"
     :value="eligibleObjects"
     removableSort
@@ -43,14 +26,21 @@ const updateEligibleObjects = (newEligibleObjects: EligibleObject[]) => {
     :rows="5"
   >
     <Column expander style="width: 5rem" />
-    <Column field="identifiantFamille" header="Identifiant de famille" sortable></Column>
-    <Column field="nomBeneficiaire" header="Nom" sortable></Column>
-    <Column field="prenomBeneficiaire" header="Prénom" sortable></Column>
-    <Column field="dateNaissanceBeneficiaire" header="Date de naissance" sortable></Column>
-    <Column field="numeroSecuriteSociale" header="Numéro de Sécurité sociale"></Column>
+    <Column field="familyId" header="Identifiant de famille" sortable></Column>
+    <Column field="beneficiaryName" header="Nom" sortable></Column>
+    <Column field="beneficiaryFirstname" header="Prénom" sortable></Column>
+    <Column field="beneficiaryBirthdate" header="Date de naissance" sortable></Column>
+    <Column field="socialSecurityNumber" header="Numéro de Sécurité sociale"></Column>
+    <Column field="environment" header="Environnement"></Column>
+    <Column field="clientName" header="Nom du client"></Column>
     <template #expansion="slotProps">
       <div class="p-4">
-        {{ slotProps.data.details.nomDuClient }}
+        <p>Délai de conservation : {{ slotProps.data.details.conservationTime }}</p>
+        <p>Période d'appel de cotisation : {{ slotProps.data.details.contributionCallPeriod }}</p>
+        <p>Année appel de cotisation : {{ slotProps.data.details.contributionCallYear }}</p>
+        <p>Date paiement cotisation : {{ slotProps.data.details.contributionPaymentDate }}</p>
+        <p>Délai de conservation : {{ slotProps.data.details.contributionTime }}</p>
+        <p>Libellé de la règle de purge : {{ slotProps.data.details.purgeRuleLabel }}</p>
       </div>
     </template>
   </DataTable>

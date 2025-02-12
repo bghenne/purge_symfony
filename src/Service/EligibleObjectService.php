@@ -29,6 +29,34 @@ readonly class EligibleObjectService
     {
         $responseContent = $this->client->doRequest($this->baseUrl . '/api-rgpd/v1/eligibles', $criteria, Request::METHOD_POST);
 
-        return json_decode($responseContent, true)['content'];
+        $results = json_decode($responseContent, true)['content'];
+        $eligibleObjects = [];
+
+        foreach ($results as $key => $result) {
+
+            $eligibleObjects[$key] = [
+                'key' => $key,
+                'campaignDate' => $result['dateCampagne'] ?? null,
+                'clientName' => $result['nomDuClient'] ?? null,
+                'environment' => $result['environnement'] ?? null,
+                'familyId' => $result['identifiantFamille'] ?? null,
+                'beneficiaryName' => $result['nomBeneficiaire'] ?? null,
+                'beneficiaryFirstname' => $result['prenomBeneficiaire'] ?? null,
+                'beneficiaryBirthdate' => $result['dateNaissanceBeneficiaire'] ?? null,
+                'socialSecurityNumber' => $result['numeroSecuriteSociale'] ?? null,
+                'details' => [
+                    'key' => $key,
+                    'contributionPaymentDate' => $result['datePaiementCotisation'] ?? null,
+                    'contributionCallPeriod' => $result['periodeAppelCotisation'] ?? null,
+                    'contributionCallYear' => $result['anneeAppelCotisation'] ?? null,
+                    'conservationTime' => $result['delaiConservation'] ?? null,
+                    'purgeRuleLabel' => $result['libRegPurg'] ?? null,
+                ]
+            ];
+
+        }
+
+        return $eligibleObjects;
+
     }
 }
