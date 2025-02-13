@@ -9,11 +9,17 @@ const eligibleObjects = ref([] as EligibleObject[]);
 const updateEligibleObjects = (newEligibleObjects: EligibleObject[]) => {
   eligibleObjects.value = newEligibleObjects;
 };
+
+const clearGrid = () => {
+  eligibleObjects.value = [];
+}
+
 </script>
 
 <template>
   <EligibleSearchForm
     @update="(newEligibleObjects) => updateEligibleObjects(newEligibleObjects)"
+    @clear="clearGrid"
   />
 
   <DataTable

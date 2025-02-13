@@ -11,7 +11,8 @@ import {EligibleObject} from "../../types/eligible-object";
 const environmentValue = ref('');
 const themeValue = ref('');
 const emits = defineEmits<{
-  update: [eligibleObjects: EligibleObject[]]
+  update: [eligibleObjects: EligibleObject[]],
+  clear: void
 }>();
 
 const searchEligible = () => {
@@ -27,6 +28,12 @@ const searchEligible = () => {
       .catch(error => console.log(error))
 }
 
+const resetForm = () => {
+  environmentValue.value = null;
+  themeValue.value = null;
+  emits('clear');
+}
+
 
 </script>
 
@@ -35,6 +42,7 @@ const searchEligible = () => {
     <Environment v-model="environmentValue"/>
     <Theme :object-type="ObjectType.ELIGIBLE" v-model="themeValue" />
     <button type="submit" >Rechercher</button>
+    <button type="button" @click="resetForm">Effacer</button>
   </form>
 </template>
 
