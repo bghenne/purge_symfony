@@ -12,14 +12,6 @@ let themesList : Ref<Array<string>> = ref([]);
 
 const theme = defineModel();
 
-onMounted(() => {
-  doRequest(`/api/theme/${props.objectType}`, Methods.GET, {})
-      .then((themes: Theme[]) => {
-        themesList.value = themes;
-      })
-      .catch(error => console.log(error))
-  });
-
 </script>
 
 <template>

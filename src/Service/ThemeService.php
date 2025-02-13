@@ -50,7 +50,10 @@ readonly class ThemeService
 
         $themesList = [];
         foreach ($themes as $theme) {
-            $themesList[$theme['code']] = $theme['label'];
+            $themesList[] = [
+                'code' => $theme['code'],
+                'name' => $theme['label']
+            ];
         }
 
         return $themesList;

@@ -11,6 +11,7 @@ import router from './vue/router';
 import ApplicationShell from './ApplicationShell.vue';
 import './styles/app.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
+import {ToastService} from "primevue";
 
 // Pre-navigates to a URL that comes from the middle (i.e. submitted in the browser address bar).
 await router.replace({path: document.body.dataset.route as string});
@@ -22,4 +23,5 @@ createApp(ApplicationShell)
             preset: Nora,
         },
     })
+    .use(ToastService)
     .mount('#app');

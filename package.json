@@ -6,10 +6,12 @@
         "url": "https://gitlab.gfptech.fr/open-web/purge_symfony"
     },
     "dependencies": {
+        "@primevue/forms": "^4.2.5",
         "@primevue/themes": "^4.2.5",
         "primevue": "^4.2.5",
         "vue": "^3.5.13",
-        "vue-router": "^4.5.0"
+        "vue-router": "^4.5.0",
+        "zod": "^3.24.2"
     },
     "devDependencies": {
         "@tailwindcss/postcss": "^4.0.3",

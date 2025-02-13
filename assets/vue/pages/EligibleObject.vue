@@ -1,37 +1,101 @@
 <script setup lang="ts">
-import { ref } from "vue";
-import {EligibleObject, EligibleObjectDetails} from "../types/eligible-object";
-import EligibleSearchForm from "../components/forms/EligibleSearchForm.vue";
-import { DataTable, Column } from "primevue";
+
+import {EligibleObject} from "../types/eligible-object";
+import {Button, Column, DataTable, Message, Select, Toast} from "primevue";
+import {Form} from "@primevue/forms";
+import {onMounted, ref} from 'vue';
+import {zodResolver} from '@primevue/forms/resolvers/zod';
+import {useToast} from "primevue/usetoast";
+import {z} from 'zod';
+import {fetchEnvironments} from "../composables/environment";
+import {fetchThemes} from "../composables/theme";
+import {ObjectType} from "../enums/object-type";
+import {doRequest} from "../utilities/request";
+import {Methods} from "../enums/methods";
 
 const eligibleObjects = ref([] as EligibleObject[]);
+const environments = ref({});
+const themes = ref({});
 
-const updateEligibleObjects = (newEligibleObjects: EligibleObject[]) => {
-  eligibleObjects.value = newEligibleObjects;
+const initialValues = ref({
+  environment: { name: '' },
+  theme: { name: '' }
+});
+
+onMounted(() => {
+  environments.value = fetchEnvironments();
+  themes.value = fetchThemes(ObjectType.ELIGIBLE);
+})
+
+const toast = useToast();
+
+const resolver = ref(zodResolver(
+    z.object({
+      environment: z.union([
+        z.object({
+          name: z.string().min(1, 'Environnement requis.')
+        }),
+        z.any().refine((val) => false, { message: 'Environnement requis.' })
+      ]),
+      theme: z.union([
+        z.object({
+          name: z.string().min(1, 'Thème requis.')
+        }),
+        z.any().refine((val) => false, { message: 'Thème requis.' })
+      ])
+    })
+));
+
+const onFormSubmit = (event) => {
+  console.log(event)
+  if (event.valid) {
+    toast.add({severity: 'success', summary: 'Form is submitted.', life: 3000});
+
+    const formData = new FormData;
+    formData.append('environment', event.values.name);
+    formData.append('theme', event.values.name);
+
+    doRequest('/api/eligible-object', Methods.POST, formData)
+        .then((newEligibleObjects : EligibleObject[]) => {
+          eligibleObjects.value = newEligibleObjects;
+        })
+        .catch(error => console.log(error))
+  }
 };
-
-const clearGrid = () => {
-  eligibleObjects.value = [];
-}
 
 </script>
 
 <template>
-  <EligibleSearchForm
-    @update="(newEligibleObjects) => updateEligibleObjects(newEligibleObjects)"
-    @clear="clearGrid"
-  />
+
+  <div class="card flex justify-center">
+    <Toast/>
+    <Form v-slot="$form" :resolver="resolver" @submit="onFormSubmit" :initialValues="initialValues" class="flex flex-col gap-4 w-full md:w-56" >
+      <div class="flex flex-col gap-1">
+        <Select name="environment" :options="environments" optionLabel="name" placeholder="Choisissez un environnement" fluid checkmark/>
+        <Message v-if="$form.environment?.invalid" severity="error" size="small" variant="simple">{{
+            $form.environment.error.message
+          }}
+        </Message>
+        <Select name="theme" :options="themes" optionLabel="name" placeholder="Choisissez un thème" fluid checkmark/>
+        <Message v-if="$form.theme?.invalid" severity="error" size="small" variant="simple">{{
+            $form.theme.error.message
+          }}
+        </Message>
+      </div>
+      <Button type="submit" severity="secondary" label="Submit"/>
+    </Form>
+  </div>
 
   <DataTable
-    v-if="eligibleObjects.length > 0"
-    v-model:expandedRows="eligibleObjects.details"
-    dataKey="key"
-    :value="eligibleObjects"
-    removableSort
-    paginator
-    :rows="5"
+      v-if="eligibleObjects.length > 0"
+      v-model:expandedRows="eligibleObjects.details"
+      dataKey="key"
+      :value="eligibleObjects"
+      removableSort
+      paginator
+      :rows="5"
   >
-    <Column expander style="width: 5rem" />
+    <Column expander style="width: 5rem"/>
     <Column field="familyId" header="Identifiant de famille" sortable></Column>
     <Column field="beneficiaryName" header="Nom" sortable></Column>
     <Column field="beneficiaryFirstname" header="Prénom" sortable></Column>
