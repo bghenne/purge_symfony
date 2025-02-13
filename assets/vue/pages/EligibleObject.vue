@@ -22,10 +22,9 @@ const initialValues = ref({
   theme: { name: '' }
 });
 
-onMounted(() => {
-  environments.value = fetchEnvironments();
-  themes.value = fetchThemes(ObjectType.ELIGIBLE);
-})
+environments.value = fetchEnvironments();
+themes.value = fetchThemes(ObjectType.ELIGIBLE);
+
 
 const toast = useToast();
 
