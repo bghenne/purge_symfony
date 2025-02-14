@@ -17,14 +17,8 @@ const eligibleObjects = ref([] as EligibleObject[]);
 const environments = ref({});
 const themes = ref({});
 
-const initialValues = ref({
-  environment: { name: '' },
-  theme: { name: '' }
-});
-
 environments.value = fetchEnvironments();
 themes.value = fetchThemes(ObjectType.ELIGIBLE);
-
 
 const toast = useToast();
 
@@ -38,7 +32,7 @@ const resolver = ref(zodResolver(
       ]),
       theme: z.union([
         z.object({
-          name: z.string().min(1, 'Thème requis.')
+          code: z.string().min(1, 'Thème requis.')
         }),
         z.any().refine((val) => false, { message: 'Thème requis.' })
       ])
@@ -46,13 +40,12 @@ const resolver = ref(zodResolver(
 ));
 
 const onFormSubmit = (event) => {
-  console.log(event)
   if (event.valid) {
     toast.add({severity: 'success', summary: 'Form is submitted.', life: 3000});
 
     const formData = new FormData;
-    formData.append('environment', event.values.name);
-    formData.append('theme', event.values.name);
+    formData.append('environment', event.values.environment.name);
+    formData.append('theme', event.values.theme.code);
 
     doRequest('/api/eligible-object', Methods.POST, formData)
         .then((newEligibleObjects : EligibleObject[]) => {
@@ -66,10 +59,10 @@ const onFormSubmit = (event) => {
 
 <template>
 
-  <div class="card flex justify-center">
+  <div class="card flex justify-center mb-4">
     <Toast/>
-    <Form v-slot="$form" :resolver="resolver" @submit="onFormSubmit" :initialValues="initialValues" class="flex flex-col gap-4 w-full md:w-56" >
-      <div class="flex flex-col gap-1">
+    <Form v-slot="$form" :resolver="resolver" @submit="onFormSubmit">
+      <div class="flex gap-5">
         <Select name="environment" :options="environments" optionLabel="name" placeholder="Choisissez un environnement" fluid checkmark/>
         <Message v-if="$form.environment?.invalid" severity="error" size="small" variant="simple">{{
             $form.environment.error.message
@@ -80,8 +73,8 @@ const onFormSubmit = (event) => {
             $form.theme.error.message
           }}
         </Message>
+        <Button type="submit" severity="secondary" label="Submit" class="shrink-0" />
       </div>
-      <Button type="submit" severity="secondary" label="Submit"/>
     </Form>
   </div>
 
