@@ -21,7 +21,11 @@ createApp(ApplicationShell)
     .use(PrimeVue, {
         theme: {
             preset: Nora,
+            options : {
+                darkModeSelector: false
+            }
         },
+
     })
     .use(ToastService)
     .mount('#app');

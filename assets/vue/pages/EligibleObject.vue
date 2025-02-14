@@ -41,7 +41,7 @@ const resolver = ref(zodResolver(
 
 const onFormSubmit = (event) => {
   if (event.valid) {
-    toast.add({severity: 'success', summary: 'Form is submitted.', life: 3000});
+    toast.add({severity: 'success', summary: 'Le formulaire a été soumis.', life: 3000});
 
     const formData = new FormData;
     formData.append('environment', event.values.environment.name);
@@ -73,7 +73,8 @@ const onFormSubmit = (event) => {
             $form.theme.error.message
           }}
         </Message>
-        <Button type="submit" severity="secondary" label="Submit" class="shrink-0" />
+        <Button type="reset" label="Effacer" class="shrink-0" />
+        <Button type="submit" severity="secondary" label="Rechercher" class="shrink-0" />
       </div>
     </Form>
   </div>
