@@ -3,7 +3,7 @@
 import {EligibleObject} from "../types/eligible-object";
 import {Button, Column, DataTable, Message, Select, Toast} from "primevue";
 import {Form} from "@primevue/forms";
-import {onMounted, ref} from 'vue';
+import {ref} from 'vue';
 import {zodResolver} from '@primevue/forms/resolvers/zod';
 import {useToast} from "primevue/usetoast";
 import {z} from 'zod';
@@ -16,6 +16,7 @@ import {Methods} from "../enums/methods";
 const eligibleObjects = ref([] as EligibleObject[]);
 const environments = ref({});
 const themes = ref({});
+const searchInProgress: boolean = ref(false);
 
 environments.value = fetchEnvironments();
 themes.value = fetchThemes(ObjectType.ELIGIBLE);
@@ -28,13 +29,13 @@ const resolver = ref(zodResolver(
         z.object({
           name: z.string().min(1, 'Environnement requis.')
         }),
-        z.any().refine((val) => false, { message: 'Environnement requis.' })
+        z.any().refine((val) => false, {message: 'Environnement requis.'})
       ]),
       theme: z.union([
         z.object({
           code: z.string().min(1, 'Thème requis.')
         }),
-        z.any().refine((val) => false, { message: 'Thème requis.' })
+        z.any().refine((val) => false, {message: 'Thème requis.'})
       ])
     })
 ));
@@ -43,15 +44,18 @@ const onFormSubmit = (event) => {
   if (event.valid) {
     toast.add({severity: 'success', summary: 'Le formulaire a été soumis.', life: 3000});
 
+    searchInProgress.value = true;
+
     const formData = new FormData;
     formData.append('environment', event.values.environment.name);
     formData.append('theme', event.values.theme.code);
 
     doRequest('/api/eligible-object', Methods.POST, formData)
-        .then((newEligibleObjects : EligibleObject[]) => {
+        .then((newEligibleObjects: EligibleObject[]) => {
           eligibleObjects.value = newEligibleObjects;
         })
         .catch(error => console.log(error))
+        .finally(() => searchInProgress.value = false)
   }
 };
 
@@ -63,7 +67,8 @@ const onFormSubmit = (event) => {
     <Toast/>
     <Form v-slot="$form" :resolver="resolver" @submit="onFormSubmit">
       <div class="flex gap-5">
-        <Select name="environment" :options="environments" optionLabel="name" placeholder="Choisissez un environnement" fluid checkmark/>
+        <Select name="environment" :options="environments" optionLabel="name" placeholder="Choisissez un environnement"
+                fluid checkmark/>
         <Message v-if="$form.environment?.invalid" severity="error" size="small" variant="simple">{{
             $form.environment.error.message
           }}
@@ -73,20 +78,20 @@ const onFormSubmit = (event) => {
             $form.theme.error.message
           }}
         </Message>
-        <Button type="reset" label="Effacer" class="shrink-0" />
-        <Button type="submit" severity="secondary" label="Rechercher" class="shrink-0" />
+        <Button type="reset" label="Effacer" class="shrink-0"/>
+        <Button type="submit" severity="secondary" label="Rechercher" class="shrink-0"/>
       </div>
     </Form>
   </div>
 
   <DataTable
-      v-if="eligibleObjects.length > 0"
       v-model:expandedRows="eligibleObjects.details"
       dataKey="key"
       :value="eligibleObjects"
       removableSort
       paginator
       :rows="5"
+      :loading="searchInProgress"
   >
     <Column expander style="width: 5rem"/>
     <Column field="familyId" header="Identifiant de famille" sortable></Column>
