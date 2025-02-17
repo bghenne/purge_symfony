@@ -16,7 +16,6 @@ doRequest('/api/get-identity', Methods.GET)
       alert(`${error.name}: ${error.message}`)
     })
 
-
 </script>
 
 <template>
