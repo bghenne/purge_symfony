@@ -33,13 +33,15 @@
           </Message>
           <div v-if="'/control-alert' === $route.path">
             <InputText name="familyId" type="text" placeholder="ID Prestation"/>
-            <Select name="serviceTypologyId" :options="typologies" placeholder="Typlogie de prestation" fluid checkmark/>
+            <Select name="serviceTypologyId" :options="typologies" placeholder="Typlogie de prestation" fluid
+                    checkmark/>
           </div>
           <Button type="reset" label="Effacer" class="shrink-0"/>
-          <Button name="search" value="advancedSearch" type="submit" severity="secondary" label="Valider" class="shrink-0" />
+          <Button name="search1" value="advancedSearch" type="submit" severity="secondary" label="Valider" class="shrink-0"/>
         </Teleport>
         <Button type="reset" label="Effacer" class="shrink-0"/>
-        <Button name="search" value="fullSearch" type="submit" severity="secondary" label="Rechercher" class="shrink-0"/>
+        <Button name="search2" value="fullSearch" type="submit" severity="secondary" label="Rechercher"
+                class="shrink-0"/>
       </div>
     </Form>
   </div>
@@ -82,8 +84,8 @@ import {Form} from "@primevue/forms";
 import {ref} from 'vue';
 import {useToast} from "primevue/usetoast";
 import {fetchEnvironments} from "../composables/environment";
-import {fetchThemes} from "../composables/theme";
 import {ObjectType} from "../enums/object-type";
+import {fetchThemes} from "../composables/theme";
 import {doRequest} from "../utilities/request";
 import {Methods} from "../enums/methods";
 import {isNumeric} from "../utilities/validation/is-numeric";
@@ -112,9 +114,6 @@ const resolver = ({values}) => {
 
   const errors = {};
 
-  console.log('Resolver')
-  console.log(values)
-
   if ('undefined' !== values.familyId && false === isNumeric(values.familyId)) {
     errors.familyId = [{message: "IDFASS doit être un nombre entier"}];
   }
@@ -125,21 +124,25 @@ const resolver = ({values}) => {
 }
 
 const onFormSubmit = ({valid, values}) => {
+
   if (valid) {
-    toast.add({severity: 'success', summary: 'Le formulaire a été soumis.', life: 3000});
+    toast.add({severity: 'success', summary: 'Recherche en cours.', life: 3000});
 
     searchInProgress.value = true;
-
-    console.log('Validation')
-    console.log(values)
-
 
     const formData = new FormData;
     formData.append('environment', values.environment.name);
     formData.append('theme', values.theme.code);
-    formData.append('dateFrom', values.dateFrom);
-    formData.append('dateTo', values.dateTo);
-    formData.append('familyId', values.familyId);
+
+    if (undefined !== values.dateFrom) {
+      formData.append('dateFrom', values.dateFrom);
+    }
+    if (undefined !== values.dateTo) {
+      formData.append('dateTo', values.dateTo);
+    }
+    if (undefined !== values.dateFrom) {
+      formData.append('familyId', values.familyId);
+    }
 
     doRequest('/api/eligible-object', Methods.POST, formData)
         .then((newEligibleObjects: EligibleObject[]) => {
