@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Service\EligibleObjectService;
+use App\Trait\DateTrait;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -17,6 +18,8 @@ use Throwable;
 #[IsGranted("IS_AUTHENTICATED_FULLY")]
 final class EligibleObjectController extends AbstractController
 {
+    use DateTrait;
+
     public function __construct(private readonly EligibleObjectService $eligibleObjectService, private readonly LoggerInterface $logger)
     {
     }
@@ -26,13 +29,27 @@ final class EligibleObjectController extends AbstractController
     {
         $jsonResponse = new JsonResponse();
 
+        $parameters = [
+            //'environment' => $request->get('environment'),
+            'environnement' => 'MERCERW2', // TODO remove
+            'theme' => $request->get('theme')
+        ];
+
+        if (!empty($request->get('dateFrom'))) {
+            $parameters['debutPeriode'] = $this->convertDateFromString($request->get('dateFrom'));
+        }
+
+        if (!empty($request->get('dateTo'))) {
+            $parameters['finPeriode'] = $this->convertDateFromString($request->get('dateTo'));
+        }
+
+        if (!empty($request->get('familyId'))) {
+            $parameters['idFass'] = $request->get('familyId');
+        }
+
         try {
             $jsonResponse->setData(
-                $this->eligibleObjectService->findEligibleObjects([
-                    //'environment' => $request->get('environment'),
-                    'environnement' => 'MERCERW2', // TODO remove
-                    'theme' => $request->get('theme')
-                ])
+                $this->eligibleObjectService->findEligibleObjects($parameters)
             );
         } catch (Throwable $e) {
             $this->logger->error($e->getMessage());

@@ -19,16 +19,16 @@ trait DateTrait
     /**
      * Format date
      *
-     * @param string $sDate
-     * @param string $sInputFormat
-     * @param string $sOutputFormat
+     * @param string $date
+     * @param string $inputFormat
+     * @param string $outputFormat
      * @access protected
      *
      * @return string
      */
-    public function formatDate(string $sDate, string $sInputFormat = 'Y-m-d H:i:s', string $sOutputFormat = 'd/m/Y H:i:s') : string
+    public function formatDate(string $date, string $inputFormat = 'Y-m-d H:i:s', string $outputFormat = 'd/m/Y H:i:s') : string
     {
-        return DateTime::createFromFormat($sInputFormat, $sDate)->format($sOutputFormat);
+        return DateTime::createFromFormat($inputFormat, $date)->format($outputFormat);
     }
 
     /**
@@ -45,17 +45,36 @@ trait DateTrait
     }
 
     /**
-     * @param DateTime $oDate
-     * @param DateTime $oFirstDate
-     * @param DateTime $oEndDate
-     * @param bool $bIsEqual
+     * @param DateTime $date
+     * @param DateTime $firstDate
+     * @param DateTime $endDate
+     * @param bool $isEqual
      * @return bool
      */
-    public function isBetween(DateTime $oDate, DateTime $oFirstDate, DateTime $oEndDate, bool $bIsEqual = false): bool
+    public function isBetween(DateTime $date, DateTime $firstDate, DateTime $endDate, bool $isEqual = false): bool
     {
         return (
-            ($oDate > $oFirstDate && $oDate < $oEndDate)
-            || ($bIsEqual && $oDate >= $oFirstDate && $oDate <= $oEndDate)
+            ($date > $firstDate && $date < $endDate)
+            || ($isEqual && $date >= $firstDate && $date <= $endDate)
         );
+    }
+
+    /**
+     * Format date given by Vue Datepicker plugin
+     *
+     * @example Tue Feb 18 2025 00:00:00 GMT+0100 will become 2025-02-18
+     *
+     * @param string $date
+     * @return string
+     */
+    public function convertDateFromString(string $date) : string
+    {
+        $time = strtotime($date);
+
+        if (false === $time) {
+            return $date;
+        }
+
+        return date('Y-m-d', $time);
     }
 }

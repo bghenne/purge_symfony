@@ -135,12 +135,14 @@ const onFormSubmit = ({valid, values}) => {
     formData.append('theme', values.theme.code);
 
     if (undefined !== values.dateFrom) {
-      formData.append('dateFrom', values.dateFrom);
+      const dateFrom = String(values.dateFrom).split('(')[0].trim();
+      formData.append('dateFrom', dateFrom);
     }
     if (undefined !== values.dateTo) {
-      formData.append('dateTo', values.dateTo);
+      const dateTo = String(values.dateTo).split('(')[0].trim();
+      formData.append('dateTo', dateTo);
     }
-    if (undefined !== values.dateFrom) {
+    if (undefined !== values.familyId) {
       formData.append('familyId', values.familyId);
     }
 
