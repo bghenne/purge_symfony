@@ -2,8 +2,8 @@
   <Section>
     <Heading>
       Recherche avancée
-      <div id="advanced_search"></div>
     </Heading>
+    <div id="advanced_search"></div>
   </Section>
 </template>
 

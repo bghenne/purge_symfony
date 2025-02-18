@@ -39,7 +39,7 @@ const resetForm = () => {
 
 <template>
   <form id="search_eligible" @submit.prevent="searchEligible">
-    <Environment v-model="environmentValue"/>
+    <Environment v-model="environmentValue" />
     <Theme :object-type="ObjectType.ELIGIBLE" v-model="themeValue" />
     <button type="submit" >Rechercher</button>
     <button type="button" @click="resetForm">Effacer</button>
