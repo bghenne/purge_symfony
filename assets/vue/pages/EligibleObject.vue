@@ -49,8 +49,9 @@
 <!--              <Select name="serviceTypologyId" :options="typologies" placeholder="Typlogie de prestation" fluid-->
 <!--                      checkmark/>-->
 <!--            </div>-->
-            <Button type="reset" label="Effacer" severity="secondary" class="row-start-3 shrink-0 mt-4" @click="resetAdvancedSearchValues" />
-            <Button type="submit" label="Valider" severity="primary" class="row-start-3 shrink-0 mt-4" />
+
+            <Button type="reset" label="Effacer" severity="secondary" class="row-start-3 shrink-0 mt-4" @click="resetAdvancedSearchValues" v-if="shouldDisplayAdvancedFormButtons" />
+            <Button type="submit" label="Valider" severity="primary" class="row-start-3 shrink-0 mt-4" v-if="shouldDisplayAdvancedFormButtons"/>
           </form>
         </Teleport>
 
@@ -95,7 +96,7 @@
 import {EligibleObject} from "../types/eligible-object";
 import {Button, Column, DataTable, InputText, Message, Select, Toast} from "primevue";
 import {Form} from "@primevue/forms";
-import {ref, useTemplateRef} from 'vue';
+import {ref, useTemplateRef, watch, watchEffect} from 'vue';
 import {useToast} from "primevue/usetoast";
 import {fetchEnvironments} from "../composables/environment";
 import {ObjectType} from "../enums/object-type";
@@ -114,6 +115,7 @@ const themes = ref({});
 const dateFrom = ref(null);
 const dateTo = ref(null);
 const familyId = ref(null);
+const shouldDisplayAdvancedFormButtons = ref(false);
 
 const searchInProgress: boolean = ref(false);
 
@@ -132,18 +134,28 @@ const resolver = ({values}) => {
 
   const errors = {};
 
-  if ('undefined' !== values.familyId && false === isNumeric(values.familyId)) {
-    errors.familyId = [{message: "IDFASS doit être un nombre entier"}];
+  if (undefined !== values.familyId && false === isNumeric(values.familyId)) {
+    errors.familyId = [{message: "L'id de famille doit être un nombre entier"}];
   }
 
   return {
-    values
+    values,
+    errors
   }
 }
 
-const onFormSubmit = ({valid, values}) => {
+const onFormSubmit = ({originalEvent, valid, values}) => {
 
-  console.log('testsubmit');
+  // if form is posted from main search perspective, we reset the advanced one
+  if (null !== originalEvent.submitter) {
+      resetAdvancedSearchValues();
+      values.dateFrom = undefined;
+      values.dateTo = undefined;
+      values.familyId = undefined;
+  }
+
+  console.log(values)
+
   if (valid) {
     toast.add({severity: 'success', summary: 'Recherche en cours.', life: 3000});
 
@@ -169,12 +181,19 @@ const onFormSubmit = ({valid, values}) => {
         .then((newEligibleObjects: EligibleObject[]) => {
           eligibleObjects.value = newEligibleObjects;
         })
-        .catch(error => console.log(error))
+        .catch(error => toast.add({severity: 'error', summary: 'Une erreur s\'est produite :' + error, life: 5000}))
         .finally(() => searchInProgress.value = false)
   }
 };
 
-function resetAdvancedSearchValues() {
+// this watcher will hide search/reset buttons in secondary form if not form field is set
+watch([dateFrom, dateTo, familyId], ([newDateFromValue, newDateToValue, newFamilyIdValue]) => {
+  shouldDisplayAdvancedFormButtons.value = !(null === newFamilyIdValue
+      && null === newDateToValue
+      && null === newDateFromValue);
+})
+
+function resetAdvancedSearchValues(event) {
   dateFrom.value = null;
   dateTo.value = null;
   familyId.value = null;
