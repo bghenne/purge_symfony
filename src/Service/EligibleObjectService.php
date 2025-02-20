@@ -35,7 +35,10 @@ readonly class EligibleObjectService
 
         $results = json_decode($responseContent, true);
 
-        $eligibleObjects = ['total' => $results['page']['totalElements']];
+        $eligibleObjects = [
+            'eligibleObjects' => [],
+            'total' => $results['page']['totalElements']
+        ];
 
         foreach ($results['content'] as $key => $result) {
 

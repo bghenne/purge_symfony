@@ -72,7 +72,8 @@
       :totalRecords="totalRecords" @page="onPage($event)" @sort="onSort($event)"
       removableSort
       paginator
-      :rows="5"
+      :lazy="true"
+      :rows="10"
       :loading="searchInProgress"
       paginatorTemplate="RowsPerPageDropdown FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
       currentPageReportTemplate="{first} à {last} sur {totalRecords}"
@@ -203,7 +204,7 @@ const findEligibleObjects = (formData : FormData) => {
 
   doRequest('/api/eligible-object', Methods.POST, formData)
       .then((newEligibleObjects: EligibleObject[]) => {
-        console.log(newEligibleObjects);
+
         totalRecords.value = newEligibleObjects.total;
 
         delete newEligibleObjects.total;
