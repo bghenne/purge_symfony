@@ -33,12 +33,13 @@ readonly class EligibleObjectService
     {
         $responseContent = $this->client->doRequest($this->baseUrl . '/api-rgpd/v1/eligibles', $criteria, Request::METHOD_POST);
 
-        $results = json_decode($responseContent, true)['content'];
-        $eligibleObjects = [];
+        $results = json_decode($responseContent, true);
 
-        foreach ($results as $key => $result) {
+        $eligibleObjects = ['total' => $results['page']['totalElements']];
 
-            $eligibleObjects[$key] = [
+        foreach ($results['content'] as $key => $result) {
+
+            $eligibleObjects['eligibleObjects'][$key] = [
                 'key' => $key,
                 'campaignDate' => $this->formatDate($result['dateCampagne'], 'Y-m-d', 'd/m/Y') ?? null,
                 'clientName' => $result['nomDuClient'] ?? null,
@@ -57,7 +58,6 @@ readonly class EligibleObjectService
                     'purgeRuleLabel' => $result['libRegPurg'] ?? null,
                 ]
             ];
-
         }
 
         return $eligibleObjects;

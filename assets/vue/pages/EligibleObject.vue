@@ -72,6 +72,8 @@
       paginator
       :rows="5"
       :loading="searchInProgress"
+      paginatorTemplate="RowsPerPageDropdown FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
+      currentPageReportTemplate="{first} à {last} sur {totalRecords}"
   >
     <Column expander style="width: 5rem"/>
     <Column field="familyId" header="Identifiant de famille" sortable></Column>
@@ -162,8 +164,6 @@ const onFormSubmit = ({originalEvent, valid, values}) => {
   if (valid) {
     toast.add({severity: 'success', summary: 'Recherche en cours.', life: 3000});
 
-    searchInProgress.value = true;
-
     const formData = new FormData;
     formData.append('environment', values.environment.name);
     environment.value = values.environment.name;
@@ -195,9 +195,15 @@ const onFormSubmit = ({originalEvent, valid, values}) => {
 
 const findEligibleObjects = (formData : FormData) => {
 
+  searchInProgress.value = true;
+
   doRequest('/api/eligible-object', Methods.POST, formData)
       .then((newEligibleObjects: EligibleObject[]) => {
-        eligibleObjects.value = newEligibleObjects;
+        console.log(newEligibleObjects);
+        totalRecords.value = newEligibleObjects.total;
+
+        delete newEligibleObjects.total;
+        eligibleObjects.value = newEligibleObjects.eligibleObjects;
       })
       .catch(error => toast.add({severity: 'error', summary: 'Une erreur s\'est produite :' + error, life: 5000}))
       .finally(() => searchInProgress.value = false)
@@ -229,7 +235,23 @@ const onPage = (event) => {
 }
 
 const onSort = (event) => {
-  console.log(event)
+
+  const formData = new FormData;
+  formData.append('environment', environment.value);
+  formData.append('theme', theme.value);
+
+  if (null !== dateFrom.value) {
+    formData.append('dateFrom', dateFrom.value);
+  }
+
+  if (null !== dateTo.value) {
+    formData.append('dateTo', dateTo.value);
+  }
+
+  if (null !== familyId.value) {
+    formData.append('familyId', familyId.value);
+  }
+
 }
 
 // this watcher will hide search/reset buttons in secondary form if no form field is set

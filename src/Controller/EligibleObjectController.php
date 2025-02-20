@@ -38,7 +38,7 @@ final class EligibleObjectController extends AbstractController
                 'size' => 10,
             ],
         ];
-        $this->logger->warning(var_export($request->get('dateFrom'), true));
+
         if (!empty($request->get('dateFrom'))) {
             $parameters['debutPeriode'] = $this->convertDateFromString($request->get('dateFrom'));
         }
