@@ -112,11 +112,12 @@ const environments = ref({});
 const themes = ref({});
 
 // Advanced search state
+const environment = ref(null);
+const theme = ref(null);
 const dateFrom = ref(null);
 const dateTo = ref(null);
 const familyId = ref(null);
 const shouldDisplayAdvancedFormButtons = ref(false);
-
 const searchInProgress: boolean = ref(false);
 
 environments.value = fetchEnvironments();
@@ -154,8 +155,6 @@ const onFormSubmit = ({originalEvent, valid, values}) => {
       values.familyId = undefined;
   }
 
-  console.log(values)
-
   if (valid) {
     toast.add({severity: 'success', summary: 'Recherche en cours.', life: 3000});
 
@@ -163,17 +162,25 @@ const onFormSubmit = ({originalEvent, valid, values}) => {
 
     const formData = new FormData;
     formData.append('environment', values.environment.name);
+    environment.value = values.environment.name;
+
     formData.append('theme', values.theme.code);
+    theme.value = values.theme.code;
 
     if (undefined !== values.dateFrom) {
-      const dateFrom = String(values.dateFrom).split('(')[0].trim();
-      formData.append('dateFrom', dateFrom);
+      const convertedDateFrom = String(values.dateFrom).split('(')[0].trim();
+      dateFrom.value = convertedDateFrom;
+      formData.append('dateFrom', convertedDateFrom);
     }
+
     if (undefined !== values.dateTo) {
-      const dateTo = String(values.dateTo).split('(')[0].trim();
-      formData.append('dateTo', dateTo);
+      const convertedDateTo = String(values.dateTo).split('(')[0].trim();
+      dateTo.value = convertedDateTo;
+      formData.append('dateTo', convertedDateTo);
     }
+
     if (undefined !== values.familyId) {
+      familyId.value = values.familyId;
       formData.append('familyId', values.familyId);
     }
 

@@ -4,6 +4,7 @@ namespace App\Service;
 
 use App\Http\Client;
 use App\Trait\DateTrait;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -19,7 +20,7 @@ readonly class EligibleObjectService
 {
     use DateTrait;
 
-    public function __construct(private Client $client, private readonly string $baseUrl)
+    public function __construct(private Client $client, private readonly string $baseUrl, private LoggerInterface $logger)
     {
     }
 
@@ -34,7 +35,7 @@ readonly class EligibleObjectService
 
         $results = json_decode($responseContent, true)['content'];
         $eligibleObjects = [];
-
+$this->logger->error(var_export($responseContent, true));
         foreach ($results as $key => $result) {
 
             $eligibleObjects[$key] = [
@@ -45,11 +46,11 @@ readonly class EligibleObjectService
                 'familyId' => $result['identifiantFamille'] ?? null,
                 'beneficiaryName' => $result['nomBeneficiaire'] ?? null,
                 'beneficiaryFirstname' => $result['prenomBeneficiaire'] ?? null,
-                'beneficiaryBirthdate' => $this->formatDate($result['dateNaissanceBeneficiaire'], 'Y-m-d', 'd/m/Y') ?? null,
+                'beneficiaryBirthdate' => !empty($result['dateNaissanceBeneficiaire']) ? $this->formatDate($result['dateNaissanceBeneficiaire'], 'Y-m-d', 'd/m/Y') : null,
                 'socialSecurityNumber' => $result['numeroSecuriteSociale'] ?? null,
                 'details' => [
                     'key' => $key,
-                    'contributionPaymentDate' => $this->formatDate($result['datePaiementCotisation'], 'Y-m-d', 'd/m/Y') ?? null,
+                    'contributionPaymentDate' => !empty($result['datePaiementCotisation']) ? $this->formatDate($result['datePaiementCotisation'], 'Y-m-d', 'd/m/Y') : null,
                     'contributionCallPeriod' => $result['periodeAppelCotisation'] ?? null,
                     'contributionCallYear' => $result['anneeAppelCotisation'] ?? null,
                     'conservationTime' => $result['delaiConservation'] ?? null,
