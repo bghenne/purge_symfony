@@ -14,47 +14,49 @@
           {{ $eligibleObjectForm.theme.error.message }}
         </Message>
 
-        <Teleport to="#advanced_search" v-if="eligibleObjects.length > 0">
-          <!-- This 2nd form element is only logically nested in the component, not physically in the DOM
-               (that would be invalid). It leverages the Web platform behaviour for forms submission,
-               e.g. allowing submission from any input by pressing the "enter" key. -->
-          <form
-              class="grid grid-cols-2 gap-3"
-              @submit.prevent="eligibleObjectForm.$el.requestSubmit()"
-          >
-            <label class="flex flex-col">
-              <span class="font-bold">Du</span>
-              <DatePicker name="dateFrom" v-model="dateFrom" dateFormat="dd/mm/yy" placeholder="jj/mm/aaaa"/>
-              <Message v-if="$eligibleObjectForm.dateFrom?.invalid" severity="error" size="small" variant="simple">
-                {{ $eligibleObjectForm.dateFrom.error.message }}
-              </Message>
-            </label>
-            <label class="flex flex-col">
-              <span class="font-bold">Au</span>
-              <DatePicker name="dateTo" v-model="dateTo" dateFormat="dd/mm/yy" placeholder="jj/mm/aaaa"/>
-              <Message v-if="$eligibleObjectForm.dateTo?.invalid" severity="error" size="small" variant="simple">
-                {{ $eligibleObjectForm.dateTo.error.message }}
-              </Message>
-            </label>
-            <label class="flex flex-col">
-              <span class="font-bold">ID de famille</span>
-              <InputText name="familyId" v-model="familyId" type="text"/>
-              <Message v-if="$eligibleObjectForm.familyId?.invalid" severity="error" size="small" variant="simple">
-                {{ $eligibleObjectForm.familyId.error.message }}
-              </Message>
-            </label>
-            <!--            Can be moved in its own page-->
-            <!--            <div v-if="'/control-alert' === $route.path">-->
-            <!--              <InputText name="familyId" type="text" placeholder="ID Prestation" />-->
-            <!--              <Select name="serviceTypologyId" :options="typologies" placeholder="Typlogie de prestation" fluid-->
-            <!--                      checkmark/>-->
-            <!--            </div>-->
+        <Teleport to="#layout-column-1" v-if="eligibleObjects.length > 0">
+          <AdvancedSearch class="mt-4">
+            <!-- This 2nd form element is only logically nested in the component, not physically in the DOM
+                 (that would be invalid). It leverages the Web platform behaviour for forms submission,
+                 e.g. allowing submission from any input by pressing the "enter" key. -->
+            <form
+                class="grid grid-cols-2 gap-3"
+                @submit.prevent="eligibleObjectForm.$el.requestSubmit()"
+            >
+              <label class="flex flex-col">
+                <span class="font-bold">Du</span>
+                <DatePicker name="dateFrom" v-model="dateFrom" dateFormat="dd/mm/yy" placeholder="jj/mm/aaaa"/>
+                <Message v-if="$eligibleObjectForm.dateFrom?.invalid" severity="error" size="small" variant="simple">
+                  {{ $eligibleObjectForm.dateFrom.error.message }}
+                </Message>
+              </label>
+              <label class="flex flex-col">
+                <span class="font-bold">Au</span>
+                <DatePicker name="dateTo" v-model="dateTo" dateFormat="dd/mm/yy" placeholder="jj/mm/aaaa"/>
+                <Message v-if="$eligibleObjectForm.dateTo?.invalid" severity="error" size="small" variant="simple">
+                  {{ $eligibleObjectForm.dateTo.error.message }}
+                </Message>
+              </label>
+              <label class="flex flex-col">
+                <span class="font-bold">ID de famille</span>
+                <InputText name="familyId" v-model="familyId" type="text"/>
+                <Message v-if="$eligibleObjectForm.familyId?.invalid" severity="error" size="small" variant="simple">
+                  {{ $eligibleObjectForm.familyId.error.message }}
+                </Message>
+              </label>
+              <!--            Can be moved in its own page-->
+              <!--            <div v-if="'/control-alert' === $route.path">-->
+              <!--              <InputText name="familyId" type="text" placeholder="ID Prestation" />-->
+              <!--              <Select name="serviceTypologyId" :options="typologies" placeholder="Typlogie de prestation" fluid-->
+              <!--                      checkmark/>-->
+              <!--            </div>-->
 
-            <Button type="reset" label="Effacer" severity="secondary" class="row-start-3 shrink-0 mt-4"
-                    @click="resetAdvancedSearchValues" v-if="shouldDisplayAdvancedFormButtons"/>
-            <Button type="submit" label="Valider" severity="primary" class="row-start-3 shrink-0 mt-4"
-                    v-if="shouldDisplayAdvancedFormButtons"/>
-          </form>
+              <Button type="reset" label="Effacer" severity="secondary" class="row-start-3 shrink-0 mt-4"
+                      @click="resetAdvancedSearchValues" v-if="shouldDisplayAdvancedFormButtons"/>
+              <Button type="submit" label="Valider" severity="primary" class="row-start-3 shrink-0 mt-4"
+                      v-if="shouldDisplayAdvancedFormButtons"/>
+            </form>
+          </AdvancedSearch>
         </Teleport>
 
         <Button type="reset" label="Effacer" severity="secondary" class="shrink-0"/>
@@ -110,6 +112,7 @@ import {doRequest} from "../utilities/request";
 import {Methods} from "../enums/methods";
 import {isNumeric} from "../utilities/validation/is-numeric";
 import DatePicker from "primevue/datepicker";
+import AdvancedSearch from "../components/AdvancedSearch.vue";
 
 const eligibleObjects = ref([] as EligibleObject[]);
 const eligibleObjectForm = useTemplateRef('eligible-object-form');
@@ -154,6 +157,7 @@ const resolver = ({values}) => {
 const onFormSubmit = ({originalEvent, valid, values}) => {
 
   // if form is posted from main search perspective, we reset the advanced one
+  // SubmitEvent.submitter returns null if a form is submitted programmatically.
   if (null !== originalEvent.submitter) {
     resetAdvancedSearchValues();
     values.dateFrom = undefined;

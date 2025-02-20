@@ -3,7 +3,8 @@
     <Heading>
       Recherche avancée
     </Heading>
-    <div id="advanced_search"></div>
+
+    <slot></slot>
   </Section>
 </template>
 

@@ -1,7 +1,5 @@
 <script setup lang="ts">
 import Header from "./vue/components/Header.vue";
-import AdvancedSearch from "./vue/components/AdvancedSearch.vue";
-import {Breadcrumb} from "primevue";
 </script>
 
 <template>
@@ -25,7 +23,7 @@ import {Breadcrumb} from "primevue";
   </ol>
 
   <!-- row 3, column 1 -->
-  <div class="ml-8">
+  <div id="layout-column-1" class="ml-8">
     <div class="p-5 pb-7 border border-gray-200">
       <h1 class="text-2xl mb-5">
         Règles de purge
@@ -39,7 +37,6 @@ import {Breadcrumb} from "primevue";
         </a>
       </div>
     </div>
-    <AdvancedSearch v-if="'/' !== $route.path" class="mt-4" />
   </div>
 
   <!-- row 3, column 2 -->
