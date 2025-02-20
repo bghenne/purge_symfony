@@ -35,7 +35,7 @@ readonly class EligibleObjectService
 
         $results = json_decode($responseContent, true)['content'];
         $eligibleObjects = [];
-$this->logger->error(var_export($responseContent, true));
+
         foreach ($results as $key => $result) {
 
             $eligibleObjects[$key] = [

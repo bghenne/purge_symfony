@@ -32,9 +32,13 @@ final class EligibleObjectController extends AbstractController
         $parameters = [
             //'environment' => $request->get('environment'),
             'environnement' => 'MERCERW2', // TODO remove
-            'theme' => $request->get('theme')
+            'theme' => $request->get('theme'),
+            'pageable' =>  [
+                'page' => $request->get('page') ?? 1,
+                'size' => 10,
+            ],
         ];
-
+        $this->logger->warning(var_export($request->get('dateFrom'), true));
         if (!empty($request->get('dateFrom'))) {
             $parameters['debutPeriode'] = $this->convertDateFromString($request->get('dateFrom'));
         }
@@ -48,6 +52,7 @@ final class EligibleObjectController extends AbstractController
         }
 
         try {
+            $this->logger->warning(json_encode($parameters));
             $jsonResponse->setData(
                 $this->eligibleObjectService->findEligibleObjects($parameters)
             );

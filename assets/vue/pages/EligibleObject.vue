@@ -24,39 +24,41 @@
           >
             <label class="flex flex-col">
               <span class="font-bold">Du</span>
-              <DatePicker name="dateFrom" v-model="dateFrom" dateFormat="dd/mm/yy" placeholder="jj/mm/aaaa" />
+              <DatePicker name="dateFrom" v-model="dateFrom" dateFormat="dd/mm/yy" placeholder="jj/mm/aaaa"/>
               <Message v-if="$eligibleObjectForm.dateFrom?.invalid" severity="error" size="small" variant="simple">
                 {{ $eligibleObjectForm.dateFrom.error.message }}
               </Message>
             </label>
             <label class="flex flex-col">
               <span class="font-bold">Au</span>
-              <DatePicker name="dateTo" v-model="dateTo" dateFormat="dd/mm/yy" placeholder="jj/mm/aaaa" />
+              <DatePicker name="dateTo" v-model="dateTo" dateFormat="dd/mm/yy" placeholder="jj/mm/aaaa"/>
               <Message v-if="$eligibleObjectForm.dateTo?.invalid" severity="error" size="small" variant="simple">
                 {{ $eligibleObjectForm.dateTo.error.message }}
               </Message>
             </label>
             <label class="flex flex-col">
               <span class="font-bold">ID de famille</span>
-              <InputText name="familyId" v-model="familyId" type="text" />
+              <InputText name="familyId" v-model="familyId" type="text"/>
               <Message v-if="$eligibleObjectForm.familyId?.invalid" severity="error" size="small" variant="simple">
                 {{ $eligibleObjectForm.familyId.error.message }}
               </Message>
             </label>
-<!--            Can be moved in its own page-->
-<!--            <div v-if="'/control-alert' === $route.path">-->
-<!--              <InputText name="familyId" type="text" placeholder="ID Prestation" />-->
-<!--              <Select name="serviceTypologyId" :options="typologies" placeholder="Typlogie de prestation" fluid-->
-<!--                      checkmark/>-->
-<!--            </div>-->
+            <!--            Can be moved in its own page-->
+            <!--            <div v-if="'/control-alert' === $route.path">-->
+            <!--              <InputText name="familyId" type="text" placeholder="ID Prestation" />-->
+            <!--              <Select name="serviceTypologyId" :options="typologies" placeholder="Typlogie de prestation" fluid-->
+            <!--                      checkmark/>-->
+            <!--            </div>-->
 
-            <Button type="reset" label="Effacer" severity="secondary" class="row-start-3 shrink-0 mt-4" @click="resetAdvancedSearchValues" v-if="shouldDisplayAdvancedFormButtons" />
-            <Button type="submit" label="Valider" severity="primary" class="row-start-3 shrink-0 mt-4" v-if="shouldDisplayAdvancedFormButtons"/>
+            <Button type="reset" label="Effacer" severity="secondary" class="row-start-3 shrink-0 mt-4"
+                    @click="resetAdvancedSearchValues" v-if="shouldDisplayAdvancedFormButtons"/>
+            <Button type="submit" label="Valider" severity="primary" class="row-start-3 shrink-0 mt-4"
+                    v-if="shouldDisplayAdvancedFormButtons"/>
           </form>
         </Teleport>
 
-        <Button type="reset" label="Effacer" severity="secondary" class="shrink-0" />
-        <Button type="submit" label="Rechercher" severity="primary" class="shrink-0" />
+        <Button type="reset" label="Effacer" severity="secondary" class="shrink-0"/>
+        <Button type="submit" label="Rechercher" severity="primary" class="shrink-0"/>
       </div>
     </Form>
   </div>
@@ -65,12 +67,13 @@
       v-model:expandedRows="eligibleObjects.details"
       dataKey="key"
       :value="eligibleObjects"
+      :totalRecords="totalRecords" @page="onPage($event)" @sort="onSort($event)"
       removableSort
       paginator
       :rows="5"
       :loading="searchInProgress"
   >
-    <Column expander style="width: 5rem" />
+    <Column expander style="width: 5rem"/>
     <Column field="familyId" header="Identifiant de famille" sortable></Column>
     <Column field="beneficiaryName" header="Nom" sortable></Column>
     <Column field="beneficiaryFirstname" header="Prénom" sortable></Column>
@@ -96,7 +99,7 @@
 import {EligibleObject} from "../types/eligible-object";
 import {Button, Column, DataTable, InputText, Message, Select, Toast} from "primevue";
 import {Form} from "@primevue/forms";
-import {ref, useTemplateRef, watch, watchEffect} from 'vue';
+import {ref, useTemplateRef, watch} from 'vue';
 import {useToast} from "primevue/usetoast";
 import {fetchEnvironments} from "../composables/environment";
 import {ObjectType} from "../enums/object-type";
@@ -118,7 +121,8 @@ const dateFrom = ref(null);
 const dateTo = ref(null);
 const familyId = ref(null);
 const shouldDisplayAdvancedFormButtons = ref(false);
-const searchInProgress: boolean = ref(false);
+const searchInProgress = ref(false);
+const totalRecords = ref(0);
 
 environments.value = fetchEnvironments();
 themes.value = fetchThemes(ObjectType.ELIGIBLE);
@@ -149,10 +153,10 @@ const onFormSubmit = ({originalEvent, valid, values}) => {
 
   // if form is posted from main search perspective, we reset the advanced one
   if (null !== originalEvent.submitter) {
-      resetAdvancedSearchValues();
-      values.dateFrom = undefined;
-      values.dateTo = undefined;
-      values.familyId = undefined;
+    resetAdvancedSearchValues();
+    values.dateFrom = undefined;
+    values.dateTo = undefined;
+    values.familyId = undefined;
   }
 
   if (valid) {
@@ -184,16 +188,51 @@ const onFormSubmit = ({originalEvent, valid, values}) => {
       formData.append('familyId', values.familyId);
     }
 
-    doRequest('/api/eligible-object', Methods.POST, formData)
-        .then((newEligibleObjects: EligibleObject[]) => {
-          eligibleObjects.value = newEligibleObjects;
-        })
-        .catch(error => toast.add({severity: 'error', summary: 'Une erreur s\'est produite :' + error, life: 5000}))
-        .finally(() => searchInProgress.value = false)
+    findEligibleObjects(formData);
+
   }
 };
 
-// this watcher will hide search/reset buttons in secondary form if not form field is set
+const findEligibleObjects = (formData : FormData) => {
+
+  doRequest('/api/eligible-object', Methods.POST, formData)
+      .then((newEligibleObjects: EligibleObject[]) => {
+        eligibleObjects.value = newEligibleObjects;
+      })
+      .catch(error => toast.add({severity: 'error', summary: 'Une erreur s\'est produite :' + error, life: 5000}))
+      .finally(() => searchInProgress.value = false)
+
+}
+
+const onPage = (event) => {
+
+  const formData = new FormData;
+  formData.append('environment', environment.value);
+  formData.append('theme', theme.value);
+
+  if (null !== dateFrom.value) {
+    formData.append('dateFrom', dateFrom.value);
+  }
+
+  if (null !== dateTo.value) {
+    formData.append('dateTo', dateTo.value);
+  }
+
+  if (null !== familyId.value) {
+    formData.append('familyId', familyId.value);
+  }
+
+  formData.append('page', event.page + 1);
+
+  findEligibleObjects(formData);
+
+}
+
+const onSort = (event) => {
+  console.log(event)
+}
+
+// this watcher will hide search/reset buttons in secondary form if no form field is set
 watch([dateFrom, dateTo, familyId], ([newDateFromValue, newDateToValue, newFamilyIdValue]) => {
   shouldDisplayAdvancedFormButtons.value = !(null === newFamilyIdValue
       && null === newDateToValue
