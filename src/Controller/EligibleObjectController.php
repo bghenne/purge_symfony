@@ -35,7 +35,7 @@ final class EligibleObjectController extends AbstractController
             'theme' => $request->get('theme'),
             'pageable' =>  [
                 'page' => $request->get('page') ?? 0,
-                'size' => 10
+                'size' => 100
             ],
         ];
 

@@ -71,7 +71,7 @@
       removableSort
       paginator
       :lazy="true"
-      :rows="10"
+      :rows="100"
       :loading="searchInProgress"
       paginatorTemplate="RowsPerPageDropdown FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
       currentPageReportTemplate="{first} à {last} sur {totalRecords}"
@@ -174,10 +174,10 @@ const onFormSubmit = ({originalEvent, valid, values}) => {
 
     const formData = new FormData;
     formData.append('environment', values.environment.name);
-    // environment.value = values.environment.name; // why?
+    environment.value = values.environment.name; // why?
 
     formData.append('theme', values.theme.code);
-    // theme.value = values.theme.code; // why?
+    theme.value = values.theme.code; // why?
 
     if (undefined !== values.dateFrom) {
       const convertedDateFrom = String(values.dateFrom).split('(')[0].trim();
