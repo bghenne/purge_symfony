@@ -49,17 +49,18 @@ readonly class EligibleObjectService
                 'clientName' => $result['nomDuClient'] ?? null,
                 'environment' => $result['environnement'] ?? null,
                 'familyId' => $result['identifiantFamille'] ?? null,
-                'beneficiaryName' => $result['nomBeneficiaire'] ?? null,
-                'beneficiaryFirstname' => $result['prenomBeneficiaire'] ?? null,
-                'beneficiaryBirthdate' => !empty($result['dateNaissanceBeneficiaire']) ? $this->formatDate($result['dateNaissanceBeneficiaire'], 'Y-m-d', 'd/m/Y') : null,
-                'socialSecurityNumber' => $result['numeroSecuriteSociale'] ?? null,
+                'contributionPaymentDate' => !empty($result['datePaiementCotisation']) ? $this->formatDate($result['datePaiementCotisation'], 'Y-m-d', 'd/m/Y') : null,
+                'contributionCallPeriod' => $result['periodeAppelCotisation'] ?? null,
+                'contributionCallYear' => $result['anneeAppelCotisation'] ?? null,
+                'conservationTime' => $result['delaiConservation'] ?? null,
+                'purgeRuleLabel' => $result['libRegPurg'] ?? null,
                 'details' => [
                     'key' => $key,
-                    'contributionPaymentDate' => !empty($result['datePaiementCotisation']) ? $this->formatDate($result['datePaiementCotisation'], 'Y-m-d', 'd/m/Y') : null,
-                    'contributionCallPeriod' => $result['periodeAppelCotisation'] ?? null,
-                    'contributionCallYear' => $result['anneeAppelCotisation'] ?? null,
-                    'conservationTime' => $result['delaiConservation'] ?? null,
-                    'purgeRuleLabel' => $result['libRegPurg'] ?? null,
+                    'beneficiaryName' => $result['nomBeneficiaire'] ?? null,
+                    'beneficiaryFirstname' => $result['prenomBeneficiaire'] ?? null,
+                    'beneficiaryBirthdate' => !empty($result['dateNaissanceBeneficiaire']) ? $this->formatDate($result['dateNaissanceBeneficiaire'], 'Y-m-d', 'd/m/Y') : null,
+                    'socialSecurityNumber' => $result['numeroSecuriteSociale'] ?? null,
+
                 ]
             ];
         }

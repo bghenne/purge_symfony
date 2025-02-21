@@ -9,15 +9,17 @@ export interface EligibleObject {
     clientName: string,
     environment: string,
     familyId: number,
-    beneficiaryName: string
-    beneficiaryFirstname : string,
-    beneficiaryBirthdate: string,
+    conservationTime: number,
+    contributionCallPeriod: string,
+    contributionCallYear: number,
+    contributionPaymentDate: string,
+    purgeRuleLabel ?: string
     details: {
         key: string,
-        conservationTime: number,
-        contributionCallPeriod: string,
-        contributionCallYear: number,
-        contributionPaymentDate: string,
-        purgeRuleLabel ?: string
+        beneficiaryName: string,
+        beneficiaryFirstname : string,
+        beneficiaryBirthdate: string,
+        socialSecurityNumber: string
     }
+
 }

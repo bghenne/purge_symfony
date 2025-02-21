@@ -78,19 +78,17 @@
   >
     <Column expander style="width: 5rem"/>
     <Column field="familyId" header="Identifiant de famille" sortable></Column>
-    <Column field="beneficiaryName" header="Nom" sortable></Column>
-    <Column field="beneficiaryFirstname" header="Prénom" sortable></Column>
-    <Column field="beneficiaryBirthdate" header="Date de naissance" sortable></Column>
-    <Column field="socialSecurityNumber" header="Numéro de Sécurité sociale"></Column>
-    <Column field="environment" header="Environnement"></Column>
+    <Column field="contributionPaymentDate" header="Date de dernier paiment de la cotisation" sortable></Column>
+    <Column field="contributionCallPeriod" header="Période des cotisations en mois" sortable></Column>
+    <Column field="contributionCallYear" header="Période des cotisations en année" sortable></Column>
+    <Column field="conservationTime" header="Délai de conservation appliqué"></Column>
     <Column field="clientName" header="Nom du client"></Column>
     <template #expansion="slotProps">
       <div class="p-4">
-        <p>Délai de conservation : {{ slotProps.data.details.conservationTime }}</p>
-        <p>Période d'appel de cotisation : {{ slotProps.data.details.contributionCallPeriod }}</p>
-        <p>Année appel de cotisation : {{ slotProps.data.details.contributionCallYear }}</p>
-        <p>Date paiement cotisation : {{ slotProps.data.details.contributionPaymentDate }}</p>
-        <p>Libellé de la règle de purge : {{ slotProps.data.details.purgeRuleLabel }}</p>
+        <p>Nom : {{ slotProps.data.details.beneficiaryName }}</p>
+        <p>Prénom : {{ slotProps.data.details.beneficiaryFirstname }}</p>
+        <p>Numéro de sécurité sociale : {{ slotProps.data.details.socialSecurityNumber }}</p>
+        <p>Date de naissance du bénéficiaire : {{ slotProps.data.details.beneficiaryBirthdate }}</p>
       </div>
     </template>
   </DataTable>
@@ -160,7 +158,6 @@ const resolver = ({values}) => {
 
 const onFormSubmit = ({originalEvent, valid, values}) => {
 
-  console.log(values);
   // if form is posted from main search perspective, we reset the advanced one
   // SubmitEvent.submitter returns null if a form is submitted programmatically.
   if (null !== originalEvent.submitter) {
@@ -242,7 +239,7 @@ const onPage = (event: DataTablePageEvent) => {
     formData.append('familyId', familyId.value);
   }
 
-  formData.append('page', event.page + 1);
+  formData.append('page', 0 === event.page ? event.page : event.page++);
 
   findEligibleObjects(formData);
 
