@@ -6,6 +6,7 @@ import PurgedObject from "./pages/PurgedObject.vue";
 import ControlAlert from "./pages/ControlAlert.vue";
 import PurgeReport from "./pages/PurgeReport.vue";
 import Home from "./pages/Home.vue";
+import Setting from "./pages/Setting.vue";
 
 const routes: Array<RouteRecordRaw> = [
   { path: "/", component: Home },
@@ -14,6 +15,7 @@ const routes: Array<RouteRecordRaw> = [
   { path: "/purged-object", component: PurgedObject },
   { path: "/control-alert", component: ControlAlert },
   { path: "/purge-report", component: PurgeReport },
+  { path: "/setting", component: Setting },
   { path: "/:pathMatch(.*)", redirect: "/" },
 ];
 

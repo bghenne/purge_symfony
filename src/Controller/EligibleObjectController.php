@@ -34,8 +34,8 @@ final class EligibleObjectController extends AbstractController
             'environnement' => 'MERCERW2', // TODO remove
             'theme' => $request->get('theme'),
             'pageable' =>  [
-                'page' => $request->get('page') ?? 1,
-                'size' => 10,
+                'page' => $request->get('page') ?? 0,
+                'size' => 10
             ],
         ];
 

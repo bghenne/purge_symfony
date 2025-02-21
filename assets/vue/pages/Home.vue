@@ -22,6 +22,14 @@
       <TiledLink to="/control-alert">Alerte de contrôle</TiledLink>
       <TiledLink to="/purge-report">Compte-rendu de purge</TiledLink>
     </div>
+
+    <Subheading>
+      Paramétrer
+    </Subheading>
+    <div class="flex gap-3">
+      <TiledLink to="/setting">Paramétrer</TiledLink>
+    </div>
+
   </nav>
 </template>
 

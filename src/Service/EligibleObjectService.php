@@ -35,6 +35,7 @@ readonly class EligibleObjectService
 
         $results = json_decode($responseContent, true);
 
+        //$this->logger->warning(var_export($results, true));
         $eligibleObjects = [
             'eligibleObjects' => [],
             'total' => $results['page']['totalElements']
