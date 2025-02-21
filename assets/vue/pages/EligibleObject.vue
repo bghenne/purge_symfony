@@ -102,20 +102,20 @@ import {Button, Column, DataTable, DataTablePageEvent, InputText, Message, Selec
 import {Form} from "@primevue/forms";
 import {ref, useTemplateRef, watch} from 'vue';
 import {useToast} from "primevue/usetoast";
-import {fetchEnvironments} from "../composables/environment";
 import {ObjectType} from "../enums/object-type";
 import {doRequest} from "../utilities/request";
 import {Methods} from "../enums/methods";
 import {isNumeric} from "../utilities/validation/is-numeric";
 import DatePicker from "primevue/datepicker";
 import AdvancedSearch from "../components/AdvancedSearch.vue";
+import {useEnvironments} from "../composables/scoped/eligible-object/useEnvironments";
 import {useThemes} from "../composables/shared/useThemes";
 
+const { environments, getEnvironments } = useEnvironments();
 const { themes, fetchingThemes, fetchThemes } = useThemes();
 
 const eligibleObjects = ref([] as EligibleObject[]);
 const eligibleObjectForm = useTemplateRef('eligible-object-form');
-const environments = ref([] as {name: string}[]);
 
 // Basic search state
 const environment = ref(null);
@@ -131,7 +131,7 @@ const searchInProgress = ref(false);
 const totalRecords = ref(0);
 const advancedSearchDisplayed = ref(false);
 
-environments.value = fetchEnvironments();
+getEnvironments();
 fetchThemes(ObjectType.ELIGIBLE);
 
 const toast = useToast();
