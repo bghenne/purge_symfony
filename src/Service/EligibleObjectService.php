@@ -42,7 +42,7 @@ class EligibleObjectService
         'purgeRuleLabel' => 'libRegPurg',
         'beneficiaryName' => 'nomBeneficiaire',
         'beneficiaryFirstname'  => 'prenomBeneficiaire',
-        'beneficiaryBirthdata'  => 'dateNaissanceBeneficiaire',
+        'beneficiaryBirthdate'  => 'dateNaissanceBeneficiaire',
         'socialSecurityNumber' => 'numeroSecuriteSociale'
     ];
 
