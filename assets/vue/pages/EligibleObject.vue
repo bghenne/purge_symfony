@@ -52,7 +52,7 @@
 
               <Button type="reset" label="Effacer" severity="secondary" class="row-start-3 shrink-0 mt-4"
                       @click="resetAdvancedSearchValues" />
-              <Button type="submit" label="Valider" severity="primary" class="row-start-3 shrink-0 mt-4" />
+              <Button type="submit" label="Valider" severity="primary" class="row-start-3 shrink-0 mt-4" :disabled="null === dateFrom && dateTo || dateFrom && null === dateTo" />
             </form>
           </AdvancedSearch>
         </Teleport>
