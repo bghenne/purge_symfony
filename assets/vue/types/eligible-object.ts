@@ -1,3 +1,8 @@
+export interface EligibleObjects {
+    eligibleObjects: EligibleObject[],
+    total: number
+}
+
 export interface EligibleObject {
     key: string, // generated in PHP
     campaignDate: string, // yyyy-mm-dd
