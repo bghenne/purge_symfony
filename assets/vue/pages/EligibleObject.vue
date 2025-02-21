@@ -50,14 +50,14 @@
               <!--                      checkmark/>-->
               <!--            </div>-->
 
-              <Button type="reset" label="Effacer" severity="secondary" class="row-start-3 shrink-0 mt-4"
+              <Button type="reset" label="Effacer" severity="secondary" class="row-start-3 shrink-0 mt-4" :disabled="null === dateFrom && null === dateTo && null === familyId"
                       @click="resetAdvancedSearchValues" />
-              <Button type="submit" label="Valider" severity="primary" class="row-start-3 shrink-0 mt-4" :disabled="null === dateFrom && dateTo || dateFrom && null === dateTo" />
+              <Button type="submit" label="Valider" severity="primary" class="row-start-3 shrink-0 mt-4" :disabled="searchInProgress || null === dateFrom && dateTo || dateFrom && null === dateTo" :loading="searchInProgress" />
             </form>
           </AdvancedSearch>
         </Teleport>
 
-        <Button type="reset" label="Effacer" severity="secondary" class="shrink-0"  @click="resetBasicSearchValues" />
+        <Button type="reset" label="Effacer" severity="secondary" class="shrink-0" :disabled="null === theme && null === environment"  @click="resetBasicSearchValues" />
         <Button type="submit" label="Rechercher" severity="primary" class="shrink-0" :disabled="searchInProgress || null === theme || null === environment" :loading="searchInProgress" />
       </div>
     </Form>
