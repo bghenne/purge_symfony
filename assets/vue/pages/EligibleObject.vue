@@ -8,7 +8,7 @@
         <Message v-if="$eligibleObjectForm.environment?.invalid" severity="error" size="small" variant="simple">
           {{ $eligibleObjectForm.environment.error.message }}
         </Message>
-        <Select v-model="theme" name="theme" :options="themes" optionLabel="name" placeholder="Choisissez un thème" fluid checkmark/>
+        <Select v-model="theme" name="theme" :options="themes" optionLabel="name" :loading="fetchingThemes" placeholder="Choisissez un thème" fluid checkmark/>
         <Message v-if="$eligibleObjectForm.theme?.invalid" severity="error" size="small" variant="simple">
           {{ $eligibleObjectForm.theme.error.message }}
         </Message>
@@ -58,7 +58,7 @@
         </Teleport>
 
         <Button type="reset" label="Effacer" severity="secondary" class="shrink-0"  @click="resetBasicSearchValues" />
-        <Button type="submit" label="Rechercher" severity="primary" class="shrink-0" />
+        <Button type="submit" label="Rechercher" severity="primary" class="shrink-0" :disabled="null === theme || null === environment" />
       </div>
     </Form>
   </div>
@@ -71,7 +71,7 @@
       removableSort
       paginator
       :lazy="true"
-      :rows="100"
+      :rows="5"
       :loading="searchInProgress"
       paginatorTemplate="RowsPerPageDropdown FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
       currentPageReportTemplate="{first} à {last} sur {totalRecords}"
@@ -104,18 +104,18 @@ import {ref, useTemplateRef, watch} from 'vue';
 import {useToast} from "primevue/usetoast";
 import {fetchEnvironments} from "../composables/environment";
 import {ObjectType} from "../enums/object-type";
-import {fetchThemes} from "../composables/theme";
 import {doRequest} from "../utilities/request";
 import {Methods} from "../enums/methods";
 import {isNumeric} from "../utilities/validation/is-numeric";
 import DatePicker from "primevue/datepicker";
 import AdvancedSearch from "../components/AdvancedSearch.vue";
-import {Theme} from "../types/theme";
+import {useThemes} from "../composables/shared/useThemes";
+
+const { themes, fetchingThemes, fetchThemes } = useThemes();
 
 const eligibleObjects = ref([] as EligibleObject[]);
 const eligibleObjectForm = useTemplateRef('eligible-object-form');
 const environments = ref([] as {name: string}[]);
-const themes = ref([] as Theme[]);
 
 // Basic search state
 const environment = ref(null);
@@ -132,7 +132,7 @@ const totalRecords = ref(0);
 const advancedSearchDisplayed = ref(false);
 
 environments.value = fetchEnvironments();
-themes.value = fetchThemes(ObjectType.ELIGIBLE);
+fetchThemes(ObjectType.ELIGIBLE);
 
 const toast = useToast();
 
