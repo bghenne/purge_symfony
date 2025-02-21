@@ -112,11 +112,12 @@ import {Methods} from "../enums/methods";
 import {isNumeric} from "../utilities/validation/is-numeric";
 import DatePicker from "primevue/datepicker";
 import AdvancedSearch from "../components/AdvancedSearch.vue";
+import {Theme} from "../types/theme";
 
 const eligibleObjects = ref([] as EligibleObject[]);
 const eligibleObjectForm = useTemplateRef('eligible-object-form');
-const environments = ref([]);
-const themes = ref([]);
+const environments = ref([] as {name: string}[]);
+const themes = ref([] as Theme[]);
 
 // Basic search state
 const environment = ref(null);
@@ -159,6 +160,7 @@ const resolver = ({values}) => {
 
 const onFormSubmit = ({originalEvent, valid, values}) => {
 
+  console.log(values);
   // if form is posted from main search perspective, we reset the advanced one
   // SubmitEvent.submitter returns null if a form is submitted programmatically.
   if (null !== originalEvent.submitter) {
@@ -174,10 +176,10 @@ const onFormSubmit = ({originalEvent, valid, values}) => {
 
     const formData = new FormData;
     formData.append('environment', values.environment.name);
-    environment.value = values.environment.name; // why?
+    // environment.value = values.environment.name; // why?
 
     formData.append('theme', values.theme.code);
-    theme.value = values.theme.code; // why?
+    // theme.value = values.theme.code; // why?
 
     if (undefined !== values.dateFrom) {
       const convertedDateFrom = String(values.dateFrom).split('(')[0].trim();
@@ -225,8 +227,8 @@ const findEligibleObjects = (formData : FormData) => {
 const onPage = (event: DataTablePageEvent) => {
 
   const formData = new FormData;
-  formData.append('environment', environment.value);
-  formData.append('theme', theme.value);
+  formData.append('environment', environment.value.name);
+  formData.append('theme', theme.value.code);
 
   if (null !== dateFrom.value) {
     formData.append('dateFrom', dateFrom.value);
