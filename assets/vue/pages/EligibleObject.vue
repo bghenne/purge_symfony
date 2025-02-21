@@ -58,7 +58,7 @@
         </Teleport>
 
         <Button type="reset" label="Effacer" severity="secondary" class="shrink-0"  @click="resetBasicSearchValues" />
-        <Button type="submit" label="Rechercher" severity="primary" class="shrink-0" :disabled="null === theme || null === environment" />
+        <Button type="submit" label="Rechercher" severity="primary" class="shrink-0" :disabled="searchInProgress || null === theme || null === environment" :loading="searchInProgress" />
       </div>
     </Form>
   </div>
