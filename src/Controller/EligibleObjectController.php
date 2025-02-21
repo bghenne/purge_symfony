@@ -39,6 +39,11 @@ final class EligibleObjectController extends AbstractController
             ],
         ];
 
+        if (!empty($request->get('sortOrder'))) {
+            $parameters['pageable']['sort']['properties'] = $this->eligibleObjectService->convertFieldName($request->get('sortField'));
+            $parameters['pageable']['sort']['direction'] = -1 === $request->get('sortOrder') ? 'DESC' : 'ASC';
+        }
+
         if (!empty($request->get('dateFrom'))) {
             $parameters['debutPeriode'] = $this->convertDateFromString($request->get('dateFrom'));
         }

@@ -4,8 +4,13 @@ namespace App\Service;
 
 use App\Http\Client;
 use App\Trait\DateTrait;
+use Drenso\OidcBundle\Exception\OidcException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 
 /**
  * Class EligibleObjectService
@@ -16,18 +21,45 @@ use Symfony\Component\HttpFoundation\Request;
  * @license
  * @copyright GFP Tech 2025
  */
-readonly class EligibleObjectService
+class EligibleObjectService
 {
     use DateTrait;
 
-    public function __construct(private Client $client, private readonly string $baseUrl, private LoggerInterface $logger)
+    /**
+     * English to French mapping
+     *
+     * @var array|string[]
+     */
+    private array $fieldsMapping = [
+        'campaignDate' => 'dateCampagne',
+        'clientName' => 'nomDuClient',
+        'environment' => 'environnement',
+        'familyId' => 'idFass',
+        'contributionPaymentDate' => 'datePaiementCotisation',
+        'contributionCallPeriod' => 'periodeAppelCotisation',
+        'contributionCallYear' => 'anneeAppelCotisation',
+        'conservationTime' => 'delaiConservation',
+        'purgeRuleLabel' => 'libRegPurg',
+        'beneficiaryName' => 'nomBeneficiaire',
+        'beneficiaryFirstname'  => 'prenomBeneficiaire',
+        'beneficiaryBirthdata'  => 'dateNaissanceBeneficiaire',
+        'socialSecurityNumber' => 'numeroSecuriteSociale'
+    ];
+
+    public function __construct(private readonly Client $client, private readonly string $baseUrl, private readonly LoggerInterface $logger)
     {
     }
 
     /**
      * Find eligible objects based on criteria
      *
+     * @param array $criteria
      * @return array
+     * @throws OidcException
+     * @throws ClientExceptionInterface
+     * @throws RedirectionExceptionInterface
+     * @throws ServerExceptionInterface
+     * @throws TransportExceptionInterface
      */
     public function findEligibleObjects(array $criteria): array
     {
@@ -35,7 +67,6 @@ readonly class EligibleObjectService
 
         $results = json_decode($responseContent, true);
 
-        //$this->logger->warning(var_export($results, true));
         $eligibleObjects = [
             'eligibleObjects' => [],
             'total' => $results['page']['totalElements']
@@ -67,5 +98,18 @@ readonly class EligibleObjectService
 
         return $eligibleObjects;
 
+    }
+
+    /**
+     * @param string $fieldName
+     * @return string
+     */
+    public function convertFieldName(string $fieldName): string
+    {
+        if (!array_key_exists($fieldName, $this->fieldsMapping)) {
+            return $fieldName;
+        }
+
+        return $this->fieldsMapping[$fieldName];
     }
 }

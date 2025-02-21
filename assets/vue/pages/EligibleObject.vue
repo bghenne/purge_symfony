@@ -248,8 +248,8 @@ const onPage = (event: DataTablePageEvent) => {
 const onSort = (event) => {
 
   const formData = new FormData;
-  formData.append('environment', environment.value);
-  formData.append('theme', theme.value);
+  formData.append('environment', environment.value.name);
+  formData.append('theme', theme.value.code);
 
   if (null !== dateFrom.value) {
     formData.append('dateFrom', dateFrom.value);
@@ -263,15 +263,12 @@ const onSort = (event) => {
     formData.append('familyId', familyId.value);
   }
 
-}
+  formData.append('sortField', event.sortField);
+  formData.append('sortOrder', event.sortOrder);
 
-// this watcher will hide search/reset buttons in secondary form if no form field is set
-// probably not needed anymore
-// watch([dateFrom, dateTo, familyId], ([newDateFromValue, newDateToValue, newFamilyIdValue]) => {
-//   shouldDisplayAdvancedFormButtons.value = !(null === newFamilyIdValue
-//       && null === newDateToValue
-//       && null === newDateFromValue);
-// })
+  findEligibleObjects(formData);
+
+}
 
 function resetBasicSearchValues(event: MouseEvent) {
   environment.value = null;
