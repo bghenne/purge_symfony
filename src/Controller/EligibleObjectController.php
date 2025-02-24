@@ -53,7 +53,7 @@ final class EligibleObjectController extends AbstractController
         }
 
         if (!empty($request->get('familyId'))) {
-            $parameters['idFass'] = $request->get('familyId');
+            $parameters['identifiantFamille'] = $request->get('familyId');
         }
 
         try {

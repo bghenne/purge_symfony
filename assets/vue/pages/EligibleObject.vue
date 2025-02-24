@@ -126,10 +126,14 @@ const dateFrom = ref(null);
 const dateTo = ref(null);
 const familyId = ref(null);
 
-// const shouldDisplayAdvancedFormButtons = ref(false);// probably not needed anymore
 const searchInProgress = ref(false);
 const totalRecords = ref(0);
 const advancedSearchDisplayed = ref(false);
+
+// Store pagination and sort stuffs
+const sortField = ref(null);
+const sortOrder = ref(null);
+const paginationPage = ref(null);
 
 getEnvironments();
 fetchThemes(ObjectType.ELIGIBLE);
@@ -168,15 +172,15 @@ const onFormSubmit = ({originalEvent, valid, values}) => {
     values.familyId = undefined;
   }
 
+  // every time form is submitted, we reset pagination and sort
+  resetPaginationAndSort();
+
   if (valid) {
     toast.add({severity: 'success', summary: 'Recherche en cours.', life: 3000});
 
     const formData = new FormData;
     formData.append('environment', values.environment.name);
-    // environment.value = values.environment.name; // why?
-
     formData.append('theme', values.theme.code);
-    // theme.value = values.theme.code; // why?
 
     if (undefined !== values.dateFrom) {
       const convertedDateFrom = String(values.dateFrom).split('(')[0].trim();
@@ -223,6 +227,8 @@ const findEligibleObjects = (formData : FormData) => {
 
 const onPage = (event: DataTablePageEvent) => {
 
+  console.log(event)
+
   const formData = new FormData;
   formData.append('environment', environment.value.name);
   formData.append('theme', theme.value.code);
@@ -239,7 +245,17 @@ const onPage = (event: DataTablePageEvent) => {
     formData.append('familyId', familyId.value);
   }
 
-  formData.append('page', 0 === event.page ? event.page : event.page++);
+  const page = 0 === event.page ? event.page : event.page++;
+  formData.append('page', page);
+
+  // store pagination
+  paginationPage.value = page;
+
+  // look for sort stuffs
+  if (null !== sortField.value && null !== sortOrder.value) {
+    formData.append('sortField', sortField.value);
+    formData.append('sortOrder', sortOrder.value);
+  }
 
   findEligibleObjects(formData);
 
@@ -248,6 +264,7 @@ const onPage = (event: DataTablePageEvent) => {
 const onSort = (event) => {
 
   console.log(event)
+
   const formData = new FormData;
   formData.append('environment', environment.value.name);
   formData.append('theme', theme.value.code);
@@ -264,12 +281,21 @@ const onSort = (event) => {
     formData.append('familyId', familyId.value);
   }
 
+  // sortField and sortOrder can be null when sort is reset
+  // @see https://primevue.org/datatable/#api.datatable.props.removableSort
+  // therefore we must remove them from search
   if (null !== event.sortField) {
     formData.append('sortField', event.sortField);
+    sortField.value = event.sortField;
   }
 
   if (null !== event.sortOrder) {
     formData.append('sortOrder', event.sortOrder);
+    sortOrder.value = event.sortOrder;
+  }
+
+  if (null !== paginationPage.value) {
+    formData.append('page', paginationPage.value);
   }
 
   findEligibleObjects(formData);
@@ -287,6 +313,12 @@ function resetAdvancedSearchValues(event: MouseEvent) {
   dateFrom.value = null;
   dateTo.value = null;
   familyId.value = null;
+}
+
+function resetPaginationAndSort() {
+  sortField.value = null;
+  sortOrder.value = null;
+  paginationPage.value = null;
 }
 
 </script>
