@@ -34,7 +34,7 @@ class EligibleObjectService
         'campaignDate' => 'dateCampagne',
         'clientName' => 'nomDuClient',
         'environment' => 'environnement',
-        'familyId' => 'idFass',
+        'familyId' => 'identifiantFamille',
         'contributionPaymentDate' => 'datePaiementCotisation',
         'contributionCallPeriod' => 'periodeAppelCotisation',
         'contributionCallYear' => 'anneeAppelCotisation',

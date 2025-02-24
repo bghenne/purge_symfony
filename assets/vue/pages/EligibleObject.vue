@@ -71,7 +71,7 @@
       removableSort
       paginator
       :lazy="true"
-      :rows="5"
+      :rows="10"
       :loading="searchInProgress"
       paginatorTemplate="RowsPerPageDropdown FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
       currentPageReportTemplate="{first} à {last} sur {totalRecords}"
@@ -247,6 +247,7 @@ const onPage = (event: DataTablePageEvent) => {
 
 const onSort = (event) => {
 
+  console.log(event)
   const formData = new FormData;
   formData.append('environment', environment.value.name);
   formData.append('theme', theme.value.code);
@@ -263,8 +264,13 @@ const onSort = (event) => {
     formData.append('familyId', familyId.value);
   }
 
-  formData.append('sortField', event.sortField);
-  formData.append('sortOrder', event.sortOrder);
+  if (null !== event.sortField) {
+    formData.append('sortField', event.sortField);
+  }
+
+  if (null !== event.sortOrder) {
+    formData.append('sortOrder', event.sortOrder);
+  }
 
   findEligibleObjects(formData);
 
