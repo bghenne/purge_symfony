@@ -64,6 +64,7 @@
   </div>
 
   <DataTable
+      ref="eligibleObjectsTable"
       v-model:expandedRows="eligibleObjects.details"
       dataKey="key"
       :value="eligibleObjects"
@@ -131,6 +132,7 @@ const totalRecords = ref(0);
 const advancedSearchDisplayed = ref(false);
 
 // Store pagination and sort stuffs
+const eligibleObjectsTable = ref(null);
 const sortField = ref(null);
 const sortOrder = ref(null);
 const paginationPage = ref(null);
@@ -217,7 +219,6 @@ const findEligibleObjects = (formData : FormData) => {
           advancedSearchDisplayed.value = true;
         }
 
-        // delete newEligibleObjects.total; // why?
         eligibleObjects.value = newEligibleObjects.eligibleObjects;
       })
       .catch(error => toast.add({severity: 'error', summary: 'Une erreur s\'est produite :' + error, life: 5000}))
@@ -316,6 +317,15 @@ function resetAdvancedSearchValues(event: MouseEvent) {
 }
 
 function resetPaginationAndSort() {
+
+  // as the data are being reloaded by form submission, we need to tell datatable to "reset" itself
+  eligibleObjectsTable.value.d_first = 0;
+  eligibleObjectsTable.value.d_page = 1;
+  eligibleObjectsTable.value.page = 1;
+  eligibleObjectsTable.value.d_sortField = null;
+  eligibleObjectsTable.value.d_sortOrder = null;
+
+  // reset fields stored between sort and pagination events
   sortField.value = null;
   sortOrder.value = null;
   paginationPage.value = null;
