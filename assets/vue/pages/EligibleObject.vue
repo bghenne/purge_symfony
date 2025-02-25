@@ -109,7 +109,7 @@ import {Methods} from "../enums/methods";
 import {isNumeric} from "../utilities/validation/is-numeric";
 import DatePicker from "primevue/datepicker";
 import AdvancedSearch from "../components/AdvancedSearch.vue";
-import {useEnvironments} from "../composables/scoped/eligible-object/useEnvironments";
+import {useEnvironments} from "../composables/shared/useEnvironments";
 import {useThemes} from "../composables/shared/useThemes";
 
 const { environments, getEnvironments } = useEnvironments();
