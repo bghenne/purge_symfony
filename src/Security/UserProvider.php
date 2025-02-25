@@ -73,7 +73,8 @@ readonly class UserProvider implements OidcUserProviderInterface
             $userRoles = $this->jsonDecode->decode($responseContent, JsonEncoder::FORMAT)['userRoles'];
 
             foreach ($userRoles as $userRole) {
-                $roles[] = $userRole['role'];
+                // all roles must be prefixed by ROLE_ in Symfony
+                $roles[] = 'ROLE_' . $userRole['role'];
             }
 
             $responseContent = $this->client->doRequest($this->baseUrl . '/api-authorization-rest/1.0/users/environments', ['application' => $this->applicationName, 'user' => $identifier]);

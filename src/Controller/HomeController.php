@@ -13,9 +13,9 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted("IS_AUTHENTICATED_FULLY")]
 final class HomeController extends AbstractController
 {
-    #[Route('/{route}', requirements: ['route' => '.{0,999}+'], priority: -1)]
+    #[Route('/{route}', name: 'app.home.index', requirements: ['route' => '.{0,999}+'], priority: -1)]
     #[IsGranted('ROLE_USER')]
-    public function home(string $route): Response
+    public function index(string $route): Response
     {
         return $this->render('base.html.twig', ['route' => $route]);
     }

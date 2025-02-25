@@ -10,7 +10,6 @@ import Setting from "./pages/Setting.vue";
 import {useRoles} from "./composables/shared/useRoles";
 import {Roles} from "./enums/roles";
 
-
 const {getRoles, hasRole} = useRoles();
 
 const routes: Array<RouteRecordRaw> = [
@@ -18,14 +17,17 @@ const routes: Array<RouteRecordRaw> = [
   { path: "/eligible-object", component: EligibleObject },
   { path: "/excluded-object", component: ExcludedObject,
     beforeEnter : (to, from) => {
-      console.log(hasRole(Roles.ADMIN) || hasRole(Roles.EXCLUSION))
       return hasRole(Roles.ADMIN) || hasRole(Roles.EXCLUSION);
     }
 },
   { path: "/purged-object", component: PurgedObject },
   { path: "/control-alert", component: ControlAlert },
   { path: "/purge-report", component: PurgeReport },
-  { path: "/setting", component: Setting },
+  { path: "/setting", component: Setting,
+    beforeEnter : (to, from) => {
+      return hasRole(Roles.ADMIN);
+    }
+  },
   { path: "/:pathMatch(.*)", redirect: "/" },
 ];
 
