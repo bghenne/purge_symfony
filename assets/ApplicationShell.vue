@@ -1,7 +1,3 @@
-<script setup lang="ts">
-import Header from "./vue/components/Header.vue";
-</script>
-
 <template>
   <!-- row 1, column 1–2 -->
   <Header />
@@ -44,6 +40,10 @@ import Header from "./vue/components/Header.vue";
     <RouterView></RouterView>
   </main>
 </template>
+
+<script setup lang="ts">
+import Header from "./vue/components/Header.vue";
+</script>
 
 <style>
 #app {

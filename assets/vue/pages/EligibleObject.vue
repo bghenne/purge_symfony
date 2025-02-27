@@ -236,7 +236,7 @@ import {useThemes} from "../composables/shared/useThemes";
 const { environments, getEnvironments } = useEnvironments();
 const { themes, fetchingThemes, fetchThemes } = useThemes();
 
-const eligibleObjects = ref([] as EligibleObject[]);
+const eligibleObjects = ref([]);
 const eligibleObjectForm = useTemplateRef('eligible-object-form');
 
 // Basic search state
