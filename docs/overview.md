@@ -44,4 +44,5 @@ Symfony is used to authenticate users with the OpenID Connect (OIDC) protocol, a
     - [Recommended](https://github.com/tailwindlabs/prettier-plugin-tailwindcss) class order  
       PhpStorm settings → Prettier → Automatic Prettier configuration
   - [Composition API](https://vuejs.org/guide/typescript/composition-api.html)
-  - Vue [style guide](https://vuejs.org/style-guide)
+  - Vue [style guide](https://vuejs.org/style-guide)  
+    PhpStorm settings → ESLint → Automatic ESLint configuration

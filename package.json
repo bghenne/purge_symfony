@@ -5,6 +5,7 @@
         "type": "git",
         "url": "https://gitlab.gfptech.fr/open-web/purge_symfony"
     },
+    "type": "module",
     "dependencies": {
         "@primevue/forms": "^4.2.5",
         "@primevue/themes": "^4.2.5",
@@ -18,6 +19,8 @@
         "@vitejs/plugin-vue": "^5.2.1",
         "autoprefixer": "^10.4.20",
         "bootstrap-icons": "^1.11.3",
+        "eslint": "^9.21.0",
+        "eslint-plugin-vue": "^9.32.0",
         "postcss": "^8.5.1",
         "prettier": "^3.4.2",
         "prettier-plugin-tailwindcss": "^0.6.11",
