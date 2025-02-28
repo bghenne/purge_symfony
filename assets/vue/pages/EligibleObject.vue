@@ -128,6 +128,16 @@
                 "
                 :loading="searchInProgress"
               />
+              <Button
+                type="button"
+                label="Exporter votre filtre"
+                severity="secondary"
+                class="shrink-0"
+                @click="onExport"
+                :loading="exportInProgress"
+                :disabled="searchInProgress || eligibleObjects.length <= 0"
+              />
+
             </form>
           </AdvancedSearch>
         </Teleport>
@@ -137,7 +147,7 @@
           label="Effacer"
           severity="secondary"
           class="shrink-0"
-          :disabled="null === theme && null === environment"
+          :disabled="searchInProgress || (null === theme && null === environment)"
           @click="resetBasicSearchValues"
         />
         <Button
@@ -147,6 +157,15 @@
           class="shrink-0"
           :disabled="searchInProgress || null === theme || null === environment"
           :loading="searchInProgress"
+        />
+        <Button
+          type="button"
+          label="Exporter toute la liste"
+          severity="secondary"
+          class="shrink-0"
+          @click="onExport"
+          :loading="exportInProgress"
+          :disabled="searchInProgress || eligibleObjects.length <= 0"
         />
       </div>
     </Form>
@@ -205,6 +224,9 @@
       </div>
     </template>
   </DataTable>
+
+
+
 </template>
 
 <script setup lang="ts">
@@ -249,6 +271,7 @@ const dateTo = ref(null);
 const familyId = ref(null);
 
 const searchInProgress = ref(false);
+const exportInProgress = ref(false);
 const totalRecords = ref(0);
 const advancedSearchDisplayed = ref(false);
 
@@ -307,19 +330,19 @@ const onFormSubmit = ({originalEvent, valid, values}) => {
     formData.append('environment', values.environment.name);
     formData.append('theme', values.theme.code);
 
-    if (undefined !== values.dateFrom) {
+    if (undefined !== values.dateFrom && null !== values.dateFrom) {
       const convertedDateFrom = String(values.dateFrom).split('(')[0].trim();
       dateFrom.value = convertedDateFrom;
       formData.append('dateFrom', convertedDateFrom);
     }
 
-    if (undefined !== values.dateTo) {
+    if (undefined !== values.dateTo && null !== values.dateTo) {
       const convertedDateTo = String(values.dateTo).split('(')[0].trim();
       dateTo.value = convertedDateTo;
       formData.append('dateTo', convertedDateTo);
     }
 
-    if (undefined !== values.familyId) {
+    if (undefined !== values.familyId && null !== values.familyId) {
       familyId.value = values.familyId;
       formData.append('familyId', values.familyId);
     }
@@ -344,6 +367,19 @@ const findEligibleObjects = (formData : FormData) => {
       })
       .catch(error => toast.add({severity: 'error', summary: 'Une erreur s\'est produite :' + error, life: 5000}))
       .finally(() => searchInProgress.value = false)
+}
+
+const findEligibleObjectsToExport = (formData : FormData) => {
+  exportInProgress.value = true;
+
+    let url : string = '/api/eligible-object/export?';
+
+    for (const value of formData.entries()) {
+      url += value[0] + '=' + value[1] + '&';
+    }
+
+    console.log(url);
+    window.open(url);
 }
 
 const onPage = (event: DataTablePageEvent) => {
@@ -378,7 +414,6 @@ const onPage = (event: DataTablePageEvent) => {
     formData.append('sortOrder', String(eligibleObjectsTable.value.d_sortOrder));
   }
 
-  console.log(Object.fromEntries(formData));
   findEligibleObjects(formData);
 }
 
@@ -415,11 +450,29 @@ const onSort = (event: DataTableSortEvent) => {
   // This prevents the current page from being reset.
   eligibleObjectsTable.value.d_first = paginationPage.value * eligibleObjectsTable.value.d_rows;
 
-  console.log('event.sortField');
-  console.log(event.sortField);
-  console.log('event.sortOrder');
-  console.log(event.sortOrder);
   findEligibleObjects(formData);
+}
+
+const onExport = (event: PointerEvent) => {
+
+  const formData = new FormData;
+  formData.append('environment', environment.value.name);
+  formData.append('theme', theme.value.code);
+
+  if (null !== dateFrom.value) {
+    formData.append('dateFrom', dateFrom.value);
+  }
+
+  if (null !== dateTo.value) {
+    formData.append('dateTo', dateTo.value);
+  }
+
+  if (null !== familyId.value) {
+    formData.append('familyId', familyId.value);
+  }
+
+  findEligibleObjectsToExport(formData);
+
 }
 
 function resetBasicSearchValues(event: MouseEvent) {

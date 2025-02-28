@@ -112,4 +112,12 @@ class EligibleObjectService
 
         return $this->fieldsMapping[$fieldName];
     }
+
+    public function findEligibleObjectsToExport(array $criteria)
+    {
+        $responseContent = $this->client->doRequest($this->baseUrl . '/api-rgpd/v1/exporter/eligibles', $criteria, Request::METHOD_POST);
+
+        return $responseContent;
+
+    }
 }
