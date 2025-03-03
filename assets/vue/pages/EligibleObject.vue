@@ -134,8 +134,7 @@
                 severity="secondary"
                 class="shrink-0"
                 @click="onExport"
-                :loading="exportInProgress"
-                :disabled="searchInProgress || eligibleObjects.length <= 0"
+                :disabled="!advancedSearchDone || eligibleObjects.length <= 0"
               />
 
             </form>
@@ -164,7 +163,6 @@
           severity="secondary"
           class="shrink-0"
           @click="onExport"
-          :loading="exportInProgress"
           :disabled="searchInProgress || eligibleObjects.length <= 0"
         />
       </div>
@@ -271,9 +269,9 @@ const dateTo = ref(null);
 const familyId = ref(null);
 
 const searchInProgress = ref(false);
-const exportInProgress = ref(false);
 const totalRecords = ref(0);
 const advancedSearchDisplayed = ref(false);
+const advancedSearchDone = ref(false);
 
 // To use the pagination and sorting features along with lazy loading,
 // we need to read and update the DataTable internal state (a limitation of PrimeVue).
@@ -317,6 +315,9 @@ const onFormSubmit = ({originalEvent, valid, values}) => {
     values.dateFrom = undefined;
     values.dateTo = undefined;
     values.familyId = undefined;
+  } else {
+    // secondary export button is no more disabled once advanced search is done
+    advancedSearchDone.value = true;
   }
 
   // every time form is submitted, we reset pagination and sort
@@ -370,7 +371,6 @@ const findEligibleObjects = (formData : FormData) => {
 }
 
 const findEligibleObjectsToExport = (formData : FormData) => {
-  exportInProgress.value = true;
 
     let url : string = '/api/eligible-object/export?';
 
@@ -378,7 +378,6 @@ const findEligibleObjectsToExport = (formData : FormData) => {
       url += value[0] + '=' + value[1] + '&';
     }
 
-    console.log(url);
     window.open(url);
 }
 
@@ -486,6 +485,7 @@ function resetAdvancedSearchValues(event: MouseEvent) {
   dateFrom.value = null;
   dateTo.value = null;
   familyId.value = null;
+  advancedSearchDone.value = false;
 }
 
 /**

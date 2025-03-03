@@ -62,6 +62,7 @@ class EligibleObjectService
     public function findEligibleObjects(Request $request): array
     {
         $parameters = $this->extractParameters($request, true);
+        $this->logger->warning(var_export($parameters, true));
 
         $responseContent = $this->client->doRequest($this->baseUrl . '/api-rgpd/v1/eligibles', $parameters, Request::METHOD_POST)['content'];
 
@@ -119,11 +120,11 @@ class EligibleObjectService
      * Extract parameters from request
      *
      * @param Request $request
-     * @param $withPagination
+     * @param true $withPagination
      *
      * @return array
      */
-    private function extractParameters(Request $request, $withPagination = true): array
+    private function extractParameters(Request $request, bool $withPagination = true): array
     {
         $parameters = [
             //'environment' => $request->get('environment'),
@@ -174,7 +175,6 @@ class EligibleObjectService
         $parameters = $this->extractParameters($request, false);
 
         return $this->client->doRequest($this->baseUrl . '/api-rgpd/v1/exporter/eligibles', $parameters, Request::METHOD_POST);
-
     }
 
     /**
@@ -188,7 +188,7 @@ class EligibleObjectService
     public function makeExport(string $content, array $headers) : array
     {
         $fileName = 'eligible_objects_' . date('Y-m-d') . '.zip';
-        if ('text/csv' === $headers['content-type']) {
+        if ('text/csv' === $headers['content-type'][0]) {
             $fileName = 'eligible_objects_' . date('Y-m-d') . '.csv';
         }
 
