@@ -34,7 +34,7 @@ class Client
      * @throws RedirectionExceptionInterface
      * @throws ClientExceptionInterface|OidcException
      */
-    public function doRequest(string $url, ?array $parameters = [], string $method = Request::METHOD_GET): string
+    public function doRequest(string $url, ?array $parameters = [], string $method = Request::METHOD_GET): array
     {
         $requestParameters = (in_array($method, [Request::METHOD_DELETE, Request::METHOD_GET]) ? ['query' => $parameters] : ['body' => json_encode($parameters)]);
 
@@ -55,7 +55,11 @@ class Client
             $response = $this->httpClient->request($method, $url, $requestParameters);
         }
 
-        return $response->getContent();
+        return [
+            'content' => $response->getContent(),
+            'headers' => $response->getHeaders(),
+        ];
+
     }
 
     protected function createClient(?string $accessToken = null): void

@@ -51,19 +51,19 @@ class EligibleObjectService
     }
 
     /**
-     * Find eligible objects based on criteria
-     *
-     * @param array $criteria
+     * @param Request $request
      * @return array
-     * @throws OidcException
      * @throws ClientExceptionInterface
+     * @throws OidcException
      * @throws RedirectionExceptionInterface
      * @throws ServerExceptionInterface
      * @throws TransportExceptionInterface
      */
-    public function findEligibleObjects(array $criteria): array
+    public function findEligibleObjects(Request $request): array
     {
-        $responseContent = $this->client->doRequest($this->baseUrl . '/api-rgpd/v1/eligibles', $criteria, Request::METHOD_POST);
+        $parameters = $this->extractParameters($request, true);
+
+        $responseContent = $this->client->doRequest($this->baseUrl . '/api-rgpd/v1/eligibles', $parameters, Request::METHOD_POST)['content'];
 
         $results = json_decode($responseContent, true);
 
@@ -101,6 +101,8 @@ class EligibleObjectService
     }
 
     /**
+     * Convert field name from
+     *
      * @param string $fieldName
      * @return string
      */
@@ -113,11 +115,89 @@ class EligibleObjectService
         return $this->fieldsMapping[$fieldName];
     }
 
-    public function findEligibleObjectsToExport(array $criteria)
+    /**
+     * Extract parameters from request
+     *
+     * @param Request $request
+     * @param $withPagination
+     *
+     * @return array
+     */
+    private function extractParameters(Request $request, $withPagination = true): array
     {
-        $responseContent = $this->client->doRequest($this->baseUrl . '/api-rgpd/v1/exporter/eligibles', $criteria, Request::METHOD_POST);
+        $parameters = [
+            //'environment' => $request->get('environment'),
+            'environnement' => 'MERCERW2', // TODO remove
+            'theme' => $request->get('theme'),
+        ];
 
-        return $responseContent;
+        if ($withPagination) {
+            $parameters['pageable'] = [
+                'page' => $request->get('page') ?? 0,
+                'size' => 10
+            ];
+        }
+
+        if (!empty($request->get('sortOrder'))) {
+            $parameters['pageable']['sort'][0]['propertie'] = $this->convertFieldName($request->get('sortField'));
+            $parameters['pageable']['sort'][0]['direction'] = '-1' === $request->get('sortOrder') ? 'DESC' : 'ASC';
+        }
+
+        if (!empty($request->get('dateFrom'))) {
+            $parameters['debutPeriode'] = $this->convertDateFromString($request->get('dateFrom'));
+        }
+
+        if (!empty($request->get('dateTo'))) {
+            $parameters['finPeriode'] = $this->convertDateFromString($request->get('dateTo'));
+        }
+
+        if (!empty($request->get('familyId'))) {
+            $parameters['identifiantFamille'] = $request->get('familyId');
+        }
+
+        return $parameters;
+    }
+
+    /**
+     * Find eligible objects to export
+     *
+     * @param Request $request
+     * @return array
+     * @throws ClientExceptionInterface
+     * @throws OidcException
+     * @throws RedirectionExceptionInterface
+     * @throws ServerExceptionInterface
+     * @throws TransportExceptionInterface
+     */
+    public function findEligibleObjectsToExport(Request $request): array
+    {
+        $parameters = $this->extractParameters($request, false);
+
+        return $this->client->doRequest($this->baseUrl . '/api-rgpd/v1/exporter/eligibles', $parameters, Request::METHOD_POST);
 
     }
+
+    /**
+     * Export data to file and return path
+     *
+     * @param string $content
+     * @param array $headers
+     *
+     * @return string
+     */
+    public function makeExport(string $content, array $headers) : string
+    {
+        $fileName = 'eligible_objects_' . date('Y-m-d') . '.zip';
+        if ('text/csv' === $headers['content-type']) {
+            $fileName = 'eligible_objects_' . date('Y-m-d') . '.csv';
+        }
+
+        $filePath = sys_get_temp_dir() . '/' . $fileName;
+
+        // save file
+        file_put_contents($filePath, $content);
+
+        return $filePath;
+    }
+
 }

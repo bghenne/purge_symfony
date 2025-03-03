@@ -6,13 +6,19 @@ namespace App\Controller;
 
 use App\Service\EligibleObjectService;
 use App\Trait\DateTrait;
+use Drenso\OidcBundle\Exception\OidcException;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Throwable;
 
 #[Route('/api')]
@@ -21,7 +27,7 @@ final class EligibleObjectController extends AbstractController
 {
     use DateTrait;
 
-    public function __construct(private readonly EligibleObjectService $eligibleObjectService, private readonly LoggerInterface $logger, private string $projectDir)
+    public function __construct(private readonly EligibleObjectService $eligibleObjectService, private readonly LoggerInterface $logger)
     {
     }
 
@@ -30,38 +36,8 @@ final class EligibleObjectController extends AbstractController
     {
         $jsonResponse = new JsonResponse();
 
-        $parameters = [
-            //'environment' => $request->get('environment'),
-            'environnement' => 'MERCERW2', // TODO remove
-            'theme' => $request->get('theme'),
-            'pageable' =>  [
-                'page' => $request->get('page') ?? 0,
-                'size' => 10
-            ],
-        ];
-
-        if (!empty($request->get('sortOrder'))) {
-            $parameters['pageable']['sort'][0]['propertie'] = $this->eligibleObjectService->convertFieldName($request->get('sortField'));
-            $parameters['pageable']['sort'][0]['direction'] = '-1' === $request->get('sortOrder') ? 'DESC' : 'ASC';
-        }
-
-        if (!empty($request->get('dateFrom'))) {
-            $parameters['debutPeriode'] = $this->convertDateFromString($request->get('dateFrom'));
-        }
-
-        if (!empty($request->get('dateTo'))) {
-            $parameters['finPeriode'] = $this->convertDateFromString($request->get('dateTo'));
-        }
-
-        if (!empty($request->get('familyId'))) {
-            $parameters['identifiantFamille'] = $request->get('familyId');
-        }
-
         try {
-            $this->logger->warning(json_encode($parameters));
-            $jsonResponse->setData(
-                $this->eligibleObjectService->findEligibleObjects($parameters)
-            );
+            $jsonResponse->setData($this->eligibleObjectService->findEligibleObjects($request));
         } catch (Throwable $e) {
             $this->logger->error($e->getMessage());
             $jsonResponse->setData([
@@ -72,38 +48,22 @@ final class EligibleObjectController extends AbstractController
         return $jsonResponse;
     }
 
+    /**
+     * @param Request $request
+     * @return BinaryFileResponse
+     */
     #[Route('/eligible-object/export', name: 'api.eligible-object.export', methods: ['GET'])]
-    public function findEligibleObjectsToExport(Request $request): BinaryFileResponse
+    public function findEligibleObjectsToExport(Request $request): BinaryFileResponse|Response
     {
-        $parameters = [
-            //'environment' => $request->get('environment'),
-            'environnement' => 'MERCERW2', // TODO remove
-            'theme' => $request->get('theme'),
-            'pageable' =>  [
-                'page' => $request->get('page') ?? 0,
-                'size' => 10
-            ],
-        ];
+        try {
 
-        if (!empty($request->get('sortOrder'))) {
-            $parameters['pageable']['sort'][0]['propertie'] = $this->eligibleObjectService->convertFieldName($request->get('sortField'));
-            $parameters['pageable']['sort'][0]['direction'] = '-1' === $request->get('sortOrder') ? 'DESC' : 'ASC';
+            $result = $this->eligibleObjectService->findEligibleObjectsToExport($request);
+
+            return new BinaryFileResponse($this->eligibleObjectService->makeExport($result['content'], $result['headers']), Response::HTTP_OK, ['Content-Type' => $result['headers']['content-type']]);
+
+        } catch (Throwable $e) {
+            $this->logger->error($e->getMessage());
+            return new Response('File not found !', Response::HTTP_NOT_FOUND);
         }
-
-        if (!empty($request->get('dateFrom'))) {
-            $parameters['debutPeriode'] = $this->convertDateFromString($request->get('dateFrom'));
-        }
-
-        if (!empty($request->get('dateTo'))) {
-            $parameters['finPeriode'] = $this->convertDateFromString($request->get('dateTo'));
-        }
-
-        if (!empty($request->get('familyId'))) {
-            $parameters['identifiantFamille'] = $request->get('familyId');
-        }
-
-        file_put_contents($this->projectDir . '/var/test.csv', $this->eligibleObjectService->findEligibleObjectsToExport($parameters));
-
-        return new BinaryFileResponse($this->projectDir . '/var/test.csv');
     }
 }
