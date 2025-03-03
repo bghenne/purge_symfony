@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
@@ -50,7 +51,7 @@ final class EligibleObjectController extends AbstractController
 
     /**
      * @param Request $request
-     * @return BinaryFileResponse
+     * @return BinaryFileResponse|Response
      */
     #[Route('/eligible-object/export', name: 'api.eligible-object.export', methods: ['GET'])]
     public function findEligibleObjectsToExport(Request $request): BinaryFileResponse|Response
@@ -58,12 +59,20 @@ final class EligibleObjectController extends AbstractController
         try {
 
             $result = $this->eligibleObjectService->findEligibleObjectsToExport($request);
+            list($filePath, $fileName) = $this->eligibleObjectService->makeExport($result['content'], $result['headers']);
 
-            return new BinaryFileResponse($this->eligibleObjectService->makeExport($result['content'], $result['headers']), Response::HTTP_OK, ['Content-Type' => $result['headers']['content-type']]);
+            $binaryFileResponse = new BinaryFileResponse($filePath, Response::HTTP_OK, ['Content-Type' => $result['headers']['content-type']]);
+            $binaryFileResponse->setContentDisposition(
+                ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+                $fileName
+            );
+
+            return $binaryFileResponse;
 
         } catch (Throwable $e) {
             $this->logger->error($e->getMessage());
             return new Response('File not found !', Response::HTTP_NOT_FOUND);
         }
+
     }
 }

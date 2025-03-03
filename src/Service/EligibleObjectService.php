@@ -183,9 +183,9 @@ class EligibleObjectService
      * @param string $content
      * @param array $headers
      *
-     * @return string
+     * @return array
      */
-    public function makeExport(string $content, array $headers) : string
+    public function makeExport(string $content, array $headers) : array
     {
         $fileName = 'eligible_objects_' . date('Y-m-d') . '.zip';
         if ('text/csv' === $headers['content-type']) {
@@ -197,7 +197,10 @@ class EligibleObjectService
         // save file
         file_put_contents($filePath, $content);
 
-        return $filePath;
+        return [
+            $filePath,
+            $fileName
+        ];
     }
 
 }
