@@ -5,7 +5,7 @@
 
 import { createApp } from 'vue';
 import PrimeVue from 'primevue/config';
-import Nora from '@primevue/themes/nora';
+import Aura from '@primevue/themes/aura';
 import router from './vue/router';
 
 import ApplicationShell from './ApplicationShell.vue';
@@ -20,7 +20,7 @@ createApp(ApplicationShell)
     .use(router)
     .use(PrimeVue, {
         theme: {
-            preset: Nora,
+            preset: Aura,
             options : {
                 darkModeSelector: false
             }
