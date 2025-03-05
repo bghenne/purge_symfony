@@ -312,9 +312,9 @@ const onFormSubmit = ({originalEvent, valid, values}) => {
   if (null !== originalEvent.submitter) {
     resetAdvancedSearchValues(originalEvent);
     advancedSearchDisplayed.value = false;
-    values.dateFrom = undefined;
-    values.dateTo = undefined;
-    values.familyId = undefined;
+    values.dateFrom = null;
+    values.dateTo = null;
+    values.familyId = null;
   } else {
     // secondary export button is no more disabled once advanced search is done
     advancedSearchDone.value = true;
@@ -331,19 +331,17 @@ const onFormSubmit = ({originalEvent, valid, values}) => {
     formData.append('environment', values.environment.name);
     formData.append('theme', values.theme.code);
 
-    if (undefined !== values.dateFrom && null !== values.dateFrom) {
+    if (null !== values.dateFrom) {
       const convertedDateFrom = String(values.dateFrom).split('(')[0].trim();
-      dateFrom.value = convertedDateFrom;
       formData.append('dateFrom', convertedDateFrom);
     }
 
-    if (undefined !== values.dateTo && null !== values.dateTo) {
+    if (null !== values.dateTo) {
       const convertedDateTo = String(values.dateTo).split('(')[0].trim();
-      dateTo.value = convertedDateTo;
       formData.append('dateTo', convertedDateTo);
     }
 
-    if (undefined !== values.familyId && null !== values.familyId) {
+    if (null !== values.familyId) {
       familyId.value = values.familyId;
       formData.append('familyId', values.familyId);
     }
