@@ -64,15 +64,21 @@ class EligibleObjectService
         $parameters = $this->extractParameters($request, true);
         $this->logger->warning(var_export($parameters, true));
 
-        $responseContent = $this->client->doRequest($this->baseUrl . '/api-rgpd/v1/eligibles', $parameters, Request::METHOD_POST)['content'];
+        $response = $this->client->doRequest($this->baseUrl . '/api-rgpd/v1/eligibles', $parameters, Request::METHOD_POST);
 
-        $results = json_decode($responseContent, true);
+        // this 'content' is the one returned by doRequest()
+        if (empty($response['content'])) {
+            return ['eligibleObjects' => []]; // if empty content is provided, we have to build this array structure to provide to DataTable component
+        }
+
+        $results = json_decode($response['content'], true);
 
         $eligibleObjects = [
             'eligibleObjects' => [],
             'total' => $results['page']['totalElements']
         ];
 
+        // this 'content' is inside web service response
         foreach ($results['content'] as $key => $result) {
 
             $eligibleObjects['eligibleObjects'][$key] = [
