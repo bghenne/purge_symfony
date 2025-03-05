@@ -315,6 +315,10 @@ const resolver = ({values}) => {
     errors.familyId = [{message: "L'id de famille doit être un nombre entier"}];
   }
 
+  if (values.familyId < 1 || values.familyId > 9999999999) {
+    errors.familyId = [{message: "L'id de famille doit être un nombre entier compris entre 1 et 9999999999"}];
+  }
+
   return {
     values,
     errors
