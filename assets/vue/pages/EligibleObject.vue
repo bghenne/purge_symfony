@@ -9,6 +9,7 @@
     >
       <div class="flex gap-5">
         <Select
+          ref="environment-select"
           v-model="environment"
           name="environment"
           :options="environments"
@@ -60,6 +61,7 @@
                   v-model="dateFrom"
                   dateFormat="dd/mm/yy"
                   placeholder="jj/mm/aaaa"
+                  :disabled="familyId"
                 />
                 <Message
                   v-if="$eligibleObjectForm.dateFrom?.invalid"
@@ -77,6 +79,7 @@
                   v-model="dateTo"
                   dateFormat="dd/mm/yy"
                   placeholder="jj/mm/aaaa"
+                  :disabled="familyId"
                 />
                 <Message
                   v-if="$eligibleObjectForm.dateTo?.invalid"
@@ -89,7 +92,11 @@
               </label>
               <label class="flex flex-col">
                 <span class="font-bold">ID de famille</span>
-                <InputText name="familyId" v-model="familyId" type="text" />
+                <InputText
+                    name="familyId"
+                    v-model="familyId"
+                    :disabled="dateFrom || dateTo"
+                />
                 <Message
                   v-if="$eligibleObjectForm.familyId?.invalid"
                   severity="error"
@@ -124,7 +131,8 @@
                 :disabled="
                   searchInProgress ||
                   (null === dateFrom && dateTo) ||
-                  (dateFrom && null === dateTo)
+                  (dateFrom && null === dateTo) ||
+                  (null === dateFrom && null === dateTo && null === familyId)
                 "
                 :loading="searchInProgress"
               />
@@ -186,7 +194,7 @@
     currentPageReportTemplate="{first} à {last} sur {totalRecords}"
   >
     <Column expander style="width: 5rem" />
-    <Column field="familyId" header="Identifiant de famille" sortable></Column>
+    <Column ref="first-table-header" field="familyId" header="Identifiant de famille" sortable></Column>
     <Column
       field="contributionPaymentDate"
       header="Date de dernier paiment de la cotisation"
@@ -222,9 +230,6 @@
       </div>
     </template>
   </DataTable>
-
-
-
 </template>
 
 <script setup lang="ts">
@@ -242,7 +247,7 @@ import {
   Toast
 } from "primevue";
 import {Form} from "@primevue/forms";
-import {ref, useTemplateRef} from 'vue';
+import {nextTick, onMounted, ref, useTemplateRef} from 'vue';
 import {useToast} from "primevue/usetoast";
 import {ObjectType} from "../enums/object-type";
 import {doRequest} from "../utilities/request";
@@ -258,6 +263,9 @@ const { themes, fetchingThemes, fetchThemes } = useThemes();
 
 const eligibleObjects = ref([]);
 const eligibleObjectForm = useTemplateRef('eligible-object-form');
+
+const environmentSelect = useTemplateRef('environment-select');
+const firstTableHeader = useTemplateRef('first-table-header');
 
 // Basic search state
 const environment = ref(null);
@@ -292,6 +300,13 @@ const typologies: String[] = ref([
   'Autres'
 ]);
 
+onMounted(async () => {
+  // This is a workaround. Currently, many PrimeVue components do not expose a function
+  // to set the focus on the underlying interactive element.
+  // See https://github.com/primefaces/primevue/issues/3138.
+  environmentSelect.value.$refs.focusInput.focus();
+})
+
 const resolver = ({values}) => {
 
   const errors = {};
@@ -325,8 +340,6 @@ const onFormSubmit = ({originalEvent, valid, values}) => {
   resetPaginationAndSort();
 
   if (valid) {
-    toast.add({severity: 'success', summary: 'Recherche en cours.', life: 3000});
-
     const formData = new FormData;
     formData.append('environment', values.environment.name);
     formData.append('theme', values.theme.code);
@@ -354,15 +367,20 @@ const findEligibleObjects = (formData : FormData) => {
   searchInProgress.value = true;
 
   doRequest('/api/eligible-object', Methods.POST, formData)
-      .then((newEligibleObjects: EligibleObjects) => {
+      .then(async (newEligibleObjects: EligibleObjects) => {
 
         totalRecords.value = newEligibleObjects.total;
+        eligibleObjects.value = newEligibleObjects.eligibleObjects;
 
         if (newEligibleObjects.total > 0) {
           advancedSearchDisplayed.value = true;
-        }
 
-        eligibleObjects.value = newEligibleObjects.eligibleObjects;
+          // Ugly workaround to set the focus on the header of the 1st sortable column.
+          // The usual hacks ($el and $refs) seem inapplicable with the Column component.
+          (document.querySelector('th[tabindex]') as HTMLTableCellElement).focus();
+        } else {
+          environmentSelect.value.$refs.focusInput.focus();
+        }
       })
       .catch(error => toast.add({severity: 'error', summary: 'Une erreur s\'est produite :' + error, life: 5000}))
       .finally(() => searchInProgress.value = false)
