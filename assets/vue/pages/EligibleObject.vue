@@ -53,6 +53,7 @@
             <form
               class="grid grid-cols-2 gap-3"
               @submit.prevent="eligibleObjectForm.$el.requestSubmit()"
+              autocomplete="off"
             >
               <label class="flex flex-col">
                 <span class="font-bold">Du</span>
@@ -95,6 +96,8 @@
                 <InputText
                     name="familyId"
                     v-model="familyId"
+                    @beforeinput="validateInsertedDigits"
+                    maxlength="10"
                     :disabled="dateFrom || dateTo"
                 />
                 <Message
@@ -274,7 +277,7 @@ const theme = ref(null);
 // Advanced search state
 const dateFrom = ref(null);
 const dateTo = ref(null);
-const familyId = ref(null);
+const familyId = ref('');
 
 const searchInProgress = ref(false);
 const totalRecords = ref(0);
@@ -307,17 +310,23 @@ onMounted(async () => {
   environmentSelect.value.$refs.focusInput.focus();
 })
 
+function validateInsertedDigits(e: InputEvent) {
+  if (e.data && null === e.data.match(/^\d+$/)) {
+    e.preventDefault();
+  }
+}
+
 const resolver = ({values}) => {
 
   const errors = {};
 
-  if (undefined !== values.familyId && false === isNumeric(values.familyId)) {
-    errors.familyId = [{message: "L'id de famille doit être un nombre entier"}];
-  }
-
-  if (values.familyId < 1 || values.familyId > 9999999999) {
-    errors.familyId = [{message: "L'id de famille doit être un nombre entier compris entre 1 et 9999999999"}];
-  }
+  // if ('' !== values.familyId && false === isNumeric(values.familyId)) {
+  //   errors.familyId = [{message: "L'id de famille doit être un nombre entier"}];
+  // }
+  //
+  // if ('' !== values.familyId && values.familyId < 1 || values.familyId > 9999999999) {
+  //   errors.familyId = [{message: "L'id de famille doit être un nombre entier compris entre 1 et 9999999999"}];
+  // }
 
   return {
     values,
