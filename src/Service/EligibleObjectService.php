@@ -133,8 +133,7 @@ class EligibleObjectService
     private function extractParameters(Request $request, bool $withPagination = true): array
     {
         $parameters = [
-            //'environment' => $request->get('environment'),
-            'environnement' => 'MERCERW2', // TODO remove
+            'environnement' => $request->get('environment'),
             'theme' => $request->get('theme'),
         ];
 
