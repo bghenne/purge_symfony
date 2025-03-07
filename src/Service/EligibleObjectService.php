@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Enum\Theme;
 use App\Http\Client;
 use App\Trait\DateTrait;
 use Drenso\OidcBundle\Exception\OidcException;
@@ -74,11 +75,28 @@ class EligibleObjectService
         $results = json_decode($response['content'], true);
 
         $eligibleObjects = [
+            'columns' => [], // todo update with database service
             'eligibleObjects' => [],
             'total' => $results['page']['totalElements']
         ];
 
-        // this 'content' is inside web service response
+        if ($parameters['theme'] === Theme::HEALTH_BENEFIT->value) {
+            return $this->buildHealthBenefitResults($results, $eligibleObjects);
+        }
+
+        return $this->buildDefaultResults($results, $eligibleObjects);
+
+    }
+
+    /**
+     * Default results
+     *
+     * @param array $results
+     * @param array $eligibleObjects
+     * @return array
+     */
+    private function buildDefaultResults(array $results, array $eligibleObjects) : array
+    {
         foreach ($results['content'] as $key => $result) {
 
             $eligibleObjects['eligibleObjects'][$key] = [
@@ -104,8 +122,48 @@ class EligibleObjectService
         }
 
         return $eligibleObjects;
-
     }
+
+    /**
+     * Build health benefit specific
+     *
+     * @param array $results
+     * @param array $eligibleObjects
+     * @return array
+     */
+    private function buildHealthBenefitResults(array $results, array $eligibleObjects) : array
+    {
+        foreach ($results['content'] as $key => $result) {
+
+            $eligibleObjects['eligibleObjects'][$key] = [
+                'key' => $key,
+                'familyId' => $result['identifiantFamille'] ?? null,
+                'openFileNumber' => $result['numeroDossierOpen'] ?? null,
+                'thirdTypeLabel' => $result['libelleTypeTiers'] ?? null,
+                'healthBenefitPaymentDate' => $result['datePaiementPrestation'] ?? null,
+                'conservationTime' => $result['delaiConservation'] ?? null,
+                'settingDescription' => $result['descriptionParametrage'] ?? null,
+                'details' => [
+                    'key' => $key,
+                    // beneficiary details
+                    'beneficiaryName' => $result['nomBeneficiaire'] ?? null,
+                    'beneficiaryFirstname' => $result['prenomBeneficiaire'] ?? null,
+                    'beneficiaryBirthdate' => !empty($result['dateNaissanceBeneficiaire']) ? $this->formatDate($result['dateNaissanceBeneficiaire'], 'Y-m-d', 'd/m/Y') : null,
+                    'socialSecurityNumber' => $result['numeroSecuriteSociale'] ?? null,
+                    // health benefit details
+                    'finessNumber' => $result['numeroFiness'],
+                    'paymentNumber' => $result['numeroPaiement'] ?? null,
+                    'paymentType' => $result['typePaiement'] ?? null,
+                    'paymentMode' => $result['modePaiement'] ?? null,
+
+                ]
+            ];
+        }
+
+        return $eligibleObjects;
+    }
+
+
 
     /**
      * Convert field name from
