@@ -4,32 +4,40 @@
   </Heading>
 
   <nav>
-    <Subheading>
-      Contrôler
-    </Subheading>
-    <TiledLink to="/eligible-object">Liste des objects éligibles</TiledLink>
+    <Subheading>Contrôler</Subheading>
 
-    <Subheading>
-      Exclure
-    </Subheading>
-    <TiledLink to="/excluded-object">Liste des objects exclus</TiledLink>
+    <TiledLink to="/eligible-object">
+      Liste des objets éligibles
+    </TiledLink>
 
-    <Subheading>
-      Piloter
-    </Subheading>
+    <Subheading>Exclure</Subheading>
+
+
+    <TiledLink to="/excluded-object">
+      Liste des objets exclus
+    </TiledLink>
+
+    <Subheading>Piloter</Subheading>
+
     <div class="flex gap-3">
-      <TiledLink to="/purged-object">Liste des objects purgés</TiledLink>
-      <TiledLink to="/control-alert">Alerte de contrôle</TiledLink>
-      <TiledLink to="/purge-report">Compte-rendu de purge</TiledLink>
+      <TiledLink to="/purged-object">
+        Liste des objets purgés
+      </TiledLink>
+      <TiledLink to="/control-alert">
+        Alertes de contrôle
+      </TiledLink>
+      <TiledLink to="/purge-report">
+        Comptes rendus de purge
+      </TiledLink>
     </div>
 
-    <Subheading>
-      Paramétrer
-    </Subheading>
-    <div class="flex gap-3">
-      <TiledLink to="/setting">Paramétrer</TiledLink>
-    </div>
+    <Subheading>Paramétrer</Subheading>
 
+    <div class="flex gap-3">
+      <TiledLink to="/setting">
+        Paramétrer
+      </TiledLink>
+    </div>
   </nav>
 </template>
 

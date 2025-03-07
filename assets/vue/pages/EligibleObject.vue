@@ -197,40 +197,19 @@
     currentPageReportTemplate="{first} à {last} sur {totalRecords}"
   >
     <Column expander style="width: 5rem" />
-    <Column ref="first-table-header" field="familyId" header="Identifiant de famille" sortable></Column>
     <Column
-      field="contributionPaymentDate"
-      header="Date de dernier paiment de la cotisation"
-      sortable
+        v-for="(column, property) in columns.config"
+        :field="property"
+        :header="columns.labels[property]"
+        :sortable="column.sortable"
     ></Column>
-    <Column
-      field="contributionCallPeriod"
-      header="Période des cotisations en mois"
-      sortable
-    ></Column>
-    <Column
-      field="contributionCallYear"
-      header="Période des cotisations en année"
-      sortable
-    ></Column>
-    <Column
-      field="conservationTime"
-      header="Délai de conservation appliqué"
-    ></Column>
-    <Column field="clientName" header="Nom du client"></Column>
     <template #expansion="slotProps">
-      <div class="p-4">
-        <p>Nom : {{ slotProps.data.details.beneficiaryName }}</p>
-        <p>Prénom : {{ slotProps.data.details.beneficiaryFirstname }}</p>
-        <p>
-          Numéro de sécurité sociale :
-          {{ slotProps.data.details.socialSecurityNumber }}
-        </p>
-        <p>
-          Date de naissance du bénéficiaire :
-          {{ slotProps.data.details.beneficiaryBirthdate }}
-        </p>
-      </div>
+      <dl>
+        <template v-for="(value, property) in slotProps.data.details">
+          <dt>{{ columns.labels[property] }}</dt>
+          <dd>{{ value }}</dd>
+        </template>
+      </dl>
     </template>
   </DataTable>
 </template>
@@ -268,7 +247,6 @@ const eligibleObjects = ref([]);
 const eligibleObjectForm = useTemplateRef('eligible-object-form');
 
 const environmentSelect = useTemplateRef('environment-select');
-const firstTableHeader = useTemplateRef('first-table-header');
 
 // Basic search state
 const environment = ref(null);
@@ -281,6 +259,7 @@ const familyId = ref('');
 
 const searchInProgress = ref(false);
 const totalRecords = ref(0);
+const columns = ref([]);
 const advancedSearchDisplayed = ref(false);
 const advancedSearchDone = ref(false);
 
@@ -384,13 +363,17 @@ const findEligibleObjects = (formData : FormData) => {
 
         totalRecords.value = newEligibleObjects.total;
         eligibleObjects.value = newEligibleObjects.eligibleObjects;
+        columns.value = newEligibleObjects.columns;
 
         if (newEligibleObjects.total > 0) {
           advancedSearchDisplayed.value = true;
 
-          // Ugly workaround to set the focus on the header of the 1st sortable column.
-          // The usual hacks ($el and $refs) seem inapplicable with the Column component.
-          (document.querySelector('th[tabindex]') as HTMLTableCellElement).focus();
+          nextTick(() => {
+            // Ugly workaround to set the focus on the header of the 1st sortable column.
+            // The usual hacks ($el and $refs) seem inapplicable with the Column component.
+            // SUPER WEIRD BUG: when validating the form with the mouse, the focus is applied but its outline is not displayed!
+            (document.querySelector('th[tabindex]') as HTMLTableCellElement).focus();
+          })
         } else {
           environmentSelect.value.$refs.focusInput.focus();
         }

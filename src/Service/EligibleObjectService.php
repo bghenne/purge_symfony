@@ -47,7 +47,7 @@ class EligibleObjectService
         'socialSecurityNumber' => 'numeroSecuriteSociale'
     ];
 
-    public function __construct(private readonly Client $client, private readonly string $baseUrl, private readonly LoggerInterface $logger)
+    public function __construct(private readonly Client $client, private readonly string $baseUrl, private readonly UiConfigProvider $uiConfigProvider, private readonly LoggerInterface $logger)
     {
     }
 
@@ -67,20 +67,58 @@ class EligibleObjectService
 
         $response = $this->client->doRequest($this->baseUrl . '/api-rgpd/v1/eligibles', $parameters, Request::METHOD_POST);
 
+        $results = json_decode($response['content'], true);
+
         // this 'content' is the one returned by doRequest()
-        if (empty($response['content'])) {
+        if (empty($results['content'])) {
             return ['eligibleObjects' => []]; // if empty content is provided, we have to build this array structure to provide to DataTable component
         }
 
-        $results = json_decode($response['content'], true);
-
         $eligibleObjects = [
-            'columns' => [], // todo update with database service
+            'columns' => [
+                'labels' => $this->uiConfigProvider->getPropertyLabels([
+                    'beneficiaryBirthdate',
+                    'beneficiaryFirstname',
+                    'beneficiaryName',
+                    'campaignDate',
+                    'clientName',
+                    'conservationTime',
+                    'contributionCallPeriod',
+                    'contributionCallYear',
+                    'contributionPaymentDate',
+                    'familyId',
+                    'socialSecurityNumber',
+                ]),
+                'config' => [
+                    'familyId' => [
+                        'sortable' => false,
+                    ],
+                    'contributionPaymentDate' => [
+                        'sortable' => true,
+                    ],
+                    'contributionCallPeriod' => [
+                        'sortable' => true,
+                    ],
+                    'contributionCallYear' => [
+                        'sortable' => true,
+                    ],
+                    'conservationTime' => [
+                        'sortable' => true,
+                    ],
+                    'clientName' => [
+                        'sortable' => true,
+                    ],
+                ],
+            ],
             'eligibleObjects' => [],
             'total' => $results['page']['totalElements']
         ];
 
-        if ($parameters['theme'] === Theme::HEALTH_BENEFIT->value) {
+        if ($parameters['theme'] === Theme::PRESTATIONS_SANTE_ELIGIBLE->name) {
+            $eligibleObjects['columns']['config'] = [
+                // TODO: maybe change the columns config for that theme
+            ];
+
             return $this->buildHealthBenefitResults($results, $eligibleObjects);
         }
 
@@ -111,7 +149,6 @@ class EligibleObjectService
                 'conservationTime' => $result['delaiConservation'] ?? null,
                 'purgeRuleLabel' => $result['libRegPurg'] ?? null,
                 'details' => [
-                    'key' => $key,
                     'beneficiaryName' => $result['nomBeneficiaire'] ?? null,
                     'beneficiaryFirstname' => $result['prenomBeneficiaire'] ?? null,
                     'beneficiaryBirthdate' => !empty($result['dateNaissanceBeneficiaire']) ? $this->formatDate($result['dateNaissanceBeneficiaire'], 'Y-m-d', 'd/m/Y') : null,
@@ -144,7 +181,6 @@ class EligibleObjectService
                 'conservationTime' => $result['delaiConservation'] ?? null,
                 'settingDescription' => $result['descriptionParametrage'] ?? null,
                 'details' => [
-                    'key' => $key,
                     // beneficiary details
                     'beneficiaryName' => $result['nomBeneficiaire'] ?? null,
                     'beneficiaryFirstname' => $result['prenomBeneficiaire'] ?? null,
