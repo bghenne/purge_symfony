@@ -44,7 +44,15 @@ class EligibleObjectService
         'beneficiaryName' => 'nomBeneficiaire',
         'beneficiaryFirstname'  => 'prenomBeneficiaire',
         'beneficiaryBirthdate'  => 'dateNaissanceBeneficiaire',
-        'socialSecurityNumber' => 'numeroSecuriteSociale'
+        'socialSecurityNumber' => 'numeroSecuriteSociale',
+        'openFileNumber' => 'numeroDossierOpen',
+        'thirdTypeLabel' => 'libelleTypeTiers',
+        'healthBenefitPaymentDate' => 'datePaiementPrestation',
+        'settingDescription' => 'descriptionParametrage',
+        'finessNumber' => 'numeroFiness',
+        'paymentNumber' => 'numeroPaiement',
+        'paymentType' => 'typePaiement',
+        'paymentMode' => 'modePaiement'
     ];
 
     public function __construct(private readonly Client $client, private readonly string $baseUrl, private readonly UiConfigProvider $uiConfigProvider, private readonly LoggerInterface $logger)

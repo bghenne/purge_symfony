@@ -62,7 +62,7 @@
                   v-model="dateFrom"
                   dateFormat="dd/mm/yy"
                   placeholder="jj/mm/aaaa"
-                  :disabled="familyId"
+                  :disabled="!!familyId"
                 />
                 <Message
                   v-if="$eligibleObjectForm.dateFrom?.invalid"
@@ -80,7 +80,7 @@
                   v-model="dateTo"
                   dateFormat="dd/mm/yy"
                   placeholder="jj/mm/aaaa"
-                  :disabled="familyId"
+                  :disabled="!!familyId"
                 />
                 <Message
                   v-if="$eligibleObjectForm.dateTo?.invalid"
@@ -98,7 +98,7 @@
                     v-model="familyId"
                     @beforeinput="validateInsertedDigits"
                     maxlength="10"
-                    :disabled="dateFrom || dateTo"
+                    :disabled="!!(dateFrom || dateTo)"
                 />
                 <Message
                   v-if="$eligibleObjectForm.familyId?.invalid"
@@ -181,6 +181,7 @@
   </div>
 
   <DataTable
+    v-if="eligibleObjects.length > 0"
     ref="eligibleObjectsTable"
     v-model:expandedRows="eligibleObjects.details"
     dataKey="key"
@@ -245,7 +246,6 @@ const { themes, fetchingThemes, fetchThemes } = useThemes();
 
 const eligibleObjects = ref([]);
 const eligibleObjectForm = useTemplateRef('eligible-object-form');
-
 const environmentSelect = useTemplateRef('environment-select');
 
 // Basic search state
@@ -314,6 +314,7 @@ const resolver = ({values}) => {
 }
 
 const onFormSubmit = ({originalEvent, valid, values}) => {
+
   // if form is posted from main search perspective, we reset the advanced one
   // SubmitEvent.submitter returns null if a form is submitted programmatically.
   if (null !== originalEvent.submitter) {
@@ -323,6 +324,7 @@ const onFormSubmit = ({originalEvent, valid, values}) => {
     values.dateTo = null;
     values.familyId = null;
   } else {
+
     // secondary export button is no more disabled once advanced search is done
     advancedSearchDone.value = true;
   }
@@ -332,6 +334,8 @@ const onFormSubmit = ({originalEvent, valid, values}) => {
   resetPaginationAndSort();
 
   if (valid) {
+
+    console.log(values);
     const formData = new FormData;
     formData.append('environment', values.environment.name);
     formData.append('theme', values.theme.code);
@@ -493,7 +497,23 @@ function resetBasicSearchValues(event: MouseEvent) {
   advancedSearchDisplayed.value = false;
 }
 
-function resetAdvancedSearchValues(event: MouseEvent) {
+/**
+ * This method needs to be async/await to catch proper form state
+ *
+ * @param event
+ */
+const resetAdvancedSearchValues = async(event: PointerEvent|SubmitEvent) => {
+
+  // this madness allows to reset values BUT only if it's done through secondary reset button
+  // @see https://github.com/primefaces/primevue/issues/6760 for further comprehension
+  if (event instanceof PointerEvent && await eligibleObjectForm.value?.validate()) {
+      eligibleObjectForm.value?.setValues({
+        'familyId': null,
+        'dateFrom': null,
+        'dateTo': null
+      });
+  }
+
   dateFrom.value = null;
   dateTo.value = null;
   familyId.value = null;
@@ -506,14 +526,21 @@ function resetAdvancedSearchValues(event: MouseEvent) {
  * It is not reset by default when the bound value changes after a form submission.
  */
 function resetPaginationAndSort(): void {
-  // First page displayed (1st row means 1st page).
-  eligibleObjectsTable.value.d_first = 0;
+
   // The page stored after the last DataTablePageEvent must be reset, too.
   paginationPage.value = 0;
 
-  // Sorting criteria.
-  eligibleObjectsTable.value.d_sortField = undefined;
-  eligibleObjectsTable.value.d_sortOrder = 0;
+  // value can be null
+  if (null !== eligibleObjectsTable.value) {
+
+    // First page displayed (1st row means 1st page).
+    eligibleObjectsTable.value.d_first = 0;
+
+    // Sorting criteria.
+    eligibleObjectsTable.value.d_sortField = undefined;
+    eligibleObjectsTable.value.d_sortOrder = 0;
+
+  }
 }
 </script>
 
