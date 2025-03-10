@@ -2,7 +2,9 @@
 
 namespace App\Trait;
 
+use DateMalformedStringException;
 use DateTime;
+use DateTimeImmutable;
 use Exception;
 
 /**
@@ -62,19 +64,14 @@ trait DateTrait
     /**
      * Format date given by Vue Datepicker plugin
      *
+     * @param string $datetime
+     * @return string
+     * @throws DateMalformedStringException
      * @example Tue Feb 18 2025 00:00:00 GMT+0100 will become 2025-02-18
      *
-     * @param string $date
-     * @return string
      */
-    public function convertDateFromString(string $date) : string
+    public function convertDateFromString(string $datetime) : string
     {
-        $time = strtotime($date);
-
-        if (false === $time) {
-            return $date;
-        }
-
-        return date('Y-m-d', $time);
+        return new DateTimeImmutable($datetime)->format('Y-m-d');
     }
 }
