@@ -63,6 +63,7 @@
                   dateFormat="dd/mm/yy"
                   placeholder="jj/mm/aaaa"
                   :disabled="!!familyId"
+                  :manualInput="false"
                 />
                 <Message
                   v-if="$eligibleObjectForm.dateFrom?.invalid"
@@ -81,6 +82,7 @@
                   dateFormat="dd/mm/yy"
                   placeholder="jj/mm/aaaa"
                   :disabled="!!familyId"
+                  :manualInput="false"
                 />
                 <Message
                   v-if="$eligibleObjectForm.dateTo?.invalid"
@@ -359,7 +361,8 @@ const onFormSubmit = ({originalEvent, valid, values}) => {
   }
 };
 
-const findEligibleObjects = (formData : FormData) => {
+const findEligibleObjects = (formData : FormData) : void => {
+
   searchInProgress.value = true;
 
   doRequest('/api/eligible-object', Methods.POST, formData)
@@ -490,7 +493,7 @@ const onExport = (event: PointerEvent) => {
 
 }
 
-function resetBasicSearchValues(event: MouseEvent) {
+function resetBasicSearchValues(event: MouseEvent) : void {
   environment.value = null;
   theme.value = null;
 
@@ -504,7 +507,7 @@ function resetBasicSearchValues(event: MouseEvent) {
  */
 const resetAdvancedSearchValues = async(event: PointerEvent|SubmitEvent) => {
 
-  // this madness allows to reset values BUT only if it's done through secondary reset button
+  // this madness allows to reset internal form values BUT only if it's done through secondary reset button
   // @see https://github.com/primefaces/primevue/issues/6760 for further comprehension
   if (event instanceof PointerEvent && await eligibleObjectForm.value?.validate()) {
       eligibleObjectForm.value?.setValues({
@@ -525,7 +528,7 @@ const resetAdvancedSearchValues = async(event: PointerEvent|SubmitEvent) => {
  *
  * It is not reset by default when the bound value changes after a form submission.
  */
-function resetPaginationAndSort(): void {
+function resetPaginationAndSort() : void {
 
   // The page stored after the last DataTablePageEvent must be reset, too.
   paginationPage.value = 0;

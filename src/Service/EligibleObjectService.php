@@ -231,6 +231,7 @@ class EligibleObjectService
      * @param true $withPagination
      *
      * @return array
+     * @throws \DateMalformedStringException
      */
     private function extractParameters(Request $request, bool $withPagination = true): array
     {
@@ -251,7 +252,6 @@ class EligibleObjectService
             $parameters['pageable']['sort'][0]['direction'] = '-1' === $request->get('sortOrder') ? 'DESC' : 'ASC';
         }
 
-        $this->logger->warning(var_export($request->get('dateFrom'), true));
         if (!empty($request->get('dateFrom'))) {
             $parameters['debutPeriode'] = $this->convertDateFromString($request->get('dateFrom'));
         }

@@ -21,7 +21,7 @@
       "label": "Individus éligibles (données signalétiques)"
     }
   ],
-  "PURGEE": [
+  "PURGED": [
     {
       "code": "COTISATIONS_PURGEE",
       "label": "Cotisations purgées"

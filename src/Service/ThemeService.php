@@ -33,7 +33,7 @@ readonly class ThemeService
             throw new InvalidArgumentException("Object type $objectType is not a valid object type.");
         }
 
-        $themesJsonFile = $this->projectDir . '/themes.json';
+        $themesJsonFile = $this->projectDir . '/referential/themes.json';
 
         // fetch themes from json file
         if (!is_readable($themesJsonFile)) {

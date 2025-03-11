@@ -1,5 +1,5 @@
 export enum ObjectType {
     ELIGIBLE = 'ELIGIBLE',
-    PURGED = 'PURGEE',
+    PURGED = 'PURGED',
     ALERT = 'ALERT'
 }
