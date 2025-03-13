@@ -5,6 +5,7 @@ namespace App\Service;
 use App\Enum\Theme;
 use App\Http\Client;
 use App\Trait\DateTrait;
+use DateMalformedStringException;
 use Drenso\OidcBundle\Exception\OidcException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -67,6 +68,7 @@ class EligibleObjectService
      * @throws RedirectionExceptionInterface
      * @throws ServerExceptionInterface
      * @throws TransportExceptionInterface
+     * @throws DateMalformedStringException
      */
     public function findEligibleObjects(Request $request): array
     {

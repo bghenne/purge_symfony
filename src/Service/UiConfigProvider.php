@@ -6,7 +6,7 @@ use App\Enum\Theme;
 
 final class UiConfigProvider
 {
-    private $propertylabels = [
+    private array $propertylabels = [
         'beneficiaryBirthdate' => "Date de naissance du bénéficiaire",
         'beneficiaryFirstname' => "Prénom",
         'beneficiaryName' => "Nom",
