@@ -1,0 +1,658 @@
+{
+  "ELIGIBLE": [
+    {
+      "COTISATIONS_ELIGIBLE": {
+        "advancedSearch": {
+          "label": "Recherche avancée des cotisations éligibles",
+          "emptyOption": "Recherche des cotisations éligibles"
+        },
+        "filters": [
+          {
+            "label": "Par date de paiement",
+            "fields": [
+              {
+                "name": "dateFrom",
+                "label": "DU",
+                "type": "date"
+              },
+              {
+                "name": "dateTo",
+                "label": "AU",
+                "type": "date"
+              }
+            ]
+          },
+          {
+            "label": "Par numéro d'adhérent",
+            "fields": [
+              {
+                "name": "membershipNumber",
+                "type": "text"
+              }
+            ]
+          }
+        ],
+        "export_file_pattern": "%s_Cotisations_eligibles_par_%s_%s",
+        "columns": {
+          "caption": "Environnement %s - %s",
+          "detailsCaption": "Détail de l'assuré",
+          "labels": [
+            {
+              "name": "membershipNumber",
+              "translation": "Numéro adhérent"
+            },
+            {
+              "name": "contributionPaymentDate",
+              "translation": "Date de dernier paiement de la cotisation"
+            },
+            {
+              "name": "contributionCallPeriod",
+              "translation": "Période des cotisations en mois"
+            },
+            {
+              "name": "contributionCallYear",
+              "translation": "Période des cotisations en année"
+            },
+            {
+              "name": "setting",
+              "translation": "Paramétrage"
+            },
+            {
+              "name": "settingDescription",
+              "translation": "Description du paramétrage"
+            },
+            {
+              "name": "beneficiaryName",
+              "translation": "Nom"
+            },
+            {
+              "name": "beneficiaryFirstname",
+              "translation": "Prénom"
+            },
+            {
+              "name": "beneficiaryBirthdate",
+              "translation": "Date de naissance du bénéficiaire"
+            },
+            {
+              "name": "socialSecurityNumber",
+              "translation": "Numéro de Sécurité sociale"
+            },
+            {
+              "name": "campaignDate",
+              "translation": "Date de la campagne"
+            },
+            {
+              "name": "clientName",
+              "translation": "Nom du client"
+            }
+          ],
+          "config": {
+            "familyId": {
+              "sortable": true
+            },
+            "contributionPaymentDate": {
+              "sortable": true
+            },
+            "contributionCallPeriod": {
+              "sortable": true
+            },
+            "contributionCallYear": {
+              "sortable": true
+            },
+            "conservationTime": {
+              "sortable": true
+            },
+            "clientName": {
+              "sortable": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "PRESTATIONS_SANTE_ELIGIBLE": {
+        "advancedSearch": {
+          "label": "Recherche avancée des prestations santé éligibles",
+          "emptyOption": "Recherche des prestations santé éligibles"
+        },
+        "filters": [
+          {
+            "label": "Par typologie prestation",
+            "fields": [
+              {
+                "emptyOption": "Sélection en cours",
+                "name": "healthBenefitTypology",
+                "type": "select",
+                "options": [
+                  "Audio",
+                  "Hôpital public",
+                  "Clinique",
+                  "Frais d'obsèques",
+                  "Cas général"
+                ]
+              }
+            ]
+          },
+          {
+            "label": "Par date de paiement sur une période",
+            "fields": [
+              {
+                "name": "dateFrom",
+                "label": "DU",
+                "type": "date"
+              },
+              {
+                "name": "dateTo",
+                "label": "AU",
+                "type": "date"
+              }
+            ]
+          },
+          {
+            "label": "Par numéro d'adhérent",
+            "fields": [
+              {
+                "name": "membershipNumber",
+                "type": "text"
+              }
+            ]
+          },
+          {
+            "label": "Par identifiant prestation",
+            "fields": [
+              {
+                "name": "healthBenefitNumber",
+                "type": "text"
+              }
+            ]
+          }
+        ],
+        "file_pattern": "%s_Prestations-sante-eligibles_par_%s_%s",
+        "columns": {
+          "caption": "Environnement %s - %s",
+          "detailsCaption": "Détail de l'assuré",
+          "labels": [
+            {
+              "name": "membershipNumber",
+              "translation": "Numéro adhérent"
+            },
+            {
+              "name": "openFileNumber",
+              "translation": "Numéro de dossier"
+            },
+            {
+              "name": "thirdTypeLabel",
+              "translation": "Type de tiers"
+            },
+            {
+              "name": "healthBenefitPaymentDate",
+              "translation": "Date de paiement"
+            },
+            {
+              "name": "conservationTime",
+              "translation": "Délai de conservation appliqué"
+            },
+            {
+              "name": "settingDescription",
+              "translation": "Description des cas de paramétrage"
+            },
+            {
+              "name": "beneficiaryName",
+              "translation": "Nom"
+            },
+            {
+              "name": "beneficiaryFirstname",
+              "translation": "Prénom"
+            },
+            {
+              "name": "beneficiaryBirthdate",
+              "translation": "Date de naissance du bénéficiaire"
+            },
+            {
+              "name": "socialSecurityNumber",
+              "translation": "Numéro de Sécurité sociale"
+            },
+            {
+              "name": "finessNumber",
+              "translation": "Numéro finess"
+            },
+            {
+              "name": "paymentNumber",
+              "translation": "Numéro de paiement"
+            },
+            {
+              "name": "paymentType",
+              "translation": "Type de paiement"
+            },
+            {
+              "name": "paymentMode",
+              "translation": "Mode de paiement"
+            }
+          ],
+          "config": {
+            "membershipNumber": {
+              "sortable": true
+            },
+            "openFileNumber": {
+              "sortable": true
+            },
+            "thirdTypeLabel": {
+              "sortable": true
+            },
+            "healthBenefitPaymentDate": {
+              "sortable": true
+            },
+            "conservationTime": {
+              "sortable": true
+            },
+            "settingDescription": {
+              "sortable": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "PRESTATIONS_PREVOYANCE_ELIGIBLE": {
+        "advancedSearchLabel": "Recherche avancée de la liste des prestations prévoyance",
+        "emptyOption": "Recherche des sinistres éligibles",
+        "filters": [
+          {
+            "label": "Incapacité par date de clôture sur une période",
+            "fields": [
+              {
+                "name": "dateFrom",
+                "label": "DU",
+                "type": "text"
+              },
+              {
+                "name": "dateTo",
+                "label": "AU",
+                "type": "text"
+              }
+            ]
+          },
+          {
+            "label": "Invalidité par date de clôture sur une période",
+            "fields": [
+              {
+                "name": "dateFrom",
+                "label": "DU",
+                "type": "text"
+              },
+              {
+                "name": "dateTo",
+                "label": "AU",
+                "type": "text"
+              }
+            ]
+          },
+          {
+            "label": "Par typologie de sinistre",
+            "fields": [
+              {
+                "name": "typology",
+                "type": "select",
+                "options": [
+                  "Incapacité",
+                  "Invalidité",
+                  "Décès"
+                ]
+              }
+            ]
+          },
+          {
+            "label": "Par date de décès sur la période",
+            "fields": [
+              {
+                "name": "dateFrom",
+                "label": "DU",
+                "type": "text"
+              },
+              {
+                "name": "dateTo",
+                "label": "AU",
+                "type": "text"
+              }
+            ]
+          },
+          {
+            "label": "Par date de paiement sur la période",
+            "fields": [
+              {
+                "name": "dateFrom",
+                "label": "DU",
+                "type": "text"
+              },
+              {
+                "name": "dateTo",
+                "label": "AU",
+                "type": "text"
+              }
+            ]
+          },
+          {
+            "label": "Par numéro d'adhérent",
+            "fields": [
+              {
+                "name": "membershipNumber",
+                "type": "text"
+              }
+            ]
+          },
+          {
+            "label": "Par identifiant de sinistre",
+            "fields": [
+              {
+                "name": "claimNumber",
+                "type": "text"
+              }
+            ]
+          }
+        ],
+        "columns": {
+          "caption": "Environnement %s - %s",
+          "detailsCaption": "Détail de l'assuré",
+          "labels": [
+            {
+              "name": "membershipNumber",
+              "translation": "Numéro adhérent"
+            },
+            {
+              "name": "openFileNumber",
+              "translation": "Numéro de dossier"
+            },
+            {
+              "name": "healthBenefitTypology",
+              "translation": "Typologie de la prestation"
+            },
+            {
+              "name": "claimClosingDate",
+              "translation": "Date de clôture du sinistre"
+            },
+            {
+              "name": "healthBenefitPaymentType",
+              "translation": "Type de paiement de la prestation"
+            },
+            {
+              "name": "lastPaymentDate",
+              "translation": "Date du dernier paiement de la prestation incapacité - invalidité (date comptable)"
+            },
+            {
+              "name": "beneficiaryDeathDate",
+              "translation": "Date de décès de l'assuré"
+            },
+            {
+              "name": "conservationTime",
+              "translation": "Délai de conservation appliqué"
+            },
+            {
+              "name": "settingsDescription",
+              "translation": "Description des cas du paramétrage"
+            },
+            {
+              "name": "beneficiaryName",
+              "translation": "Nom"
+            },
+            {
+              "name": "beneficiaryFirstname",
+              "translation": "Prénom"
+            },
+            {
+              "name": "beneficiaryBirthdate",
+              "translation": "Date de naissance du bénéficiaire"
+            },
+            {
+              "name": "socialSecurityNumber",
+              "translation": "Numéro de Sécurité sociale"
+            },
+            {
+              "name": "beneficiaryRank",
+              "translation": "Lien de famille (ID RNGASS) et et libellé"
+            }
+          ],
+          "config": {
+            "membershipNumber": {
+              "sortable": true
+            },
+            "openFileNumber": {
+              "sortable": true
+            },
+            "healthBenefitTypology": {
+              "sortable": true
+            },
+            "claimClosingDate": {
+              "sortable": true
+            },
+            "healthBenefitPaymentType": {
+              "sortable": true
+            },
+            "lastPaymentDate": {
+              "sortable": true
+            },
+            "beneficiaryDeathDate": {
+              "sortable": true
+            },
+            "conservationTime": {
+              "sortable": true
+            },
+            "settingsDescription": {
+              "sortable": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "CONTRATS_OPTIONS_LIEN_SALARIAL_ELIGIBLE": {
+        "advancedSearch": {
+          "label": "Recherche avancée des contrats, options, liens salariaux éligibles",
+          "emptyOption": "Recherche des contrats éligibles"
+        },
+        "filters": [
+          {
+            "label": "Par typologie",
+            "fields": [
+              {
+                "emptyOption": "Sélection en cours",
+                "name": "typology",
+                "type": "select",
+                "options": [
+                  "Contrat Santé",
+                  "Contrat Prévoyance"
+                ]
+              }
+            ]
+          },
+          {
+            "label": "Par identifiant contrat",
+            "fields": [
+              {
+                "name": "contractIdentifier",
+                "type": "text"
+              }
+            ]
+          },
+          {
+            "label": "Par motif de résiliation",
+            "fields": [
+              {
+                "emptyOption": "Sélection du motif de résiliation en cours",
+                "name": "cancellingReason",
+                "type": "select",
+                "options": [
+                  "Cas de résiliation sans sinistre - Risque incapacité / invalidité",
+                  "Cas de résiliation sans sinistre - Risque décès garantie obsèques",
+                  "Cas de résiliation pour motif décès"
+                ]
+              }
+            ]
+          },
+          {
+            "label": "Par numéro adhérent",
+            "fields": [
+              {
+                "name": "membershipNumber",
+                "type": "text"
+              }
+            ]
+          }
+        ],
+        "columns": {
+          "caption": "Environnement %s - %s",
+          "detailsCaption": "Détail de l'assuré",
+          "labels": [
+            {
+              "name": "membershipNumber",
+              "translation": "Numéro adhérent"
+            },
+            {
+              "name": "openContractIdentifier",
+              "translation": "Identifiant du contrat dans Open"
+            },
+            {
+              "name": "contractType",
+              "translation": "Type contrat"
+            },
+            {
+              "name": "subcontractType",
+              "translation": "Sous-type contrat"
+            },
+            {
+              "name": "optionTop",
+              "translation": "Top option"
+            },
+            {
+              "name": "cancellingContractDate",
+              "translation": "Date de résiliation du contrat ou affiliation"
+            },
+            {
+              "name": "cancellingContractReason",
+              "translation": "Motif de résiliation du contrat ou affiliation"
+            },
+            {
+              "name": "conservationTime",
+              "translation": "Délait de conservation appliqué"
+            },
+            {
+              "name": "settingsDescription",
+              "translation": "Description du paramétrage"
+            }
+          ],
+          "config": {
+            "membershipNumber": {
+              "sortable": true
+            },
+            "openContractIdentifier": {
+              "sortable": true
+            },
+            "contractType": {
+              "sortable": true
+            },
+            "subcontractType": {
+              "sortable": true
+            },
+            "optionTop": {
+              "sortable": true
+            },
+            "cancellingContractDate": {
+              "sortable": true
+            },
+            "cancellingContractReason": {
+              "sortable": true
+            },
+            "conservationTime": {
+              "sortable": true
+            },
+            "settingsDescription": {
+              "sortable": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "INDIVIDUS_ELIGIBLE": {
+        "advancedSearch": {
+          "label": "Recherche avancée des individus éligibles (données signalétiques)",
+          "emptyOption": "Recherche des individus éligibles"
+        },
+        "filters": [
+          {
+            "label": "Par numéro adhérent",
+            "fields": [
+              {
+                "name": "membershipNumber",
+                "type": "text"
+              }
+            ]
+          }
+        ],
+        "columns": {
+          "caption": "Environnement %s - %s",
+          "detailCaption": "Détail de l'assuré",
+          "labels": [
+            {
+              "name": "membershipNumber",
+              "translation": "Numéro adhérent"
+            },
+            {
+              "name": "familyLink",
+              "translation": "Lien de famille"
+            },
+            {
+              "name": "conservationTime",
+              "translation": "Délai de conservation appliqué"
+            },
+            {
+              "name": "settingsDescription",
+              "translation": "Description du paramétrage"
+            },
+            {
+              "name": "beneficiaryName",
+              "translation": "Nom"
+            },
+            {
+              "name": "beneficiaryFirstname",
+              "translation": "Prénom"
+            },
+            {
+              "name": "beneficiaryBirthdate",
+              "translation": "Date de naissance du bénéficiaire"
+            },
+            {
+              "name": "socialSecurityNumber",
+              "translation": "Numéro de Sécurité sociale"
+            }
+          ],
+          "config": {
+            "membershipNumber": {
+              "sortable": true
+            },
+            "familyLink": {
+              "sortable": true
+            },
+            "conservationTime": {
+              "sortable": true
+            },
+            "settingsDescription": {
+              "sortable": true
+            },
+            "beneficiaryName": {
+              "sortable": true
+            },
+            "beneficiaryFirstname": {
+              "sortable": true
+            },
+            "beneficiaryBirthdate": {
+              "sortable": true
+            },
+            "socialSecurityNumber": {
+              "sortable": true
+            }
+          }
+        }
+      }
+    }
+  ]
+}
