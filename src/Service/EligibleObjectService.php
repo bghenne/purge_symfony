@@ -2,13 +2,17 @@
 
 namespace App\Service;
 
+use App\Enum\ObjectType;
 use App\Enum\Theme;
 use App\Http\Client;
+use App\Provider\UiConfigProvider;
 use App\Trait\DateTrait;
 use DateMalformedStringException;
 use Drenso\OidcBundle\Exception\OidcException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Serializer\Encoder\DecoderInterface;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
@@ -23,42 +27,20 @@ use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
  * @license
  * @copyright GFP Tech 2025
  */
-class EligibleObjectService
+readonly class EligibleObjectService
 {
     use DateTrait;
 
-    /**
-     * English to French mapping
-     *
-     * @var array|string[]
-     */
-    private array $fieldsMapping = [
-        'campaignDate' => 'dateCampagne',
-        'clientName' => 'nomDuClient',
-        'environment' => 'environnement',
-        'familyId' => 'identifiantFamille',
-        'contributionPaymentDate' => 'datePaiementCotisation',
-        'contributionCallPeriod' => 'periodeAppelCotisation',
-        'contributionCallYear' => 'anneeAppelCotisation',
-        'conservationTime' => 'delaiConservation',
-        'purgeRuleLabel' => 'libRegPurg',
-        'beneficiaryName' => 'nomBeneficiaire',
-        'beneficiaryFirstname'  => 'prenomBeneficiaire',
-        'beneficiaryBirthdate'  => 'dateNaissanceBeneficiaire',
-        'socialSecurityNumber' => 'numeroSecuriteSociale',
-        'openFileNumber' => 'numeroDossierOpen',
-        'thirdTypeLabel' => 'libelleTypeTiers',
-        'healthBenefitPaymentDate' => 'datePaiementPrestation',
-        'settingDescription' => 'descriptionParametrage',
-        'finessNumber' => 'numeroFiness',
-        'paymentNumber' => 'numeroPaiement',
-        'paymentType' => 'typePaiement',
-        'paymentMode' => 'modePaiement'
-    ];
-
-    public function __construct(private readonly Client $client, private readonly string $baseUrl, private readonly UiConfigProvider $uiConfigProvider, private readonly LoggerInterface $logger)
+    public function __construct(
+        private Client           $client,
+        private string           $baseUrl,
+        private UiConfigProvider $uiConfigProvider,
+        private LoggerInterface  $logger,
+        private DecoderInterface $jsonDecoder
+    )
     {
     }
+
 
     /**
      * @param Request $request
@@ -72,68 +54,47 @@ class EligibleObjectService
      */
     public function findEligibleObjects(Request $request): array
     {
+        // extract parameters from request
         $parameters = $this->extractParameters($request, true);
         $this->logger->warning(var_export($parameters, true));
 
         $response = $this->client->doRequest($this->baseUrl . '/api-rgpd/v1/eligibles', $parameters, Request::METHOD_POST);
 
-        $results = json_decode($response['content'], true);
+        $results = $this->jsonDecoder->decode($response['content'], JsonEncoder::FORMAT);
 
         // this 'content' is the one returned by doRequest()
         if (empty($results['content'])) {
             return ['eligibleObjects' => []]; // if empty content is provided, we have to build this array structure to provide to DataTable component
         }
 
-        $eligibleObjects = [
+        $objects = [
             'columns' => [
-                'labels' => $this->uiConfigProvider->getPropertyLabels([
-                    'beneficiaryBirthdate',
-                    'beneficiaryFirstname',
-                    'beneficiaryName',
-                    'campaignDate',
-                    'clientName',
-                    'conservationTime',
-                    'contributionCallPeriod',
-                    'contributionCallYear',
-                    'contributionPaymentDate',
-                    'familyId',
-                    'socialSecurityNumber',
-                ]),
-                'config' => [
-                    'familyId' => [
-                        'sortable' => false,
-                    ],
-                    'contributionPaymentDate' => [
-                        'sortable' => true,
-                    ],
-                    'contributionCallPeriod' => [
-                        'sortable' => true,
-                    ],
-                    'contributionCallYear' => [
-                        'sortable' => true,
-                    ],
-                    'conservationTime' => [
-                        'sortable' => true,
-                    ],
-                    'clientName' => [
-                        'sortable' => true,
-                    ],
-                ],
+                'labels' => $this->uiConfigProvider->getPropertyLabels(ObjectType::ELIGIBLE, $parameters['theme']),
+                'config' => $this->uiConfigProvider->getColumnsConfig(ObjectType::ELIGIBLE, $parameters['theme']),
             ],
-            'eligibleObjects' => [],
+            'objects' => [],
             'total' => $results['page']['totalElements']
         ];
 
-        if ($parameters['theme'] === Theme::PRESTATIONS_SANTE_ELIGIBLE->name) {
-            $eligibleObjects['columns']['config'] = [
-                // TODO: maybe change the columns config for that theme
-            ];
-
-            return $this->buildHealthBenefitResults($results, $eligibleObjects);
+        if ($parameters['theme'] === Theme::COTISATIONS_ELIGIBLE->name) {
+            return $this->buildEligibleObjectsResults($results, $objects);
         }
 
-        return $this->buildDefaultResults($results, $eligibleObjects);
+        if ($parameters['theme'] === Theme::PRESTATIONS_SANTE_ELIGIBLE->name) {
+            return $this->buildHealthBenefitResults($results, $objects);
+        }
 
+        if ($parameters['theme'] === Theme::PRESTATIONS_PREVOYANCE_ELIGIBLE->name) {
+
+        }
+
+        if ($parameters['theme'] === Theme::CONTRATS_OPTIONS_LIEN_SALARIAL_ELIGIBLE->name) {
+
+        }
+
+        if ($parameters['theme'] === Theme::INDIVIDUS_ELIGIBLE->name) {
+
+        }
     }
 
     /**
@@ -143,11 +104,11 @@ class EligibleObjectService
      * @param array $eligibleObjects
      * @return array
      */
-    private function buildDefaultResults(array $results, array $eligibleObjects) : array
+    private function buildEligibleObjectsResults(array $results, array $eligibleObjects): array
     {
         foreach ($results['content'] as $key => $result) {
 
-            $eligibleObjects['eligibleObjects'][$key] = [
+            $eligibleObjects['objects'][$key] = [
                 'key' => $key,
                 'campaignDate' => $this->formatDate($result['dateCampagne'], 'Y-m-d', 'd/m/Y') ?? null,
                 'clientName' => $result['nomDuClient'] ?? null,
@@ -178,11 +139,11 @@ class EligibleObjectService
      * @param array $eligibleObjects
      * @return array
      */
-    private function buildHealthBenefitResults(array $results, array $eligibleObjects) : array
+    private function buildHealthBenefitResults(array $results, array $healthBenefitObjects): array
     {
         foreach ($results['content'] as $key => $result) {
 
-            $eligibleObjects['eligibleObjects'][$key] = [
+            $healthBenefitObjects['objects'][$key] = [
                 'key' => $key,
                 'familyId' => $result['identifiantFamille'] ?? null,
                 'openFileNumber' => $result['numeroDossierOpen'] ?? null,
@@ -206,9 +167,8 @@ class EligibleObjectService
             ];
         }
 
-        return $eligibleObjects;
+        return $healthBenefitObjects;
     }
-
 
 
     /**
@@ -233,7 +193,7 @@ class EligibleObjectService
      * @param true $withPagination
      *
      * @return array
-     * @throws \DateMalformedStringException
+     * @throws DateMalformedStringException
      */
     private function extractParameters(Request $request, bool $withPagination = true): array
     {
@@ -295,7 +255,7 @@ class EligibleObjectService
      *
      * @return array
      */
-    public function makeExport(string $content, array $headers) : array
+    public function makeExport(string $content, array $headers): array
     {
         $fileName = 'eligible_objects_' . date('Y-m-d') . '.zip';
         if ('text/csv' === $headers['content-type'][0]) {

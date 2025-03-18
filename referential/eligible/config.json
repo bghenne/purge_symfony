@@ -2,9 +2,24 @@
   "ELIGIBLE": [
     {
       "COTISATIONS_ELIGIBLE": {
+        "export_file_pattern": "%s_cotisations_eligibles_par_%s_%s",
         "advancedSearch": {
           "label": "Recherche avancée des cotisations éligibles",
           "emptyOption": "Recherche des cotisations éligibles"
+        },
+        "fields": {
+          "membershipNumber": "numAdherent",
+          "contributionPaymentDate": "datePaiementCotisation",
+          "contributionCallPeriod": "periodeAppelCotisation",
+          "contributionCallYear": "anneeAppelCotisation",
+          "setting": "parametrage",
+          "settingDescription": "descriptionParametrage",
+          "beneficiaryName": "nomBeneficiaire",
+          "beneficiaryFirstname": "prenomBeneficiaire",
+          "beneficiaryBirthdate": "dateNaissanceBeneficiaire",
+          "socialSecurityNumber": "numeroSecuriteSociale",
+          "campaignDate": "dateCampagne",
+          "clientName": "nomDuClient"
         },
         "filters": [
           {
@@ -32,7 +47,6 @@
             ]
           }
         ],
-        "export_file_pattern": "%s_Cotisations_eligibles_par_%s_%s",
         "columns": {
           "caption": "Environnement %s - %s",
           "detailsCaption": "Détail de l'assuré",
@@ -111,9 +125,25 @@
     },
     {
       "PRESTATIONS_SANTE_ELIGIBLE": {
+        "export_file_pattern": "%s_Prestations_sante_eligibles_par_%s_%s",
         "advancedSearch": {
           "label": "Recherche avancée des prestations santé éligibles",
           "emptyOption": "Recherche des prestations santé éligibles"
+        },
+        "fields": {
+          "membershipNumber": "numAdherent",
+          "openFileNumber": "numeroDossierOpen",
+          "thirdTypeLabel": "libelleTypeTiers",
+          "healthBenefitPaymentDate": "datePaiementPrestation",
+          "conservationTime": "delaiConservation",
+          "settingDescription": "descriptionParametrage",
+          "beneficiaryName": "nomBeneficiaire",
+          "beneficiaryFirstname": "prenomBeneficiaire",
+          "beneficiaryBirthdate": "dateNaissanceBeneficiaire",
+          "finessNumber": "numeroFiness",
+          "paymentNumber": "numeroPaiement",
+          "paymentType": "typePaiement",
+          "paymentMode": "modePaiement"
         },
         "filters": [
           {
@@ -167,7 +197,7 @@
             ]
           }
         ],
-        "file_pattern": "%s_Prestations-sante-eligibles_par_%s_%s",
+        "file_pattern": "%s_prestations-sante-eligibles_par_%s_%s",
         "columns": {
           "caption": "Environnement %s - %s",
           "detailsCaption": "Détail de l'assuré",
@@ -254,8 +284,27 @@
     },
     {
       "PRESTATIONS_PREVOYANCE_ELIGIBLE": {
-        "advancedSearchLabel": "Recherche avancée de la liste des prestations prévoyance",
-        "emptyOption": "Recherche des sinistres éligibles",
+        "export_file_pattern": "%s_%s_eligibles_par_%s_%s",
+        "advancedSearch": {
+          "label": "Recherche avancée de la liste des prestations prévoyance",
+          "emptyOption": "Recherche des sinistres éligibles"
+        },
+        "fields": {
+          "membershipNumber": "numAdherent",
+          "claimNumber": "numeroSinistre",
+          "healthBenefitTypology": "typeVersement",
+          "claimClosingDate": "dateClosureSinistre",
+          "healthBenefitPaymentType": "typePaiement",
+          "lastPaymentDate": "datePaiementPrestation",
+          "beneficiaryDeathDate": "dateDecesBeneficiaire",
+          "conservationTime": "delaiConservation",
+          "settingsDescription": "descriptionParametrage",
+          "beneficiaryName": "nomBeneficiaire",
+          "beneficiaryFirstname": "prenomBeneficiaire",
+          "beneficiaryBirthdate": "dateNaissanceBeneficiaire",
+          "socialSecurityNumber": "numeroSecuriteSociale",
+          "beneficiaryRank": "rangBeneficiaire"
+        },
         "filters": [
           {
             "label": "Incapacité par date de clôture sur une période",
@@ -359,8 +408,8 @@
               "translation": "Numéro adhérent"
             },
             {
-              "name": "openFileNumber",
-              "translation": "Numéro de dossier"
+              "name": "claimNumber",
+              "translation": "Numéro de sinistre"
             },
             {
               "name": "healthBenefitTypology",
@@ -445,9 +494,21 @@
     },
     {
       "CONTRATS_OPTIONS_LIEN_SALARIAL_ELIGIBLE": {
+        "export_file_pattern": "%s_contrats_eligibles_%s",
         "advancedSearch": {
           "label": "Recherche avancée des contrats, options, liens salariaux éligibles",
           "emptyOption": "Recherche des contrats éligibles"
+        },
+        "fields": {
+          "membershipNumber": "numAdherent",
+          "openContractIdentifier": "",
+          "contractType": "",
+          "subcontractType": "",
+          "optionTop": "",
+          "cancellingContractDate": "",
+          "cancellingContractReason": "",
+          "conservationTime": "delaiConservation",
+          "settingsDescription": "descriptionParametrage"
         },
         "filters": [
           {
@@ -573,9 +634,20 @@
     },
     {
       "INDIVIDUS_ELIGIBLE": {
+        "export_file_pattern": "%s_individus_eligibles_par_%s_%s",
         "advancedSearch": {
           "label": "Recherche avancée des individus éligibles (données signalétiques)",
           "emptyOption": "Recherche des individus éligibles"
+        },
+        "fields": {
+          "membershipNumber": "numAdherent",
+          "familyLink": "",
+          "conservationTime": "delaiConservation",
+          "settingsDescription": "descriptionParametrage",
+          "beneficiaryName": "nomBeneficiaire",
+          "beneficiaryFirstname": "prenomBeneficiaire",
+          "beneficiaryBirthdate": "dateNaissanceBeneficiaire",
+          "socialSecurityNumber": "numeroSecuriteSociale"
         },
         "filters": [
           {
