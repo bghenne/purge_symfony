@@ -41,7 +41,6 @@ readonly class EligibleObjectService
     {
     }
 
-
     /**
      * @param Request $request
      * @return array
@@ -72,7 +71,7 @@ readonly class EligibleObjectService
                 'labels' => $this->uiConfigProvider->getPropertyLabels(ObjectType::ELIGIBLE, $parameters['theme']),
                 'config' => $this->uiConfigProvider->getColumnsConfig(ObjectType::ELIGIBLE, $parameters['theme']),
             ],
-            'objects' => [],
+            'eligibleObjects' => [],
             'total' => $results['page']['totalElements']
         ];
 
@@ -108,7 +107,7 @@ readonly class EligibleObjectService
     {
         foreach ($results['content'] as $key => $result) {
 
-            $eligibleObjects['objects'][$key] = [
+            $eligibleObjects['eligibleObjects'][$key] = [
                 'key' => $key,
                 'campaignDate' => $this->formatDate($result['dateCampagne'], 'Y-m-d', 'd/m/Y') ?? null,
                 'clientName' => $result['nomDuClient'] ?? null,

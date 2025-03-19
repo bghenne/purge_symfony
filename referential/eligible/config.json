@@ -197,7 +197,6 @@
             ]
           }
         ],
-        "file_pattern": "%s_prestations-sante-eligibles_par_%s_%s",
         "columns": {
           "caption": "Environnement %s - %s",
           "detailsCaption": "Détail de l'assuré",

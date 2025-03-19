@@ -11,8 +11,6 @@ final class UiConfigProvider
 {
     private array $config = [];
 
-    private bool $isLoaded = false;
-
     public function __construct(private readonly string $projectDir, private readonly DecoderInterface $jsonDecoder)
     {
     }
@@ -25,7 +23,7 @@ final class UiConfigProvider
      */
     private function loadConfig(ObjectType $objectType): void
     {
-        if (true === $this->isLoaded) {
+        if (!empty($this->config[$objectType->value])) {
             return; // we have been there already
         }
 
@@ -44,8 +42,7 @@ final class UiConfigProvider
             throw new LogicException("Can not load config");
         }
 
-        $this->config = $config;
-        $this->isLoaded = true;
+        $this->config[$objectType->value] = $config;
     }
 
     /**
@@ -54,10 +51,10 @@ final class UiConfigProvider
      * @param string $theme
      * @return array
      */
-    private function extractThemeConfig(string $theme): array
+    private function extractThemeConfig(ObjectType $objectType, string $theme): array
     {
         // this methods assumes config is loaded
-        foreach ($this->config as $themeConfig) {
+        foreach ($this->config[$objectType->value] as $themeConfig) {
             if (!empty($themeConfig[$theme])) {
                 return $themeConfig[$theme];
             }
@@ -77,7 +74,7 @@ final class UiConfigProvider
     public function getPropertyLabels(ObjectType $objectType, string $theme): array
     {
         $this->loadConfig($objectType);
-        $themeConfig = $this->extractThemeConfig($theme);
+        $themeConfig = $this->extractThemeConfig($objectType, $theme);
 
         $labels = $themeConfig['columns']['labels'];
         $labelsList = [];
@@ -100,6 +97,6 @@ final class UiConfigProvider
     {
         $this->loadConfig($objectType);
 
-        return $this->extractThemeConfig($theme)['columns']['config'];
+        return $this->extractThemeConfig($objectType, $theme)['columns']['config'];
     }
 }
