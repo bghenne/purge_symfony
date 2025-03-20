@@ -112,7 +112,7 @@ readonly class EligibleObjectService
                 'campaignDate' => $this->formatDate($result['dateCampagne'], 'Y-m-d', 'd/m/Y') ?? null,
                 'clientName' => $result['nomDuClient'] ?? null,
                 'environment' => $result['environnement'] ?? null,
-                'familyId' => $result['identifiantFamille'] ?? null,
+                'membershipNumber' => $result['identifiantFamille'] ?? null, // todo update to numAdherent when ws is ready
                 'contributionPaymentDate' => !empty($result['datePaiementCotisation']) ? $this->formatDate($result['datePaiementCotisation'], 'Y-m-d', 'd/m/Y') : null,
                 'contributionCallPeriod' => $result['periodeAppelCotisation'] ?? null,
                 'contributionCallYear' => $result['anneeAppelCotisation'] ?? null,
@@ -169,22 +169,6 @@ readonly class EligibleObjectService
         return $healthBenefitObjects;
     }
 
-
-    /**
-     * Convert field name from
-     *
-     * @param string $fieldName
-     * @return string
-     */
-    public function convertFieldName(string $fieldName): string
-    {
-        if (!array_key_exists($fieldName, $this->fieldsMapping)) {
-            return $fieldName;
-        }
-
-        return $this->fieldsMapping[$fieldName];
-    }
-
     /**
      * Extract parameters from request
      *
@@ -196,9 +180,10 @@ readonly class EligibleObjectService
      */
     private function extractParameters(Request $request, bool $withPagination = true): array
     {
+        $theme = $request->get('theme');
         $parameters = [
             'environnement' => $request->get('environment'),
-            'theme' => $request->get('theme'),
+            'theme' => $theme,
         ];
 
         if ($withPagination) {
@@ -209,7 +194,7 @@ readonly class EligibleObjectService
         }
 
         if (!empty($request->get('sortOrder'))) {
-            $parameters['pageable']['sort'][0]['propertie'] = $this->convertFieldName($request->get('sortField'));
+            $parameters['pageable']['sort'][0]['propertie'] = $this->uiConfigProvider->convertFieldName(ObjectType::ELIGIBLE, $theme, $request->get('sortField'));
             $parameters['pageable']['sort'][0]['direction'] = '-1' === $request->get('sortOrder') ? 'DESC' : 'ASC';
         }
 

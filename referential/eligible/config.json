@@ -19,7 +19,8 @@
           "beneficiaryBirthdate": "dateNaissanceBeneficiaire",
           "socialSecurityNumber": "numeroSecuriteSociale",
           "campaignDate": "dateCampagne",
-          "clientName": "nomDuClient"
+          "clientName": "nomDuClient",
+          "conservationTime": "delaiConservation"
         },
         "filters": [
           {
@@ -98,10 +99,14 @@
             {
               "name": "clientName",
               "translation": "Nom du client"
+            },
+            {
+              "name": "conservationTime",
+              "translation": "Délai de conservation appliqué"
             }
           ],
           "config": {
-            "familyId": {
+            "membershipNumber": {
               "sortable": true
             },
             "contributionPaymentDate": {

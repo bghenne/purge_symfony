@@ -337,7 +337,6 @@ const onFormSubmit = ({originalEvent, valid, values}) => {
 
   if (valid) {
 
-    console.log(values);
     const formData = new FormData;
     formData.append('environment', values.environment.name);
     formData.append('theme', values.theme.code);
@@ -427,7 +426,7 @@ const onPage = (event: DataTablePageEvent) => {
   // Checks if sorting criteria must be passed to the webservice.
   // Note that the sorting criteria are not available in DataTablePageEvent.
   // The workaround is to retrieve them from the component state.
-  if (undefined !== eligibleObjectsTable.value.d_sortField) {
+  if (undefined !== eligibleObjectsTable.value.d_sortField && null !== eligibleObjectsTable.value.d_sortField ) {
     formData.append('sortField', eligibleObjectsTable.value.d_sortField as string);
     formData.append('sortOrder', String(eligibleObjectsTable.value.d_sortOrder));
   }
@@ -451,6 +450,7 @@ const onSort = (event: DataTableSortEvent) => {
   if (null !== familyId.value) {
     formData.append('familyId', familyId.value);
   }
+
 
   // sortField and sortOrder evaluate to null when a sorted column becomes unsorted again.
   // @see https://primevue.org/datatable/#api.datatable.props.removableSort

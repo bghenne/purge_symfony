@@ -48,6 +48,7 @@ final class UiConfigProvider
     /**
      * Extract config for a specific theme inside object type
      *
+     * @param ObjectType $objectType
      * @param string $theme
      * @return array
      */
@@ -98,5 +99,28 @@ final class UiConfigProvider
         $this->loadConfig($objectType);
 
         return $this->extractThemeConfig($objectType, $theme)['columns']['config'];
+    }
+
+
+    /**
+     * Convert field name before giving it to webservice
+     *
+     * @param ObjectType $objectType
+     * @param string $theme
+     * @param string $fieldName
+     * @return string
+     */
+    public function convertFieldName(ObjectType $objectType, string $theme, string $fieldName): string
+    {
+        $this->loadConfig($objectType);
+        $themeConfig = $this->extractThemeConfig($objectType, $theme);
+
+        $fields = $themeConfig['fields'];
+
+        if (array_key_exists($fieldName, $fields)) {
+            return $fields[$fieldName];
+        }
+
+        return $fieldName;
     }
 }
