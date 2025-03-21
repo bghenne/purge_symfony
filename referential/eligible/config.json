@@ -107,7 +107,7 @@
           ],
           "config": {
             "membershipNumber": {
-              "sortable": true
+              "sortable": false
             },
             "contributionPaymentDate": {
               "sortable": true

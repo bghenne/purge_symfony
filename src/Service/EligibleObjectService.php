@@ -27,7 +27,7 @@ use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
  * @license
  * @copyright GFP Tech 2025
  */
-readonly class EligibleObjectService
+final readonly class EligibleObjectService
 {
     use DateTrait;
 
@@ -112,7 +112,7 @@ readonly class EligibleObjectService
                 'campaignDate' => $this->formatDate($result['dateCampagne'], 'Y-m-d', 'd/m/Y') ?? null,
                 'clientName' => $result['nomDuClient'] ?? null,
                 'environment' => $result['environnement'] ?? null,
-                'membershipNumber' => $result['identifiantFamille'] ?? null, // todo update to numAdherent when ws is ready
+                'membershipNumber' => $result['numAdherent'] ?? null,
                 'contributionPaymentDate' => !empty($result['datePaiementCotisation']) ? $this->formatDate($result['datePaiementCotisation'], 'Y-m-d', 'd/m/Y') : null,
                 'contributionCallPeriod' => $result['periodeAppelCotisation'] ?? null,
                 'contributionCallYear' => $result['anneeAppelCotisation'] ?? null,
@@ -194,7 +194,7 @@ readonly class EligibleObjectService
         }
 
         if (!empty($request->get('sortOrder'))) {
-            $parameters['pageable']['sort'][0]['propertie'] = $this->uiConfigProvider->convertFieldName(ObjectType::ELIGIBLE, $theme, $request->get('sortField'));
+            $parameters['pageable']['sort'][0]['property'] = $this->uiConfigProvider->convertFieldName(ObjectType::ELIGIBLE, $theme, $request->get('sortField'));
             $parameters['pageable']['sort'][0]['direction'] = '-1' === $request->get('sortOrder') ? 'DESC' : 'ASC';
         }
 
