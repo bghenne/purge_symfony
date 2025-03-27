@@ -7,7 +7,7 @@
 <script lang="ts" setup></script>
 
 <style module>
-@reference "../../styles/app.css";
+@reference "../../../styles/app.css";
 
 .section {
   @apply border

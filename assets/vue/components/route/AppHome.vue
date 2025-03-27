@@ -29,9 +29,9 @@
 </template>
 
 <script lang="ts" setup>
-import AppTiledLink from "../components/AppTiledLink.vue";
-import AppSubheading from "../components/AppSubheading.vue";
-import AppHeading from "../components/AppHeading.vue";
+import AppTiledLink from "../atomic/AppTiledLink.vue";
+import AppSubheading from "../atomic/AppSubheading.vue";
+import AppHeading from "../atomic/AppHeading.vue";
 </script>
 
 <style scoped></style>

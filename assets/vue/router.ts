@@ -5,13 +5,13 @@ import {
   RouteRecordRaw,
 } from "vue-router";
 
-import AppEligibleObject from "./pages/AppEligibleObject.vue";
-import AppExcludedObject from "./pages/AppExcludedObject.vue";
-import AppPurgedObject from "./pages/AppPurgedObject.vue";
-import AppControlAlert from "./pages/AppControlAlert.vue";
-import AppPurgeReport from "./pages/AppPurgeReport.vue";
-import AppHome from "./pages/AppHome.vue";
-import AppSetting from "./pages/AppSetting.vue";
+import AppEligibleObject from "./components/route/AppEligibleObject.vue";
+import AppExcludedObject from "./components/route/AppExcludedObject.vue";
+import AppPurgedObject from "./components/route/AppPurgedObject.vue";
+import AppControlAlert from "./components/route/AppControlAlert.vue";
+import AppPurgeReport from "./components/route/AppPurgeReport.vue";
+import AppHome from "./components/route/AppHome.vue";
+import AppSetting from "./components/route/AppSetting.vue";
 import { useRoles } from "./composables/shared/useRoles";
 import { Roles } from "./enums/roles";
 

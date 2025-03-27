@@ -2,8 +2,8 @@
   <div class="card mb-4 flex justify-center">
     <Toast />
     <Form
-      v-slot="$purgedObjectForm"
-      ref="purged-object-form"
+      v-slot="$eligibleObjectForm"
+      ref="eligible-object-form"
       :resolver="resolver"
       @submit="onFormSubmit"
     >
@@ -19,12 +19,12 @@
           checkmark
         />
         <Message
-          v-if="$purgedObjectForm.environment?.invalid"
+          v-if="$eligibleObjectForm.environment?.invalid"
           severity="error"
           size="small"
           variant="simple"
         >
-          {{ $purgedObjectForm.environment.error.message }}
+          {{ $eligibleObjectForm.environment.error.message }}
         </Message>
         <Select
           v-model="theme"
@@ -37,12 +37,12 @@
           checkmark
         />
         <Message
-          v-if="$purgedObjectForm.theme?.invalid"
+          v-if="$eligibleObjectForm.theme?.invalid"
           severity="error"
           size="small"
           variant="simple"
         >
-          {{ $purgedObjectForm.theme.error.message }}
+          {{ $eligibleObjectForm.theme.error.message }}
         </Message>
 
         <Teleport v-if="advancedSearchDisplayed" to="#layout-column-1">
@@ -52,7 +52,8 @@
                  e.g. allowing submission from any input by pressing the "enter" key. -->
             <form
               class="grid grid-cols-2 gap-3"
-              @submit.prevent="purgedObjectForm.$el.requestSubmit()"
+              autocomplete="off"
+              @submit.prevent="eligibleObjectForm.$el.requestSubmit()"
             >
               <label class="flex flex-col">
                 <span class="font-bold">Du</span>
@@ -61,15 +62,17 @@
                   name="dateFrom"
                   date-format="dd/mm/yy"
                   placeholder="jj/mm/aaaa"
-                  :disabled="familyId"
+                  :disabled="!!familyId"
+                  :show-icon="true"
+                  :show-on-focus="false"
                 />
                 <Message
-                  v-if="$purgedObjectForm.dateFrom?.invalid"
+                  v-if="$eligibleObjectForm.dateFrom?.invalid"
                   severity="error"
                   size="small"
                   variant="simple"
                 >
-                  {{ $purgedObjectForm.dateFrom.error.message }}
+                  {{ $eligibleObjectForm.dateFrom.error.message }}
                 </Message>
               </label>
               <label class="flex flex-col">
@@ -79,15 +82,17 @@
                   name="dateTo"
                   date-format="dd/mm/yy"
                   placeholder="jj/mm/aaaa"
-                  :disabled="familyId"
+                  :disabled="!!familyId"
+                  :show-icon="true"
+                  :show-on-focus="false"
                 />
                 <Message
-                  v-if="$purgedObjectForm.dateTo?.invalid"
+                  v-if="$eligibleObjectForm.dateTo?.invalid"
                   severity="error"
                   size="small"
                   variant="simple"
                 >
-                  {{ $purgedObjectForm.dateTo.error.message }}
+                  {{ $eligibleObjectForm.dateTo.error.message }}
                 </Message>
               </label>
               <label class="flex flex-col">
@@ -95,17 +100,20 @@
                 <InputText
                   v-model="familyId"
                   name="familyId"
-                  :disabled="dateFrom || dateTo"
+                  maxlength="10"
+                  :disabled="!!(dateFrom || dateTo)"
+                  @beforeinput="validateInsertedDigits"
                 />
                 <Message
-                  v-if="$purgedObjectForm.familyId?.invalid"
+                  v-if="$eligibleObjectForm.familyId?.invalid"
                   severity="error"
                   size="small"
                   variant="simple"
                 >
-                  {{ $purgedObjectForm.familyId.error.message }}
+                  {{ $eligibleObjectForm.familyId.error.message }}
                 </Message>
               </label>
+
               <Button
                 type="reset"
                 label="Effacer"
@@ -134,7 +142,7 @@
                 label="Exporter votre filtre"
                 severity="secondary"
                 class="shrink-0"
-                :disabled="!advancedSearchDone || purgedObjects.length <= 0"
+                :disabled="!advancedSearchDone || eligibleObjects.length <= 0"
                 @click="onExport"
               />
             </form>
@@ -164,7 +172,7 @@
           label="Exporter toute la liste"
           severity="secondary"
           class="shrink-0"
-          :disabled="searchInProgress || purgedObjects.length <= 0"
+          :disabled="searchInProgress || eligibleObjects.length <= 0"
           @click="onExport"
         />
       </div>
@@ -172,10 +180,11 @@
   </div>
 
   <DataTable
-    ref="purgedObjectsTable"
-    v-model:expanded-rows="purgedObjects.details"
+    v-if="eligibleObjects.length > 0"
+    ref="eligibleObjectsTable"
+    v-model:expanded-rows="eligibleObjects.details"
     data-key="key"
-    :value="purgedObjects"
+    :value="eligibleObjects"
     :total-records="totalRecords"
     removable-sort
     paginator
@@ -189,50 +198,24 @@
   >
     <Column expander style="width: 5rem" />
     <Column
-      ref="first-table-header"
-      field="familyId"
-      header="Identifiant de famille"
-      sortable
+      v-for="(column, property) in columns.config"
+      :field="property"
+      :header="columns.labels[property]"
+      :sortable="column.sortable"
     ></Column>
-    <Column
-      field="contributionPaymentDate"
-      header="Date de dernier paiment de la cotisation"
-      sortable
-    ></Column>
-    <Column
-      field="contributionCallPeriod"
-      header="Période des cotisations en mois"
-      sortable
-    ></Column>
-    <Column
-      field="contributionCallYear"
-      header="Période des cotisations en année"
-      sortable
-    ></Column>
-    <Column
-      field="conservationTime"
-      header="Délai de conservation appliqué"
-    ></Column>
-    <Column field="clientName" header="Nom du client"></Column>
     <template #expansion="slotProps">
-      <div class="p-4">
-        <p>Nom : {{ slotProps.data.details.beneficiaryName }}</p>
-        <p>Prénom : {{ slotProps.data.details.beneficiaryFirstname }}</p>
-        <p>
-          Numéro de sécurité sociale :
-          {{ slotProps.data.details.socialSecurityNumber }}
-        </p>
-        <p>
-          Date de naissance du bénéficiaire :
-          {{ slotProps.data.details.beneficiaryBirthdate }}
-        </p>
-      </div>
+      <dl>
+        <template v-for="(value, property) in slotProps.data.details">
+          <dt>{{ columns.labels[property] }}</dt>
+          <dd>{{ value }}</dd>
+        </template>
+      </dl>
     </template>
   </DataTable>
 </template>
 
 <script setup lang="ts">
-import { purgedObjects } from "../types/purged-object";
+import { EligibleObjects } from "../../types/eligible-object";
 import {
   Button,
   Column,
@@ -246,25 +229,22 @@ import {
   Toast,
 } from "primevue";
 import { Form } from "@primevue/forms";
-import { onMounted, ref, useTemplateRef } from "vue";
+import { nextTick, onMounted, ref, useTemplateRef } from "vue";
 import { useToast } from "primevue/usetoast";
-import { ObjectType } from "../enums/object-type";
-import { doRequest } from "../utilities/request";
-import { Methods } from "../enums/methods";
-import { isNumeric } from "../utilities/validation/is-numeric";
+import { ObjectType } from "../../enums/object-type";
+import { doRequest } from "../../utilities/request";
+import { Methods } from "../../enums/methods";
 import DatePicker from "primevue/datepicker";
-import AdvancedSearch from "../components/AdvancedSearch.vue";
-import { useEnvironments } from "../composables/shared/useEnvironments";
-import { useThemes } from "../composables/shared/useThemes";
+import AdvancedSearch from "../compound/AdvancedSearch.vue";
+import { useEnvironments } from "../../composables/shared/useEnvironments";
+import { useThemes } from "../../composables/shared/useThemes";
 
 const { environments, getEnvironments } = useEnvironments();
 const { themes, fetchingThemes, fetchThemes } = useThemes();
 
-const purgedObjects = ref([]);
-const purgedObjectForm = useTemplateRef("purged-object-form");
-
+const eligibleObjects = ref([]);
+const eligibleObjectForm = useTemplateRef("eligible-object-form");
 const environmentSelect = useTemplateRef("environment-select");
-const firstTableHeader = useTemplateRef("first-table-header");
 
 // Basic search state
 const environment = ref(null);
@@ -273,23 +253,24 @@ const theme = ref(null);
 // Advanced search state
 const dateFrom = ref(null);
 const dateTo = ref(null);
-const familyId = ref(null);
+const familyId = ref("");
 
 const searchInProgress = ref(false);
 const totalRecords = ref(0);
+const columns = ref([]);
 const advancedSearchDisplayed = ref(false);
 const advancedSearchDone = ref(false);
 
 // To use the pagination and sorting features along with lazy loading,
 // we need to read and update the DataTable internal state (a limitation of PrimeVue).
-const purgedObjectsTable = ref({} as DataTableState);
+const eligibleObjectsTable = ref({} as DataTableState);
 
 // As of PrimeVue 4.2.5, the DataTable component state does not include
 // the current page, which must be tracked here.
 const paginationPage = ref(0);
 
 getEnvironments();
-fetchThemes(ObjectType.PURGED);
+fetchThemes(ObjectType.ELIGIBLE);
 
 const toast = useToast();
 
@@ -300,23 +281,22 @@ onMounted(async () => {
   environmentSelect.value.$refs.focusInput.focus();
 });
 
+function validateInsertedDigits(e: InputEvent) {
+  if (e.data && null === e.data.match(/^\d+$/)) {
+    e.preventDefault();
+  }
+}
+
 const resolver = ({ values }) => {
   const errors = {};
 
-  if (undefined !== values.familyId && false === isNumeric(values.familyId)) {
-    errors.familyId = [
-      { message: "L'id de famille doit être un nombre entier" },
-    ];
-  }
-
-  if (values.familyId < 1 || values.familyId > 9999999999) {
-    errors.familyId = [
-      {
-        message:
-          "L'id de famille doit être un nombre entier compris entre 1 et 9999999999",
-      },
-    ];
-  }
+  // if ('' !== values.familyId && false === isNumeric(values.familyId)) {
+  //   errors.familyId = [{message: "L'id de famille doit être un nombre entier"}];
+  // }
+  //
+  // if ('' !== values.familyId && values.familyId < 1 || values.familyId > 9999999999) {
+  //   errors.familyId = [{message: "L'id de famille doit être un nombre entier compris entre 1 et 9999999999"}];
+  // }
 
   return {
     values,
@@ -362,26 +342,30 @@ const onFormSubmit = ({ originalEvent, valid, values }) => {
       formData.append("familyId", values.familyId);
     }
 
-    findPurgedObjects(formData);
+    findEligibleObjects(formData);
   }
 };
 
-const findPurgedObjects = (formData: FormData) => {
+const findEligibleObjects = (formData: FormData): void => {
   searchInProgress.value = true;
 
-  doRequest("/api/purged-object", Methods.POST, formData)
-    .then(async (newPurgedObjects: purgedObjects) => {
-      totalRecords.value = newPurgedObjects.total;
-      purgedObjects.value = newPurgedObjects.purgedObjects;
+  doRequest("/api/eligible-object", Methods.POST, formData)
+    .then(async (newEligibleObjects: EligibleObjects) => {
+      totalRecords.value = newEligibleObjects.total;
+      eligibleObjects.value = newEligibleObjects.eligibleObjects;
+      columns.value = newEligibleObjects.columns;
 
-      if (newPurgedObjects.total > 0) {
+      if (newEligibleObjects.total > 0) {
         advancedSearchDisplayed.value = true;
 
-        // Ugly workaround to set the focus on the header of the 1st sortable column.
-        // The usual hacks ($el and $refs) seem inapplicable with the Column component.
-        (
-          document.querySelector("th[tabindex]") as HTMLTableCellElement
-        ).focus();
+        await nextTick(() => {
+          // Ugly workaround to set the focus on the header of the 1st sortable column.
+          // The usual hacks ($el and $refs) seem inapplicable with the Column component.
+          // SUPER WEIRD BUG: when validating the form with the mouse, the focus is applied but its outline is not displayed!
+          (
+            document.querySelector("th[tabindex]") as HTMLTableCellElement
+          ).focus();
+        });
       } else {
         environmentSelect.value.$refs.focusInput.focus();
       }
@@ -396,8 +380,8 @@ const findPurgedObjects = (formData: FormData) => {
     .finally(() => (searchInProgress.value = false));
 };
 
-const findPurgedObjectsToExport = (formData: FormData) => {
-  let url: string = "/api/purged-object/export?";
+const findEligibleObjectsToExport = (formData: FormData) => {
+  let url: string = "/api/eligible-object/export?";
 
   for (const value of formData.entries()) {
     url += value[0] + "=" + value[1] + "&";
@@ -433,15 +417,21 @@ const onPage = (event: DataTablePageEvent) => {
   // Checks if sorting criteria must be passed to the webservice.
   // Note that the sorting criteria are not available in DataTablePageEvent.
   // The workaround is to retrieve them from the component state.
-  if (undefined !== purgedObjectsTable.value.d_sortField) {
+  if (
+    undefined !== eligibleObjectsTable.value.d_sortField &&
+    null !== eligibleObjectsTable.value.d_sortField
+  ) {
     formData.append(
       "sortField",
-      purgedObjectsTable.value.d_sortField as string,
+      eligibleObjectsTable.value.d_sortField as string,
     );
-    formData.append("sortOrder", String(purgedObjectsTable.value.d_sortOrder));
+    formData.append(
+      "sortOrder",
+      String(eligibleObjectsTable.value.d_sortOrder),
+    );
   }
 
-  findPurgedObjects(formData);
+  findEligibleObjects(formData);
 };
 
 const onSort = (event: DataTableSortEvent) => {
@@ -475,13 +465,13 @@ const onSort = (event: DataTableSortEvent) => {
   formData.append("page", String(paginationPage.value));
 
   // This prevents the current page from being reset.
-  purgedObjectsTable.value.d_first =
-    paginationPage.value * purgedObjectsTable.value.d_rows;
+  eligibleObjectsTable.value.d_first =
+    paginationPage.value * eligibleObjectsTable.value.d_rows;
 
-  findpurgedObjects(formData);
+  findEligibleObjects(formData);
 };
 
-const onExport = () => {
+const onExport = (_event: PointerEvent) => {
   const formData = new FormData();
   formData.append("environment", environment.value.name);
   formData.append("theme", theme.value.code);
@@ -498,22 +488,40 @@ const onExport = () => {
     formData.append("familyId", familyId.value);
   }
 
-  findpurgedObjectsToExport(formData);
+  findEligibleObjectsToExport(formData);
 };
 
-function resetBasicSearchValues() {
+function resetBasicSearchValues(_event: MouseEvent): void {
   environment.value = null;
   theme.value = null;
 
   advancedSearchDisplayed.value = false;
 }
 
-function resetAdvancedSearchValues() {
+/**
+ * This method needs to be async/await to catch proper form state
+ *
+ * @param event
+ */
+const resetAdvancedSearchValues = async (event: PointerEvent | SubmitEvent) => {
+  // this madness allows to reset internal form values BUT only if it's done through secondary reset button
+  // @see https://github.com/primefaces/primevue/issues/6760 for further comprehension
+  if (
+    event instanceof PointerEvent &&
+    (await eligibleObjectForm.value?.validate())
+  ) {
+    eligibleObjectForm.value?.setValues({
+      familyId: null,
+      dateFrom: null,
+      dateTo: null,
+    });
+  }
+
   dateFrom.value = null;
   dateTo.value = null;
   familyId.value = null;
   advancedSearchDone.value = false;
-}
+};
 
 /**
  * Resets the current page and the DataTable component state.
@@ -521,14 +529,18 @@ function resetAdvancedSearchValues() {
  * It is not reset by default when the bound value changes after a form submission.
  */
 function resetPaginationAndSort(): void {
-  // First page displayed (1st row means 1st page).
-  purgedObjectsTable.value.d_first = 0;
   // The page stored after the last DataTablePageEvent must be reset, too.
   paginationPage.value = 0;
 
-  // Sorting criteria.
-  purgedObjectsTable.value.d_sortField = undefined;
-  purgedObjectsTable.value.d_sortOrder = 0;
+  // value can be null
+  if (null !== eligibleObjectsTable.value) {
+    // First page displayed (1st row means 1st page).
+    eligibleObjectsTable.value.d_first = 0;
+
+    // Sorting criteria.
+    eligibleObjectsTable.value.d_sortField = undefined;
+    eligibleObjectsTable.value.d_sortOrder = 0;
+  }
 }
 </script>
 

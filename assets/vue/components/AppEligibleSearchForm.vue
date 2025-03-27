@@ -8,13 +8,13 @@
 </template>
 
 <script setup lang="ts">
-import { ObjectType } from "../../enums/object-type";
-import AppTheme from "../AppTheme.vue";
-import AppEnvironment from "../AppEnvironment.vue";
+import { ObjectType } from "../enums/object-type";
+import AppTheme from "./AppTheme.vue";
+import AppEnvironment from "./AppEnvironment.vue";
 import { ref } from "vue";
-import { doRequest } from "../../utilities/request";
-import { Methods } from "../../enums/methods";
-import { EligibleObject } from "../../types/eligible-object";
+import { doRequest } from "../utilities/request";
+import { Methods } from "../enums/methods";
+import { EligibleObject } from "../types/eligible-object";
 
 const environmentValue = ref("");
 const themeValue = ref("");

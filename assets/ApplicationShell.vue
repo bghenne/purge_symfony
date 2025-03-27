@@ -49,7 +49,7 @@
 </template>
 
 <script setup lang="ts">
-import AppHeader from "./vue/components/AppHeader.vue";
+import AppHeader from "./vue/components/compound/AppHeader.vue";
 </script>
 
 <style>

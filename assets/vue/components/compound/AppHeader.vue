@@ -23,9 +23,9 @@
 <script setup lang="ts">
 import { ref, Ref } from "vue";
 
-import { Identity } from "../types/identity";
-import { doRequest } from "../utilities/request";
-import { Methods } from "../enums/methods";
+import { Identity } from "../../types/identity";
+import { doRequest } from "../../utilities/request";
+import { Methods } from "../../enums/methods";
 
 const user: Ref<Identity> = ref({} as Identity);
 
