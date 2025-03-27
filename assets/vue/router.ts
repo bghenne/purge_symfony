@@ -1,32 +1,41 @@
-import {createRouter, createWebHistory, Router, RouteRecordRaw} from "vue-router";
+import {
+  createRouter,
+  createWebHistory,
+  Router,
+  RouteRecordRaw,
+} from "vue-router";
 
-import EligibleObject from "./pages/EligibleObject.vue";
-import ExcludedObject from "./pages/ExcludedObject.vue";
-import PurgedObject from "./pages/PurgedObject.vue";
-import ControlAlert from "./pages/ControlAlert.vue";
-import PurgeReport from "./pages/PurgeReport.vue";
-import Home from "./pages/Home.vue";
-import Setting from "./pages/Setting.vue";
-import {useRoles} from "./composables/shared/useRoles";
-import {Roles} from "./enums/roles";
+import AppEligibleObject from "./pages/AppEligibleObject.vue";
+import AppExcludedObject from "./pages/AppExcludedObject.vue";
+import AppPurgedObject from "./pages/AppPurgedObject.vue";
+import AppControlAlert from "./pages/AppControlAlert.vue";
+import AppPurgeReport from "./pages/AppPurgeReport.vue";
+import AppHome from "./pages/AppHome.vue";
+import AppSetting from "./pages/AppSetting.vue";
+import { useRoles } from "./composables/shared/useRoles";
+import { Roles } from "./enums/roles";
 
-const {getRoles, hasRole} = useRoles();
+const { hasRole } = useRoles();
 
 const routes: Array<RouteRecordRaw> = [
-  { path: "/", component: Home },
-  { path: "/eligible-object", component: EligibleObject },
-  { path: "/excluded-object", component: ExcludedObject,
-    beforeEnter : (to, from) => {
+  { path: "/", component: AppHome },
+  { path: "/eligible-object", component: AppEligibleObject },
+  {
+    path: "/excluded-object",
+    component: AppExcludedObject,
+    beforeEnter: () => {
       return hasRole(Roles.ADMIN) || hasRole(Roles.EXCLUSION);
-    }
-},
-  { path: "/purged-object", component: PurgedObject },
-  { path: "/control-alert", component: ControlAlert },
-  { path: "/purge-report", component: PurgeReport },
-  { path: "/setting", component: Setting,
-    beforeEnter : (to, from) => {
+    },
+  },
+  { path: "/purged-object", component: AppPurgedObject },
+  { path: "/control-alert", component: AppControlAlert },
+  { path: "/purge-report", component: AppPurgeReport },
+  {
+    path: "/setting",
+    component: AppSetting,
+    beforeEnter: () => {
       return hasRole(Roles.ADMIN);
-    }
+    },
   },
   { path: "/:pathMatch(.*)", redirect: "/" },
 ];

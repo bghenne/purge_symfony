@@ -346,11 +346,7 @@
               {
                 "name": "typology",
                 "type": "select",
-                "options": [
-                  "Incapacité",
-                  "Invalidité",
-                  "Décès"
-                ]
+                "options": ["Incapacité", "Invalidité", "Décès"]
               }
             ]
           },
@@ -522,10 +518,7 @@
                 "emptyOption": "Sélection en cours",
                 "name": "typology",
                 "type": "select",
-                "options": [
-                  "Contrat Santé",
-                  "Contrat Prévoyance"
-                ]
+                "options": ["Contrat Santé", "Contrat Prévoyance"]
               }
             ]
           },

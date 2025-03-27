@@ -1,3 +1,3 @@
 export function isNumeric(value) {
-    return !isNaN(value);
+  return !isNaN(value);
 }

@@ -33,7 +33,7 @@ Symfony is used to authenticate users with the OpenID Connect (OIDC) protocol, a
     - [`<style module>` syntax](https://vuejs.org/api/sfc-css-features.html#css-modules) (CSS Modules) to avoid [leaks](https://github.com/vuejs/vue-loader/issues/957)
       - [camelCase for class names](https://github.com/css-modules/css-modules/blob/master/docs/naming.md)
     - Root element selector named after the component, e.g.  
-      `MyComponent` ↓  
+      `MyComponent` ↓
       ```vue
       <template>
         <div :class="$style.myComponent">
@@ -41,8 +41,8 @@ Symfony is used to authenticate users with the OpenID Connect (OIDC) protocol, a
         </div>
       </template>
       ```
-    - [Recommended](https://github.com/tailwindlabs/prettier-plugin-tailwindcss) class order  
+    - Formatting and [recommended](https://github.com/tailwindlabs/prettier-plugin-tailwindcss) Tailwind class order  
       PhpStorm settings → Prettier → Automatic Prettier configuration
   - [Composition API](https://vuejs.org/guide/typescript/composition-api.html)
-  - Vue [style guide](https://vuejs.org/style-guide)  
+  - Linting and Vue [style guide](https://vuejs.org/style-guide)  
     PhpStorm settings → ESLint → Automatic ESLint configuration

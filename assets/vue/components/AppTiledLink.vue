@@ -10,8 +10,7 @@
 @reference "../../styles/app.css";
 
 .tiledLink {
-  @apply
-    inline-flex
+  @apply inline-flex
     min-h-20
     w-50
     items-center
@@ -20,7 +19,6 @@
     p-3
     text-center
     text-base/5
-    hover:bg-slate-400
-  ;
+    hover:bg-slate-400;
 }
 </style>

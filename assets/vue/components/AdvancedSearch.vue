@@ -1,17 +1,14 @@
 <template>
-  <Section>
-    <Heading>
-      Recherche avancée
-    </Heading>
+  <AppSection>
+    <AppHeading> Recherche avancée </AppHeading>
 
-    <slot></slot>
-  </Section>
+    <slot />
+  </AppSection>
 </template>
 
 <script setup lang="ts">
-import Heading from "./Heading.vue";
-import Section from "./Section.vue";
+import AppHeading from "./AppHeading.vue";
+import AppSection from "./AppSection.vue";
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

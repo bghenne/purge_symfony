@@ -10,11 +10,9 @@
 @reference "../../styles/app.css";
 
 .section {
-  @apply
-    border
+  @apply border
     border-gray-200
     p-5
-    pb-7
-  ;
+    pb-7;
 }
 </style>

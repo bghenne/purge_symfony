@@ -10,14 +10,12 @@
 @reference "../../styles/app.css";
 
 .subheading {
-  @apply
-    my-4
+  @apply my-4
     w-50
     border-b
     border-gray-200
     p-2
     text-center
-    uppercase
-  ;
+    uppercase;
 }
 </style>

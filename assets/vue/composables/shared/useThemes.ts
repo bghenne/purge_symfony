@@ -10,7 +10,7 @@ export function useThemes() {
   const themesFetched = ref(false);
 
   async function fetchThemes(objectType: ObjectType): Promise<void> {
-    let themesList: Theme[] = [];
+    const themesList: Theme[] = [];
     fetchingThemes.value = true;
 
     doRequest(`/api/theme/${objectType}`, Methods.GET)

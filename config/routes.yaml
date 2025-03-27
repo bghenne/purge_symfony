@@ -1,7 +1,7 @@
 # Routes are defined in controllers.
 # See https://symfony.com/doc/current/routing.html#creating-routes-as-attributes.
 controllers:
-    resource:
-        path: ../src/Controller/
-        namespace: App\Controller
-    type: attribute
+  resource:
+    path: ../src/Controller/
+    namespace: App\Controller
+  type: attribute

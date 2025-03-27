@@ -1,26 +1,26 @@
-import {Identity} from "../../types/identity";
+import { Identity } from "../../types/identity";
 
 export function useRoles() {
-    function getRoles(): String[] {
+  function getRoles(): string[] {
+    let roles: string[] = [];
 
-        let roles : String[] = [];
+    if ((localStorage.getItem("identity") as string).length > 0) {
+      const identity: Identity = JSON.parse(
+        localStorage.getItem("identity") as string,
+      ) as Identity;
 
-        if ((localStorage.getItem('identity') as string).length > 0) {
-            const identity: Identity = JSON.parse(localStorage.getItem('identity') as string) as Identity;
-
-            roles = identity.roles;
-
-        }
-
-        return roles;
+      roles = identity.roles;
     }
 
-    function hasRole(role: string) : boolean {
-        return getRoles().includes(role);
-    }
+    return roles;
+  }
 
-    return {
-        getRoles,
-        hasRole
-    }
+  function hasRole(role: string): boolean {
+    return getRoles().includes(role);
+  }
+
+  return {
+    getRoles,
+    hasRole,
+  };
 }

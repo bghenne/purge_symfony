@@ -10,9 +10,7 @@
 @reference "../../styles/app.css";
 
 .heading {
-  @apply
-    mb-5
-    text-2xl
-  ;
+  @apply mb-5
+    text-2xl;
 }
 </style>
