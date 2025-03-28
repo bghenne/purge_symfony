@@ -229,7 +229,7 @@ import {
   Toast,
 } from "primevue";
 import { Form } from "@primevue/forms";
-import { nextTick, onMounted, ref, useTemplateRef } from "vue";
+import { inject, nextTick, onActivated, ref, useTemplateRef } from "vue";
 import { useToast } from "primevue/usetoast";
 import { ObjectType } from "../../enums/object-type";
 import { doRequest } from "../../utilities/request";
@@ -238,6 +238,8 @@ import DatePicker from "primevue/datepicker";
 import AdvancedSearch from "../compound/AdvancedSearch.vue";
 import { useEnvironments } from "../../composables/shared/useEnvironments";
 import { useThemes } from "../../composables/shared/useThemes";
+
+const updateTabs = inject("updateTabs");
 
 const { environments, getEnvironments } = useEnvironments();
 const { themes, fetchingThemes, fetchThemes } = useThemes();
@@ -274,11 +276,13 @@ fetchThemes(ObjectType.ELIGIBLE);
 
 const toast = useToast();
 
-onMounted(async () => {
+onActivated(async () => {
   // This is a workaround. Currently, many PrimeVue components do not expose a function
   // to set the focus on the underlying interactive element.
   // See https://github.com/primefaces/primevue/issues/3138.
   environmentSelect.value.$refs.focusInput.focus();
+
+  updateTabs("1");
 });
 
 function validateInsertedDigits(e: InputEvent) {
@@ -496,6 +500,7 @@ function resetBasicSearchValues(_event: MouseEvent): void {
   theme.value = null;
 
   advancedSearchDisplayed.value = false;
+  environmentSelect.value.$refs.focusInput.focus();
 }
 
 /**

@@ -1,5 +1,5 @@
 <template>
-  <AppHeading> Choix d'accès aux objets</AppHeading>
+  <AppHeading>Choix d'accès aux objets</AppHeading>
 
   <nav>
     <AppSubheading>Contrôler</AppSubheading>
@@ -32,6 +32,13 @@
 import AppTiledLink from "../atomic/AppTiledLink.vue";
 import AppSubheading from "../atomic/AppSubheading.vue";
 import AppHeading from "../atomic/AppHeading.vue";
+import { inject, onActivated } from "vue";
+
+const updateTabs = inject("updateTabs");
+
+onActivated(async () => {
+  updateTabs("0");
+});
 </script>
 
 <style scoped></style>

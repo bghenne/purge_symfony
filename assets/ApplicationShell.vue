@@ -3,20 +3,47 @@
   <AppHeader />
 
   <!-- row 2, column 1 -->
-  <!-- TODO: maybe make a custom component. -->
-  <ol class="ml-8 flex">
-    <li>Portail</li>
-    <li>Purge</li>
-  </ol>
+  <!-- TODO: maybe make a custom, lighter component. It's not really a breadcrumb. -->
+  <Breadcrumb :model="breadcrumbItems" class="ml-8">
+    <template #item="{ item }">{{ item.label }}</template>
+    <template #separator> / </template>
+  </Breadcrumb>
 
-  <!-- row 2, column 2 -->
-  <!-- TODO: this must dynamic. Maybe use nested routes and use the router to populate the content. -->
-  <!-- TODO: maybe make a custom component. -->
-  <!--  <Breadcrumb :model="[{ label: 'Formulaire de choix d\'objets' }, { label: 'Liste des objets éligibles' }]" />-->
-  <ol class="mr-8 flex">
-    <li>Formulaire de choix d'objets</li>
-    <li>Liste des objets éligibles</li>
-  </ol>
+  <!-- row 2-3, column 2 -->
+  <Tabs
+    v-model:value="currentTab"
+    class="row-span-2 min-w-full"
+    scrollable
+    @update:value="updateRoute"
+  >
+    <TabList class="mb-8">
+      <!-- One tab equals one route. -->
+      <template v-for="tab in tabs" :key="tab.title">
+        <Tab v-if="tab.visible" :value="tab.value">
+          {{ tab.title }}
+        </Tab>
+      </template>
+    </TabList>
+    <TabPanels
+      :pt="{
+        root: '!p-0',
+      }"
+    >
+      <!-- Only one tab panel has to be rendered at a time. -->
+      <!-- The negative top-margin is here to cancel the border width. -->
+      <main class="-mt-px mr-8 border border-gray-200 p-5 pb-7">
+        <TabPanel :value="currentTab">
+          <RouterView v-slot="{ Component }">
+            <!-- Route components must not be unmounted. Only the end-user may reset their state. -->
+            <!-- https://router.vuejs.org/guide/advanced/router-view-slot.html#KeepAlive-Transition -->
+            <KeepAlive>
+              <Component :is="Component" />
+            </KeepAlive>
+          </RouterView>
+        </TabPanel>
+      </main>
+    </TabPanels>
+  </Tabs>
 
   <!-- row 3, column 1 -->
   <div id="layout-column-1" class="ml-8">
@@ -41,15 +68,98 @@
       </div>
     </div>
   </div>
-
-  <!-- row 3, column 2 -->
-  <main class="mr-8 border border-gray-200 p-5 pb-7">
-    <RouterView />
-  </main>
 </template>
 
 <script setup lang="ts">
 import AppHeader from "./vue/components/compound/AppHeader.vue";
+import { Breadcrumb, Tab, Tabs, TabList, TabPanel, TabPanels } from "primevue";
+import { provide, Ref, ref } from "vue";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
+
+const breadcrumbItems = [{ label: "RGPD" }, { label: "Accueil" }];
+
+type Tab = {
+  title: string;
+  path: string;
+  value: string;
+  visible: boolean;
+};
+
+// A subset of routes with additional properties (can be improved).
+const tabs: Ref<Tab[]> = ref([
+  {
+    title: "Formulaire de choix d'objets",
+    path: "/",
+    value: "0",
+    visible: true,
+  },
+  {
+    title: "Liste des objets éligibles",
+    path: "/eligible-object",
+    value: "1",
+    visible: false,
+  },
+  {
+    title: "Liste des objets exclus",
+    path: "/excluded-object",
+    value: "2",
+    visible: false,
+  },
+  {
+    title: "Liste des objets purgés",
+    path: "/purged-object",
+    value: "3",
+    visible: false,
+  },
+  {
+    title: "Alertes de contrôle",
+    path: "/control-alert",
+    value: "4",
+    visible: false,
+  },
+  {
+    title: "Comptes rendus de purge",
+    path: "/purge-report",
+    value: "5",
+    visible: false,
+  },
+  {
+    title: "Paramétrer",
+    path: "/setting",
+    value: "6",
+    visible: false,
+  },
+]);
+const currentTab = ref("0");
+
+/**
+ * Navigates to the route that matches the selected tab.
+ */
+function updateRoute(event: string | number) {
+  router.push(getSelectedTab(Number(event)).path);
+}
+
+/**
+ * Updates both the current tab and its content with the relevant route component.
+ *
+ * Called from onActivated() lifecycle hooks. onMounted() is inapplicable,
+ * because route components are cached with KeepAlive.
+ */
+function updateTabs(value: string) {
+  currentTab.value = value;
+  getSelectedTab(Number(value)).visible = true;
+}
+
+/**
+ * Returns the Tab object that matches the selected tab index.
+ */
+function getSelectedTab(index: number): Tab {
+  return tabs.value[Number(index)];
+}
+
+provide("updateTabs", updateTabs);
 </script>
 
 <style>
