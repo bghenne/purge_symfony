@@ -30,7 +30,7 @@
       }"
     >
       <!-- Only one tab panel has to be rendered at a time. -->
-      <!-- The negative top-margin is here to cancel the border width. -->
+      <!-- The negative top-margin is here to cancel out the border width. -->
       <main class="-mt-px mr-8 border border-gray-200 p-5 pb-7">
         <TabPanel :value="currentTab">
           <RouterView v-slot="{ Component }">

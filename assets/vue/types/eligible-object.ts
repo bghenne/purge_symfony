@@ -12,6 +12,16 @@ export interface EligibleObjects {
       };
     };
   };
+  advancedSearch: [
+    {
+      label: string;
+      fields: {
+        name: string;
+        label: string;
+        type: string;
+      };
+    },
+  ];
 }
 
 export interface EligibleObject {

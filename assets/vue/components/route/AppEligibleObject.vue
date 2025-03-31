@@ -55,64 +55,84 @@
               autocomplete="off"
               @submit.prevent="eligibleObjectForm.$el.requestSubmit()"
             >
-              <label class="flex flex-col">
-                <span class="font-bold">Du</span>
-                <DatePicker
-                  v-model="dateFrom"
-                  name="dateFrom"
-                  date-format="dd/mm/yy"
-                  placeholder="jj/mm/aaaa"
-                  :disabled="!!familyId"
-                  :show-icon="true"
-                  :show-on-focus="false"
-                />
-                <Message
-                  v-if="$eligibleObjectForm.dateFrom?.invalid"
-                  severity="error"
-                  size="small"
-                  variant="simple"
-                >
-                  {{ $eligibleObjectForm.dateFrom.error.message }}
-                </Message>
-              </label>
-              <label class="flex flex-col">
-                <span class="font-bold">Au</span>
-                <DatePicker
-                  v-model="dateTo"
-                  name="dateTo"
-                  date-format="dd/mm/yy"
-                  placeholder="jj/mm/aaaa"
-                  :disabled="!!familyId"
-                  :show-icon="true"
-                  :show-on-focus="false"
-                />
-                <Message
-                  v-if="$eligibleObjectForm.dateTo?.invalid"
-                  severity="error"
-                  size="small"
-                  variant="simple"
-                >
-                  {{ $eligibleObjectForm.dateTo.error.message }}
-                </Message>
-              </label>
-              <label class="flex flex-col">
-                <span class="font-bold">ID de famille</span>
-                <InputText
-                  v-model="familyId"
-                  name="familyId"
-                  maxlength="10"
-                  :disabled="!!(dateFrom || dateTo)"
-                  @beforeinput="validateInsertedDigits"
-                />
-                <Message
-                  v-if="$eligibleObjectForm.familyId?.invalid"
-                  severity="error"
-                  size="small"
-                  variant="simple"
-                >
-                  {{ $eligibleObjectForm.familyId.error.message }}
-                </Message>
-              </label>
+              <Select
+                v-model="selectedAdvancedSearchCriterion"
+                :options="advancedSearchCriteria"
+                class="col-span-2"
+              />
+              <template
+                v-if="
+                  'Par date de paiement' === selectedAdvancedSearchCriterion
+                "
+              >
+                <label class="flex flex-col">
+                  <span class="font-bold">Du</span>
+                  <!-- Manual input for the DatePicker component is currently broken. -->
+                  <!-- https://github.com/primefaces/primevue/issues?q=is%3Aissue%20datepicker%20manual%20input%20 -->
+                  <!-- Removing the date-format attribute fixes the typing, but the value does not get registered anymore. -->
+                  <!-- Note: the final, normalized value is DatePicker.data.d_value, and the displayed data is in DatePicker.computed.inputFieldValue. -->
+                  <DatePicker
+                    v-model="dateFrom"
+                    name="dateFrom"
+                    date-format="dd/mm/yy"
+                    placeholder="jj/mm/aaaa"
+                    :show-icon="true"
+                    :show-on-focus="false"
+                    :manual-input="true"
+                  />
+                  <Message
+                    v-if="$eligibleObjectForm.dateFrom?.invalid"
+                    severity="error"
+                    size="small"
+                    variant="simple"
+                  >
+                    {{ $eligibleObjectForm.dateFrom.error.message }}
+                  </Message>
+                </label>
+                <label class="flex flex-col">
+                  <span class="font-bold">Au</span>
+                  <DatePicker
+                    v-model="dateTo"
+                    name="dateTo"
+                    date-format="dd/mm/yy"
+                    placeholder="jj/mm/aaaa"
+                    :show-icon="true"
+                    :show-on-focus="false"
+                    :manual-input="true"
+                  />
+                  <Message
+                    v-if="$eligibleObjectForm.dateTo?.invalid"
+                    severity="error"
+                    size="small"
+                    variant="simple"
+                  >
+                    {{ $eligibleObjectForm.dateTo.error.message }}
+                  </Message>
+                </label>
+              </template>
+              <template
+                v-if="
+                  'Par numéro d\'adhérent' === selectedAdvancedSearchCriterion
+                "
+              >
+                <label class="flex flex-col">
+                  <span class="font-bold">ID de famille</span>
+                  <InputText
+                    v-model="familyId"
+                    name="familyId"
+                    maxlength="10"
+                    @beforeinput="validateInsertedDigits"
+                  />
+                  <Message
+                    v-if="$eligibleObjectForm.familyId?.invalid"
+                    severity="error"
+                    size="small"
+                    variant="simple"
+                  >
+                    {{ $eligibleObjectForm.familyId.error.message }}
+                  </Message>
+                </label>
+              </template>
 
               <Button
                 type="reset"
@@ -131,9 +151,11 @@
                 class="row-start-3 mt-4 shrink-0"
                 :disabled="
                   searchInProgress ||
-                  (null === dateFrom && dateTo) ||
-                  (dateFrom && null === dateTo) ||
-                  (null === dateFrom && null === dateTo && null === familyId)
+                  ('Par date de paiement' === selectedAdvancedSearchCriterion &&
+                    (null === dateFrom || null === dateTo)) ||
+                  ('Par numéro d\'adhérent' ===
+                    selectedAdvancedSearchCriterion &&
+                    null === familyId)
                 "
                 :loading="searchInProgress"
               />
@@ -141,8 +163,8 @@
                 type="button"
                 label="Exporter votre filtre"
                 severity="secondary"
-                class="shrink-0"
-                :disabled="!advancedSearchDone || eligibleObjects.length <= 0"
+                class="col-span-2 shrink-0"
+                :disabled="!advancedSearchDone || eligibleObjects.length == 0"
                 @click="onExport"
               />
             </form>
@@ -262,6 +284,8 @@ const totalRecords = ref(0);
 const columns = ref([]);
 const advancedSearchDisplayed = ref(false);
 const advancedSearchDone = ref(false);
+const advancedSearchCriteria = ref([]);
+const selectedAdvancedSearchCriterion = ref("Par date de paiement");
 
 // To use the pagination and sorting features along with lazy loading,
 // we need to read and update the DataTable internal state (a limitation of PrimeVue).
@@ -332,6 +356,8 @@ const onFormSubmit = ({ originalEvent, valid, values }) => {
     formData.append("theme", values.theme.code);
 
     if (null !== values.dateFrom) {
+      // E.g. "Sat Mar 29 2025 00:00:00 GMT+0100 (Central European Standard Time)"
+      // --> "Sat Mar 29 2025 00:00:00 GMT+0100"
       const convertedDateFrom = String(values.dateFrom).split("(")[0].trim();
       formData.append("dateFrom", convertedDateFrom);
     }
@@ -353,6 +379,16 @@ const onFormSubmit = ({ originalEvent, valid, values }) => {
 const findEligibleObjects = (formData: FormData): void => {
   searchInProgress.value = true;
 
+  switch (selectedAdvancedSearchCriterion.value) {
+    case "Par date de paiement":
+      formData.delete("familyId");
+      break;
+    case "Par numéro d'adhérent":
+      formData.delete("dateFrom");
+      formData.delete("dateTo");
+      break;
+  }
+
   doRequest("/api/eligible-object", Methods.POST, formData)
     .then(async (newEligibleObjects: EligibleObjects) => {
       totalRecords.value = newEligibleObjects.total;
@@ -360,7 +396,17 @@ const findEligibleObjects = (formData: FormData): void => {
       columns.value = newEligibleObjects.columns;
 
       if (newEligibleObjects.total > 0) {
-        advancedSearchDisplayed.value = true;
+        if (newEligibleObjects.advancedSearch.length > 0) {
+          advancedSearchCriteria.value = [];
+
+          for (const advancedSearchCriterion of Object.values(
+            newEligibleObjects.advancedSearch,
+          )) {
+            advancedSearchCriteria.value.push(advancedSearchCriterion.label);
+          }
+
+          advancedSearchDisplayed.value = true;
+        }
 
         await nextTick(() => {
           // Ugly workaround to set the focus on the header of the 1st sortable column.

@@ -101,6 +101,25 @@ final class UiConfigProvider
         return $this->extractThemeConfig($objectType, $theme)['columns']['config'];
     }
 
+    /**
+     * Returns the content of the advanced search form.
+     *
+     * @param ObjectType $objectType
+     * @param string $theme
+     * @return array
+     */
+    public function getAdvancedSearchConfig(ObjectType $objectType, string $theme): array
+    {
+        $this->loadConfig($objectType);
+
+        foreach ($this->config[$objectType->value] as $themeConfig) {
+            if (!empty($themeConfig[$theme]['filters'])) {
+                return $themeConfig[$theme]['filters'];
+            }
+        }
+
+        throw new LogicException("Can not load theme config");
+    }
 
     /**
      * Convert field name before giving it to webservice

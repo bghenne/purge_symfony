@@ -6,7 +6,7 @@ import { Methods } from "../enums/methods";
 export async function doRequest<T>(
   url: string,
   method: string,
-  parameters: FormData | object = {},
+  parameters: FormData,
 ): Promise<T | void> {
   const requestParameters: RequestInit = {
     method: method,

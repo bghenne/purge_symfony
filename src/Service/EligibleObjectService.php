@@ -71,6 +71,7 @@ final readonly class EligibleObjectService
                 'labels' => $this->uiConfigProvider->getPropertyLabels(ObjectType::ELIGIBLE, $parameters['theme']),
                 'config' => $this->uiConfigProvider->getColumnsConfig(ObjectType::ELIGIBLE, $parameters['theme']),
             ],
+            'advancedSearch' => $this->uiConfigProvider->getAdvancedSearchConfig(ObjectType::ELIGIBLE, $parameters['theme']),
             'eligibleObjects' => [],
             'total' => $results['page']['totalElements']
         ];
