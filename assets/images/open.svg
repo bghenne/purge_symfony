@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Calque_1" data-name="Calque 1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 527.47 225.01">
+  <defs>
+    <linearGradient id="Dégradé_sans_nom_215" data-name="Dégradé sans nom 215" x1="-1588.03" y1="-791.33" x2="-1492.2" y2="-791.33" gradientTransform="translate(493.93 1798.94) rotate(49.04)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#74bb6d"/>
+      <stop offset=".65" stop-color="#63b770"/>
+      <stop offset="1" stop-color="#56b257"/>
+    </linearGradient>
+    <linearGradient id="Dégradé_sans_nom_211" data-name="Dégradé sans nom 211" x1="-1621.97" y1="-791.21" x2="-1526.15" y2="-791.21" gradientTransform="translate(482.33 1824.61) rotate(49.04)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#bee3f2"/>
+      <stop offset="1" stop-color="#5dc4e7"/>
+    </linearGradient>
+  </defs>
+  <text transform="translate(134.57 168.09) scale(.97 1)" style="font-family: CenturyGothic-Bold, &apos;Century Gothic&apos;; font-size: 156.32px; font-weight: 700;"><tspan x="0" y="0" style="fill: #5ac3e6;">o</tspan><tspan x="100.07" y="0" style="fill: #141c32;">pen</tspan></text>
+  <text transform="translate(347.82 212.14)" style="fill: #979797; font-family: CenturyGothic-Bold, &apos;Century Gothic&apos;; font-size: 41.97px; font-weight: 700;"><tspan x="0" y="0">by heka </tspan></text>
+  <rect x="45.23" y="80.54" width="73.25" height="73.25" rx="9.14" ry="9.14" transform="translate(224 132.16) rotate(130.96)" style="fill: url(#Dégradé_sans_nom_215); stroke-width: 0px;"/>
+  <rect x="11.29" y="80.66" width="73.25" height="73.25" rx="9.14" ry="9.14" transform="translate(167.89 157.99) rotate(130.96)" style="fill: url(#Dégradé_sans_nom_211); stroke-width: 0px;"/>
+</svg>
