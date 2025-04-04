@@ -45,7 +45,10 @@
           {{ $eligibleObjectForm.theme.error.message }}
         </Message>
 
-        <Teleport v-if="advancedSearchDisplayed" to="#layout-column-1">
+        <Teleport
+          v-if="advancedSearchDisplayed"
+          to="#advanced-search-form-parent"
+        >
           <AdvancedSearch class="mt-4">
             <!-- This 2nd form element is only logically nested in the component, not physically in the DOM
                  (that would be invalid). It leverages the Web platform behaviour for forms submission,

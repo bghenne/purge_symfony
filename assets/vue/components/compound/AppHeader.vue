@@ -1,7 +1,5 @@
 <template>
-  <header
-    class="col-span-2 flex h-16 border-b border-gray-200 px-4 py-0 text-gray-800"
-  >
+  <header class="flex h-16 border-b border-gray-200 px-4 py-0 text-gray-800">
     <router-link
       to="/"
       class="mr-auto flex items-center px-4 hover:bg-slate-200"
