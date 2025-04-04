@@ -78,7 +78,7 @@
                     placeholder="jj/mm/aaaa"
                     :show-icon="true"
                     :show-on-focus="false"
-                    :manual-input="true"
+                    :manual-input="false"
                   />
                   <Message
                     v-if="$eligibleObjectForm.dateFrom?.invalid"
@@ -98,7 +98,7 @@
                     placeholder="jj/mm/aaaa"
                     :show-icon="true"
                     :show-on-focus="false"
-                    :manual-input="true"
+                    :manual-input="false"
                   />
                   <Message
                     v-if="$eligibleObjectForm.dateTo?.invalid"

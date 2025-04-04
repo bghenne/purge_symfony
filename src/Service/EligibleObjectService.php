@@ -136,14 +136,14 @@ final readonly class EligibleObjectService
      * Build health benefit specific
      *
      * @param array $results
-     * @param array $eligibleObjects
+     * @param array $healthBenefitObjects
      * @return array
      */
     private function buildHealthBenefitResults(array $results, array $healthBenefitObjects): array
     {
         foreach ($results['content'] as $key => $result) {
 
-            $healthBenefitObjects['objects'][$key] = [
+            $healthBenefitObjects['eligibleObjects'][$key] = [
                 'key' => $key,
                 'familyId' => $result['identifiantFamille'] ?? null,
                 'openFileNumber' => $result['numeroDossierOpen'] ?? null,
@@ -224,6 +224,7 @@ final readonly class EligibleObjectService
      * @throws RedirectionExceptionInterface
      * @throws ServerExceptionInterface
      * @throws TransportExceptionInterface
+     * @throws DateMalformedStringException
      */
     public function findEligibleObjectsToExport(Request $request): array
     {
