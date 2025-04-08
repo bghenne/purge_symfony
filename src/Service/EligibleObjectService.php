@@ -145,7 +145,7 @@ final readonly class EligibleObjectService
 
             $healthBenefitObjects['eligibleObjects'][$key] = [
                 'key' => $key,
-                'familyId' => $result['identifiantFamille'] ?? null,
+                'membershipNumber' => $result['numAdherent'] ?? null,
                 'openFileNumber' => $result['numeroDossierOpen'] ?? null,
                 'thirdTypeLabel' => $result['libelleTypeTiers'] ?? null,
                 'healthBenefitPaymentDate' => $result['datePaiementPrestation'] ?? null,
