@@ -508,7 +508,11 @@
           "cancellingContractDate": "",
           "cancellingContractReason": "",
           "conservationTime": "delaiConservation",
-          "settingsDescription": "descriptionParametrage"
+          "settingsDescription": "descriptionParametrage",
+          "beneficiaryName": "nomBeneficiaire",
+          "beneficiaryFirstname": "prenomBeneficiaire",
+          "beneficiaryBirthdate": "dateNaissanceBeneficiaire",
+          "socialSecurityNumber": "numeroSecuriteSociale"
         },
         "filters": [
           {

@@ -9,6 +9,7 @@ use App\Provider\UiConfigProvider;
 use App\Trait\DateTrait;
 use DateMalformedStringException;
 use Drenso\OidcBundle\Exception\OidcException;
+use LogicException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Serializer\Encoder\DecoderInterface;
@@ -77,7 +78,7 @@ final readonly class EligibleObjectService
         ];
 
         if ($parameters['theme'] === Theme::COTISATIONS_ELIGIBLE->name) {
-            return $this->buildEligibleObjectsResults($results, $objects);
+            return $this->buildEligibleContributionResults($results, $objects);
         }
 
         if ($parameters['theme'] === Theme::PRESTATIONS_SANTE_ELIGIBLE->name) {
@@ -85,16 +86,18 @@ final readonly class EligibleObjectService
         }
 
         if ($parameters['theme'] === Theme::PRESTATIONS_PREVOYANCE_ELIGIBLE->name) {
-
+            return $this->buildDisabilityBenefitResults($results, $objects);
         }
 
         if ($parameters['theme'] === Theme::CONTRATS_OPTIONS_LIEN_SALARIAL_ELIGIBLE->name) {
-
+            return $this->buildContractResults($results, $objects);
         }
 
         if ($parameters['theme'] === Theme::INDIVIDUS_ELIGIBLE->name) {
-
+            return $this->buildIndividualResults($results, $objects);
         }
+
+        throw new LogicException('Unsupported theme: ' . $parameters['theme']);
     }
 
     /**
@@ -104,7 +107,7 @@ final readonly class EligibleObjectService
      * @param array $eligibleObjects
      * @return array
      */
-    private function buildEligibleObjectsResults(array $results, array $eligibleObjects): array
+    private function buildEligibleContributionResults(array $results, array $eligibleObjects): array
     {
         foreach ($results['content'] as $key => $result) {
 
@@ -123,8 +126,7 @@ final readonly class EligibleObjectService
                     'beneficiaryName' => $result['nomBeneficiaire'] ?? null,
                     'beneficiaryFirstname' => $result['prenomBeneficiaire'] ?? null,
                     'beneficiaryBirthdate' => !empty($result['dateNaissanceBeneficiaire']) ? $this->formatDate($result['dateNaissanceBeneficiaire'], 'Y-m-d', 'd/m/Y') : null,
-                    'socialSecurityNumber' => $result['numeroSecuriteSociale'] ?? null,
-
+                    'socialSecurityNumber' => $result['numeroSecuriteSociale'] ?? null
                 ]
             ];
         }
@@ -161,13 +163,112 @@ final readonly class EligibleObjectService
                     'finessNumber' => $result['numeroFiness'],
                     'paymentNumber' => $result['numeroPaiement'] ?? null,
                     'paymentType' => $result['typePaiement'] ?? null,
-                    'paymentMode' => $result['modePaiement'] ?? null,
+                    'paymentMode' => $result['modePaiement'] ?? null
 
                 ]
             ];
         }
 
         return $healthBenefitObjects;
+    }
+
+    /**
+     * Build disability benefit
+     *
+     * @param array $results
+     * @param array $disabilityBenefitObjects
+     * @return array
+     */
+    private function buildDisabilityBenefitResults(array $results, array $disabilityBenefitObjects): array
+    {
+        foreach ($results['content'] as $key => $result) {
+
+            $disabilityBenefitObjects['eligibleObjects'][$key] = [
+                'key' => $key,
+                'membershipNumber' => $result['numAdherent'] ?? null,
+                'claimNumber' => $result['numeroSinistre'] ?? null,
+                'healthBenefitTypology' => $result['typeVersement'] ?? null,
+                'claimClosingDate' => $result['dateClosureSinistre'] ?? null,
+                'healthBenefitPaymentType' => $result['typePaiement'] ?? null,
+                'lastPaymentDate' => $result['datePaiementPrestation'] ?? null,
+                'beneficiaryDeathDate' => $result['dateDecesBeneficiaire'] ?? null,
+                'conservationTime' => $result['delaiConservation'] ?? null,
+                'settingsDescription' => $result['descriptionParametrage'] ?? null,
+                'details' => [
+                    // beneficiary details
+                    'beneficiaryName' => $result['nomBeneficiaire'] ?? null,
+                    'beneficiaryFirstname' => $result['prenomBeneficiaire'] ?? null,
+                    'beneficiaryBirthdate' => $result['dateNaissanceBeneficiaire'] ?? null,
+                    'socialSecurityNumber' => $result['numeroSecuriteSociale'] ?? null,
+                    'beneficiaryRank' => $result['rangBeneficiaire'] ?? null
+                ]
+            ];
+        }
+
+        return $disabilityBenefitObjects;
+    }
+
+    /**
+     * Build contracts
+     *
+     * @param array $results
+     * @param array $contractObjects
+     * @return array
+     */
+    private function buildContractResults(array $results, array $contractObjects): array
+    {
+        foreach ($results['content'] as $key => $result) {
+
+            $contractObjects['eligibleObjects'][$key] = [
+                'key' => $key,
+                'membershipNumber' => $result['numAdherent'] ?? null,
+                'openContractIdentifier' => $result[''] ?? null,
+                'contractType' => $result[''] ?? null,
+                'subcontractType' => $result[''] ?? null,
+                'optionTop' => $result[''] ?? null,
+                'cancellingContractDate' => $result[''] ?? null,
+                'cancellingContractReason' => $result[''] ?? null,
+                'conservationTime' => $result['delaiConservation'] ?? null,
+                'settingsDescription' => $result['descriptionParametrage'] ?? null,
+                'details' => [
+                    // beneficiary details
+                    'beneficiaryName' => $result['nomBeneficiaire'] ?? null,
+                    'beneficiaryFirstname' => $result['prenomBeneficiaire'] ?? null,
+                    'beneficiaryBirthdate' => $result['dateNaissanceBeneficiaire'] ?? null,
+                    'socialSecurityNumber' => $result['numeroSecuriteSociale'] ?? null
+                ]
+            ];
+        }
+
+        return $contractObjects;
+    }
+
+    /**
+     * Build individuals
+     *
+     * @param array $results
+     * @param array $individualObjects
+     * @return array
+     */
+    private function buildIndividualResults(array $results, array $individualObjects): array
+    {
+        foreach ($results['content'] as $key => $result) {
+            $individualObjects['eligibleObjects'][$key] = [
+                'key' => $key,
+                'familyLink' => $result[''] ?? null,
+                'membershipNumber' => $result['numAdherent'] ?? null,
+                'conservationTime' => $result['delaiConservation'] ?? null,
+                'settingsDescription' => $result['descriptionParametrage'] ?? null,
+                'details' => [
+                    'beneficiaryName' => $result['nomBeneficiaire'] ?? null,
+                    'beneficiaryFirstname' => $result['prenomBeneficiaire'] ?? null,
+                    'beneficiaryBirthdate' => $result['dateNaissanceBeneficiaire'] ?? null,
+                    'socialSecurityNumber' => $result['numeroSecuriteSociale'] ?? null
+                ]
+            ];
+        }
+
+        return $individualObjects;
     }
 
     /**
