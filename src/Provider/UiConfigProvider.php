@@ -7,7 +7,7 @@ use LogicException;
 use Symfony\Component\Serializer\Encoder\DecoderInterface;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 
-final class UiConfigProvider
+class UiConfigProvider
 {
     private array $config = [];
 

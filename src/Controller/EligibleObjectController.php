@@ -33,7 +33,7 @@ final class EligibleObjectController extends AbstractController
         $jsonResponse = new JsonResponse();
 
         try {
-            $jsonResponse->setData($this->eligibleObjectService->findEligibleObjects($request));
+            $jsonResponse->setData($this->eligibleObjectService->find($request));
         } catch (Throwable $e) {
             $this->logger->error($e->getMessage());
             $jsonResponse->setData([
@@ -53,7 +53,7 @@ final class EligibleObjectController extends AbstractController
     {
         try {
 
-            $result = $this->eligibleObjectService->findEligibleObjectsToExport($request);
+            $result = $this->eligibleObjectService->findToExport($request);
             list($filePath, $fileName) = $this->eligibleObjectService->makeExport($result['content'], $result['headers']);
 
             $binaryFileResponse = new BinaryFileResponse($filePath, Response::HTTP_OK, ['Content-Type' => $result['headers']['content-type']]);

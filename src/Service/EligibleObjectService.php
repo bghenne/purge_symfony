@@ -28,7 +28,7 @@ use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
  * @license
  * @copyright GFP Tech 2025
  */
-final readonly class EligibleObjectService
+final readonly class EligibleObjectService implements ServiceInterface
 {
     use DateTrait;
 
@@ -52,11 +52,10 @@ final readonly class EligibleObjectService
      * @throws TransportExceptionInterface
      * @throws DateMalformedStringException
      */
-    public function findEligibleObjects(Request $request): array
+    public function find(Request $request): array
     {
         // extract parameters from request
         $parameters = $this->extractParameters($request, true);
-        $this->logger->warning(var_export($parameters, true));
 
         $response = $this->client->doRequest($this->baseUrl . '/api-rgpd/v1/eligibles', $parameters, Request::METHOD_POST);
 
@@ -104,14 +103,14 @@ final readonly class EligibleObjectService
      * Default results
      *
      * @param array $results
-     * @param array $eligibleObjects
+     * @param array $eligibleContributionObjects
      * @return array
      */
-    private function buildEligibleContributionResults(array $results, array $eligibleObjects): array
+    private function buildEligibleContributionResults(array $results, array $eligibleContributionObjects): array
     {
         foreach ($results['content'] as $key => $result) {
 
-            $eligibleObjects['eligibleObjects'][$key] = [
+            $eligibleContributionObjects['eligibleObjects'][$key] = [
                 'key' => $key,
                 'campaignDate' => $this->formatDate($result['dateCampagne'], 'Y-m-d', 'd/m/Y') ?? null,
                 'clientName' => $result['nomDuClient'] ?? null,
@@ -131,7 +130,7 @@ final readonly class EligibleObjectService
             ];
         }
 
-        return $eligibleObjects;
+        return $eligibleContributionObjects;
     }
 
     /**
@@ -280,7 +279,7 @@ final readonly class EligibleObjectService
      * @return array
      * @throws DateMalformedStringException
      */
-    private function extractParameters(Request $request, bool $withPagination = true): array
+    public function extractParameters(Request $request, bool $withPagination = true): array
     {
         $theme = $request->get('theme');
         $parameters = [
@@ -308,8 +307,8 @@ final readonly class EligibleObjectService
             $parameters['finPeriode'] = $this->convertDateFromString($request->get('dateTo'));
         }
 
-        if (!empty($request->get('familyId'))) {
-            $parameters['identifiantFamille'] = $request->get('familyId');
+        if (!empty($request->get('membershipNumber'))) {
+            $parameters['numAdherent'] = $request->get('membershipNumber');
         }
 
         return $parameters;
@@ -327,7 +326,7 @@ final readonly class EligibleObjectService
      * @throws TransportExceptionInterface
      * @throws DateMalformedStringException
      */
-    public function findEligibleObjectsToExport(Request $request): array
+    public function findToExport(Request $request): array
     {
         $parameters = $this->extractParameters($request, false);
 
