@@ -147,9 +147,10 @@ final readonly class EligibleObjectService implements ServiceInterface
             $healthBenefitObjects['eligibleObjects'][$key] = [
                 'key' => $key,
                 'membershipNumber' => $result['numAdherent'] ?? null,
+                'environment' => $result['environnement'] ?? null,
                 'openFileNumber' => $result['numeroDossierOpen'] ?? null,
                 'thirdTypeLabel' => $result['libelleTypeTiers'] ?? null,
-                'healthBenefitPaymentDate' => $result['datePaiementPrestation'] ?? null,
+                'healthBenefitPaymentDate' => !empty($result['datePaiementPrestation']) ? $this->formatDate($result['datePaiementPrestation'], 'Y-m-d', 'd/m/Y') : null,
                 'conservationTime' => $result['delaiConservation'] ?? null,
                 'settingDescription' => $result['descriptionParametrage'] ?? null,
                 'details' => [

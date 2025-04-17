@@ -75,7 +75,7 @@ class EligibleObjectServiceTest extends TestCase
      * @throws ServerExceptionInterface
      * @throws TransportExceptionInterface
      */
-    public function testFind(): void
+    public function testFindEligibleContribution(): void
     {
         $requestMock = $this->getMockBuilder(Request::class)
             ->disableOriginalConstructor()
@@ -284,5 +284,292 @@ class EligibleObjectServiceTest extends TestCase
             $this->instance->find($requestMock)
         );
     }
+
+    /**
+     * @return void
+     * @throws DateMalformedStringException
+     * @throws OidcException
+     * @throws ClientExceptionInterface
+     * @throws RedirectionExceptionInterface
+     * @throws ServerExceptionInterface
+     * @throws TransportExceptionInterface
+     */
+    public function testFindHealthBenefit(): void
+    {
+        $requestMock = $this->getMockBuilder(Request::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['get'])
+            ->getMock();
+
+        $requestMock->expects($this->exactly(12))
+            ->method('get')
+            ->willReturnCallback(function ($parameter) {
+                static $invocationCount = 0;
+                $consecutiveArgs = [
+                    'theme', 'environment', 'page', 'sortOrder',
+                    'sortField', 'sortOrder', 'dateFrom', 'dateFrom',
+                    'dateTo', 'dateTo', 'membershipNumber', 'membershipNumber',
+                ];
+                $consecutiveResults = [
+                    'PRESTATIONS_SANTE_ELIGIBLE', 'MERCERWA', 1, '1',
+                    'name', '1', '2025-04-01', '2025-04-01',
+                    '2025-04-30', '2025-04-30', '12345', '12345'
+                ];
+
+                $this->assertEquals($consecutiveArgs[$invocationCount], $parameter);
+
+                return $consecutiveResults[$invocationCount++];
+            });
+
+        $this->uiConfigProviderMock->expects($this->once())
+            ->method('convertFieldName')
+            ->with(ObjectType::ELIGIBLE, 'PRESTATIONS_SANTE_ELIGIBLE', 'name')
+            ->willReturn('nom');
+
+        $this->uiConfigProviderMock->expects($this->once())
+            ->method('getPropertyLabels')
+            ->with(ObjectType::ELIGIBLE, 'PRESTATIONS_SANTE_ELIGIBLE')
+            ->willReturn([
+                'membershipNumber' => 'Numéro adhérent',
+                'conservationTime' => 'Délai de conservation'
+            ]);
+
+        $this->uiConfigProviderMock->expects($this->once())
+            ->method('getColumnsConfig')
+            ->with(ObjectType::ELIGIBLE, 'PRESTATIONS_SANTE_ELIGIBLE')
+            ->willReturn([
+                'membershipNumber' => [
+                    'sortable' => false
+                ],
+                'conservationTime' => [
+                    'sortable' => true
+                ]
+            ]);
+
+        $this->uiConfigProviderMock->expects($this->once())
+            ->method('getAdvancedSearchConfig')
+            ->with(ObjectType::ELIGIBLE, 'PRESTATIONS_SANTE_ELIGIBLE')
+            ->willReturn([
+                [
+                    'fields' => [
+                        [
+                            'name' => 'dateFrom',
+                            'label' => 'DU',
+                            'type' => 'date'
+                        ]
+                    ],
+                    'labels' => 'Par date de paiement sur une période'
+                ]
+            ]);
+
+        $this->clientMock->expects($this->once())
+            ->method('doRequest')
+            ->with('/url/api-rgpd/v1/eligibles', [
+                'environnement' => 'MERCERWA',
+                'theme' => 'PRESTATIONS_SANTE_ELIGIBLE',
+                'pageable' => [
+                    'sort' => [
+                        [
+                            'direction' => 'ASC',
+                            'property' => 'nom'
+                        ]
+                    ],
+                    'page' => 1,
+                    'size' => 10
+                ],
+                'debutPeriode' => '2025-04-01',
+                'finPeriode' => '2025-04-30',
+                'numAdherent' => '12345'
+            ], Request::METHOD_POST)
+            ->willReturn([
+                'content' => '{"content": [
+                    {
+                            "numAdherent": "01000005",
+                            "environnement": "MERCERWA",
+                            "numeroDossierOpen": "7700410009411",
+                            "libelleTypeTiers": "MERCER",
+                            "datePaiementPrestation": "2025-04-01",
+                            "delaiConservation": 5,
+                            "descriptionParametrage": null,
+                            "nomBeneficiaire": "ASS5",
+                            "prenomBeneficiaire": "LOUIS",
+                            "dateNaissanceBeneficiaire": "1920-05-18",
+                            "numeroSecuriteSociale": "1200578999995",
+                            "numeroFiness": "0932013840",
+                            "numeroPaiement": "0",
+                            "typePaiement": "Paiement1",
+                            "modePaiement": null
+                    }],
+                    "page": {
+                        "totalElements": 1
+                    }
+                }',
+                'headers' => []
+            ]);
+
+        $this->jsonDecoderMock->expects($this->once())
+            ->method('decode')
+            ->with('{"content": [
+                    {
+                            "numAdherent": "01000005",
+                            "environnement": "MERCERWA",
+                            "numeroDossierOpen": "7700410009411",
+                            "libelleTypeTiers": "MERCER",
+                            "datePaiementPrestation": "2025-04-01",
+                            "delaiConservation": 5,
+                            "descriptionParametrage": null,
+                            "nomBeneficiaire": "ASS5",
+                            "prenomBeneficiaire": "LOUIS",
+                            "dateNaissanceBeneficiaire": "1920-05-18",
+                            "numeroSecuriteSociale": "1200578999995",
+                            "numeroFiness": "0932013840",
+                            "numeroPaiement": "0",
+                            "typePaiement": "Paiement1",
+                            "modePaiement": null
+                    }],
+                    "page": {
+                        "totalElements": 1
+                    }
+                }')
+            ->willReturn([
+                'content' => [
+                    [
+                        "numAdherent" => "01000005",
+                        "environnement" => "MERCERWA",
+                        "numeroDossierOpen" => "7700410009411",
+                        "libelleTypeTiers" => "MERCER",
+                        "datePaiementPrestation" => "2025-04-01",
+                        "delaiConservation" => 5,
+                        "descriptionParametrage" => null,
+                        "nomBeneficiaire" => "ASS5",
+                        "prenomBeneficiaire" => "LOUIS",
+                        "dateNaissanceBeneficiaire" => "1920-05-18",
+                        "numeroSecuriteSociale" => "1200578999995",
+                        "numeroFiness" => "0932013840",
+                        "numeroPaiement" => 0,
+                        "typePaiement" => "Paiement1",
+                        "modePaiement" => null
+                    ]
+                ],
+                'page' => [
+                    'totalElements' => 1
+                ]
+            ]);
+
+        $this->assertEquals([
+            'columns' => [
+                'labels' => [
+                    'membershipNumber' => 'Numéro adhérent',
+                    'conservationTime' => 'Délai de conservation'
+                ],
+                'config' => [
+                    'membershipNumber' => [
+                        'sortable' => false
+                    ],
+                    'conservationTime' => [
+                        'sortable' => true
+                    ]
+                ]
+            ],
+            'advancedSearch' => [
+                [
+                    'fields' => [
+                        [
+                            'name' => 'dateFrom',
+                            'label' => 'DU',
+                            'type' => 'date'
+                        ]
+                    ],
+                    'labels' => 'Par date de paiement sur une période'
+                ]
+            ],
+            'eligibleObjects' => [[
+                'key' => 0,
+                'membershipNumber' => '01000005',
+                'environment' => 'MERCERWA',
+                'openFileNumber' => '7700410009411',
+                'thirdTypeLabel' => 'MERCER',
+                'healthBenefitPaymentDate' => '01/04/2025',
+                'conservationTime' => 5,
+                'settingDescription' => null,
+                'details' => [
+                    'beneficiaryName' => 'ASS5',
+                    'beneficiaryFirstname' => 'LOUIS',
+                    'beneficiaryBirthdate' => '18/05/1920',
+                    'socialSecurityNumber' => '1200578999995',
+                    'finessNumber' => '0932013840',
+                    'paymentNumber' => 0,
+                    'paymentType' => 'Paiement1',
+                    'paymentMode' => null
+
+                ]
+            ]],
+            'total' => 1
+        ],
+            $this->instance->find($requestMock)
+        );
+    }
+
+    public function testFindWithNoResult() : void
+    {
+        $requestMock = $this->getMockBuilder(Request::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['get'])
+            ->getMock();
+
+        $requestMock->expects($this->exactly(12))
+            ->method('get')
+            ->willReturnCallback(function ($parameter) {
+                static $invocationCount = 0;
+                $consecutiveArgs = [
+                    'theme', 'environment', 'page', 'sortOrder',
+                    'sortField', 'sortOrder', 'dateFrom', 'dateFrom',
+                    'dateTo', 'dateTo', 'membershipNumber', 'membershipNumber',
+                ];
+                $consecutiveResults = [
+                    'COTISATIONS_ELIGIBLE', 'MERCERWA', 1, '1',
+                    'name', '1', '2025-04-01', '2025-04-01',
+                    '2025-04-30', '2025-04-30', '12345', '12345'
+                ];
+
+                $this->assertEquals($consecutiveArgs[$invocationCount], $parameter);
+
+                return $consecutiveResults[$invocationCount++];
+            });
+
+        $this->uiConfigProviderMock->expects($this->once())
+            ->method('convertFieldName')
+            ->with(ObjectType::ELIGIBLE, 'COTISATIONS_ELIGIBLE', 'name')
+            ->willReturn('nom');
+
+
+        $this->clientMock->expects($this->once())
+            ->method('doRequest')
+            ->with('/url/api-rgpd/v1/eligibles', [
+                'environnement' => 'MERCERWA',
+                'theme' => 'COTISATIONS_ELIGIBLE',
+                'pageable' => [
+                    'sort' => [
+                        [
+                            'direction' => 'ASC',
+                            'property' => 'nom'
+                        ]
+                    ],
+                    'page' => 1,
+                    'size' => 10
+                ],
+                'debutPeriode' => '2025-04-01',
+                'finPeriode' => '2025-04-30',
+                'numAdherent' => '12345'
+            ], Request::METHOD_POST)
+            ->willReturn([
+                'content' => '',
+                'headers' => []
+            ]);
+
+        $this->assertEquals(['eligibleObjects' => []], $this->instance->find($requestMock));;
+    }
+
+
 
 }
