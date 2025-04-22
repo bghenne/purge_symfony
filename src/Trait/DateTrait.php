@@ -28,7 +28,7 @@ trait DateTrait
      *
      * @return string
      */
-    public function formatDate(string $date, string $inputFormat = 'Y-m-d H:i:s', string $outputFormat = 'd/m/Y H:i:s') : string
+    public function formatDate(string $date, string $inputFormat = 'Y-m-d', string $outputFormat = 'd/m/Y') : string
     {
         return DateTime::createFromFormat($inputFormat, $date)->format($outputFormat);
     }

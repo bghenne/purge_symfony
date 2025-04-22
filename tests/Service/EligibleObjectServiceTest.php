@@ -75,7 +75,7 @@ class EligibleObjectServiceTest extends TestCase
      * @throws ServerExceptionInterface
      * @throws TransportExceptionInterface
      */
-    public function testFindEligibleContribution(): void
+    public function testFindEligibleContributionResults(): void
     {
         $requestMock = $this->getMockBuilder(Request::class)
             ->disableOriginalConstructor()
@@ -294,7 +294,7 @@ class EligibleObjectServiceTest extends TestCase
      * @throws ServerExceptionInterface
      * @throws TransportExceptionInterface
      */
-    public function testFindHealthBenefit(): void
+    public function testFindHealthBenefitResults(): void
     {
         $requestMock = $this->getMockBuilder(Request::class)
             ->disableOriginalConstructor()
@@ -502,6 +502,238 @@ class EligibleObjectServiceTest extends TestCase
                     'paymentType' => 'Paiement1',
                     'paymentMode' => null
 
+                ]
+            ]],
+            'total' => 1
+        ],
+            $this->instance->find($requestMock)
+        );
+    }
+
+    public function testBuildDisabilityBenefitsResults() : void
+    {
+        $requestMock = $this->getMockBuilder(Request::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['get'])
+            ->getMock();
+
+        $requestMock->expects($this->exactly(12))
+            ->method('get')
+            ->willReturnCallback(function ($parameter) {
+                static $invocationCount = 0;
+                $consecutiveArgs = [
+                    'theme', 'environment', 'page', 'sortOrder',
+                    'sortField', 'sortOrder', 'dateFrom', 'dateFrom',
+                    'dateTo', 'dateTo', 'membershipNumber', 'membershipNumber',
+                ];
+                $consecutiveResults = [
+                    'PRESTATIONS_PREVOYANCE_ELIGIBLE', 'MERCERWA', 1, '1',
+                    'name', '1', '2025-04-01', '2025-04-01',
+                    '2025-04-30', '2025-04-30', '12345', '12345'
+                ];
+
+                $this->assertEquals($consecutiveArgs[$invocationCount], $parameter);
+
+                return $consecutiveResults[$invocationCount++];
+            });
+
+        $this->uiConfigProviderMock->expects($this->once())
+            ->method('convertFieldName')
+            ->with(ObjectType::ELIGIBLE, 'PRESTATIONS_PREVOYANCE_ELIGIBLE', 'name')
+            ->willReturn('nom');
+
+        $this->uiConfigProviderMock->expects($this->once())
+            ->method('getPropertyLabels')
+            ->with(ObjectType::ELIGIBLE, 'PRESTATIONS_PREVOYANCE_ELIGIBLE')
+            ->willReturn([
+                'membershipNumber' => 'Numéro adhérent',
+                'claimNumber' => 'Numéro de sinistre'
+            ]);
+
+        $this->uiConfigProviderMock->expects($this->once())
+            ->method('getColumnsConfig')
+            ->with(ObjectType::ELIGIBLE, 'PRESTATIONS_PREVOYANCE_ELIGIBLE')
+            ->willReturn([
+                'membershipNumber' => [
+                    'sortable' => false
+                ],
+                'claimNumber' => [
+                    'sortable' => true
+                ]
+            ]);
+
+        $this->uiConfigProviderMock->expects($this->once())
+            ->method('getAdvancedSearchConfig')
+            ->with(ObjectType::ELIGIBLE, 'PRESTATIONS_PREVOYANCE_ELIGIBLE')
+            ->willReturn([
+                [
+                    'fields' => [
+                        [
+                            'name' => 'dateFrom',
+                            'label' => 'DU',
+                            'type' => 'date'
+                        ]
+                    ],
+                    'labels' => 'Par date de paiement sur la période'
+                ]
+            ]);
+
+        $this->clientMock->expects($this->once())
+            ->method('doRequest')
+            ->with('/url/api-rgpd/v1/eligibles', [
+                'environnement' => 'MERCERWA',
+                'theme' => 'PRESTATIONS_PREVOYANCE_ELIGIBLE',
+                'pageable' => [
+                    'sort' => [
+                        [
+                            'direction' => 'ASC',
+                            'property' => 'nom'
+                        ]
+                    ],
+                    'page' => 1,
+                    'size' => 10
+                ],
+                'debutPeriode' => '2025-04-01',
+                'finPeriode' => '2025-04-30',
+                'numAdherent' => '12345'
+            ], Request::METHOD_POST)
+            ->willReturn([
+                'content' => '{"content": [
+                    {
+                            "dateCampagne": "2025-02-01",
+                            "nomDuClient": "NOVEO",
+                            "environnement": "GFPPREV",
+                            "identifiantFamille": 20,
+                            "numAdherent": "07000020",
+                            "nomBeneficiaire": "ASS20",
+                            "prenomBeneficiaire": "CHRISTIAN",
+                            "dateNaissanceBeneficiaire": "1960-10-08",
+                            "dateDecesBeneficiaire": null,
+                            "rangBeneficiaire": 1,
+                            "libelleRangBeneficiaire": "",
+                            "numeroSecuriteSociale": "1601074999920",
+                            "numeroSinistre": 4590021702170,
+                            "dateClotureSinistre": "2018-03-21",
+                            "typeSinistre": "",
+                            "dateDernierPaiement": null,
+                            "typeVersement": "",
+                            "dateInvalidite": null,
+                            "delaiConservation": 5,
+                            "parametrage": "PARMPINC1",
+                            "descriptionParametrage": "règle date de cloture et date du dernier paiement"
+                    }],
+                    "page": {
+                        "totalElements": 1
+                    }
+                }',
+                'headers' => []
+            ]);
+
+        $this->jsonDecoderMock->expects($this->once())
+            ->method('decode')
+            ->with('{"content": [
+                    {
+                            "dateCampagne": "2025-02-01",
+                            "nomDuClient": "NOVEO",
+                            "environnement": "GFPPREV",
+                            "identifiantFamille": 20,
+                            "numAdherent": "07000020",
+                            "nomBeneficiaire": "ASS20",
+                            "prenomBeneficiaire": "CHRISTIAN",
+                            "dateNaissanceBeneficiaire": "1960-10-08",
+                            "dateDecesBeneficiaire": null,
+                            "rangBeneficiaire": 1,
+                            "libelleRangBeneficiaire": "",
+                            "numeroSecuriteSociale": "1601074999920",
+                            "numeroSinistre": 4590021702170,
+                            "dateClotureSinistre": "2018-03-21",
+                            "typeSinistre": "",
+                            "dateDernierPaiement": null,
+                            "typeVersement": "",
+                            "dateInvalidite": null,
+                            "delaiConservation": 5,
+                            "parametrage": "PARMPINC1",
+                            "descriptionParametrage": "règle date de cloture et date du dernier paiement"
+                    }],
+                    "page": {
+                        "totalElements": 1
+                    }
+                }')
+            ->willReturn([
+                'content' => [
+                    [
+                        "dateCampagne" => "2025-02-01",
+                        "nomDuClient" => "NOVEO",
+                        "environnement" => "GFPPREV",
+                        "identifiantFamille" => 20,
+                        "numAdherent" => "07000020",
+                        "nomBeneficiaire" => "ASS20",
+                        "prenomBeneficiaire" => "CHRISTIAN",
+                        "dateNaissanceBeneficiaire" => "1960-10-08",
+                        "dateDecesBeneficiaire" => null,
+                        "rangBeneficiaire" => 1,
+                        "libelleRangBeneficiaire" => "",
+                        "numeroSecuriteSociale" => "1601074999920",
+                        "numeroSinistre" => 4590021702170,
+                        "dateClotureSinistre" => "2018-03-21",
+                        "typeSinistre" => "",
+                        "dateDernierPaiement" => null,
+                        "typeVersement" => "",
+                        "dateInvalidite" => null,
+                        "delaiConservation" => 5,
+                        "parametrage" => "PARMPINC1",
+                        "descriptionParametrage" => "règle date de cloture et date du dernier paiement"
+                    ]
+                ],
+                'page' => [
+                    'totalElements' => 1
+                ]
+            ]);
+
+        $this->assertEquals([
+            'columns' => [
+                'labels' => [
+                    'membershipNumber' => 'Numéro adhérent',
+                    'claimNumber' => 'Numéro de sinistre'
+                ],
+                'config' => [
+                    'membershipNumber' => [
+                        'sortable' => false
+                    ],
+                    'claimNumber' => [
+                        'sortable' => true
+                    ]
+                ]
+            ],
+            'advancedSearch' => [
+                [
+                    'fields' => [
+                        [
+                            'name' => 'dateFrom',
+                            'label' => 'DU',
+                            'type' => 'date'
+                        ]
+                    ],
+                    'labels' => 'Par date de paiement sur la période'
+                ]
+            ],
+            'eligibleObjects' => [[
+                'key' => 0,
+                'membershipNumber' => '07000020',
+                'claimNumber' => 4590021702170,
+                'healthBenefitTypology' => '',
+                'claimClosingDate' => '21/03/2018',
+                'healthBenefitPaymentType' => '',
+                'lastPaymentDate' => null,
+                'beneficiaryDeathDate' => null,
+                'conservationTime' => 5,
+                'settingsDescription' => 'règle date de cloture et date du dernier paiement',
+                'details' => [
+                    'beneficiaryName' => 'ASS20',
+                    'beneficiaryFirstname' => 'CHRISTIAN',
+                    'beneficiaryBirthdate' => '08/10/1960',
+                    'socialSecurityNumber' => '1601074999920',
+                    'beneficiaryRank' => 1
                 ]
             ]],
             'total' => 1

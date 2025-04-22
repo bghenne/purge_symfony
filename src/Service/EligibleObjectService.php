@@ -188,7 +188,7 @@ final readonly class EligibleObjectService implements ServiceInterface
                 'membershipNumber' => $result['numAdherent'] ?? null,
                 'claimNumber' => $result['numeroSinistre'] ?? null,
                 'healthBenefitTypology' => $result['typeVersement'] ?? null,
-                'claimClosingDate' => $result['dateClosureSinistre'] ?? null,
+                'claimClosingDate' => !empty($result['dateClotureSinistre']) ? $this->formatDate($result['dateClotureSinistre']) : null,
                 'healthBenefitPaymentType' => $result['typePaiement'] ?? null,
                 'lastPaymentDate' => $result['datePaiementPrestation'] ?? null,
                 'beneficiaryDeathDate' => $result['dateDecesBeneficiaire'] ?? null,
@@ -198,7 +198,7 @@ final readonly class EligibleObjectService implements ServiceInterface
                     // beneficiary details
                     'beneficiaryName' => $result['nomBeneficiaire'] ?? null,
                     'beneficiaryFirstname' => $result['prenomBeneficiaire'] ?? null,
-                    'beneficiaryBirthdate' => $result['dateNaissanceBeneficiaire'] ?? null,
+                    'beneficiaryBirthdate' => !empty($result['dateNaissanceBeneficiaire']) ? $this->formatDate($result['dateNaissanceBeneficiaire']) : null,
                     'socialSecurityNumber' => $result['numeroSecuriteSociale'] ?? null,
                     'beneficiaryRank' => $result['rangBeneficiaire'] ?? null
                 ]
