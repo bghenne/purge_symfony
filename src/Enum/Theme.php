@@ -27,4 +27,15 @@ enum Theme
     case PRESTATIONS_PREVOYANCE_ALERTE;
     case CONTRATS_OPTIONS_LIEN_SALARIAL_ALERTE;
     case INDIVIDUS_ALERTE;
+
+    public static function values(): array
+    {
+        $values = [];
+
+        foreach (self::cases() as $case) {
+            $values[] = $case->name;
+        }
+
+        return $values;
+    }
 }

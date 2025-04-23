@@ -3,6 +3,7 @@
 namespace App\Provider;
 
 use App\Enum\ObjectType;
+use App\Enum\Theme;
 use LogicException;
 use Symfony\Component\Serializer\Encoder\DecoderInterface;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
@@ -141,5 +142,18 @@ class UiConfigProvider
         }
 
         return $fieldName;
+    }
+
+    /**
+     * Check if theme is valid
+     *
+     * @param string $theme
+     * @return bool
+     */
+    public function isThemeValid(string $theme): bool
+    {
+        $themes = Theme::values();
+
+        return in_array($theme, $themes, true);
     }
 }

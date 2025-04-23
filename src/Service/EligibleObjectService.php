@@ -55,7 +55,12 @@ final readonly class EligibleObjectService implements ServiceInterface
     public function find(Request $request): array
     {
         // extract parameters from request
-        $parameters = $this->extractParameters($request, true);
+        $parameters = $this->extractParameters($request);
+
+        // check if the theme is valid
+        if (!$this->uiConfigProvider->isThemeValid($parameters['theme'])) {
+            throw new LogicException('Unsupported theme: ' . $parameters['theme']);
+        }
 
         $response = $this->client->doRequest($this->baseUrl . '/api-rgpd/v1/eligibles', $parameters, Request::METHOD_POST);
 
@@ -95,8 +100,6 @@ final readonly class EligibleObjectService implements ServiceInterface
         if ($parameters['theme'] === Theme::INDIVIDUS_ELIGIBLE->name) {
             return $this->buildIndividualResults($results, $objects);
         }
-
-        throw new LogicException('Unsupported theme: ' . $parameters['theme']);
     }
 
     /**
@@ -190,7 +193,7 @@ final readonly class EligibleObjectService implements ServiceInterface
                 'healthBenefitTypology' => $result['typeVersement'] ?? null,
                 'claimClosingDate' => !empty($result['dateClotureSinistre']) ? $this->formatDate($result['dateClotureSinistre']) : null,
                 'healthBenefitPaymentType' => $result['typePaiement'] ?? null,
-                'lastPaymentDate' => $result['datePaiementPrestation'] ?? null,
+                'lastPaymentDate' => !empty($result['datePaiementPrestation']) ? $this->formatDate($result['datePaiementPrestation']) : null,
                 'beneficiaryDeathDate' => $result['dateDecesBeneficiaire'] ?? null,
                 'conservationTime' => $result['delaiConservation'] ?? null,
                 'settingsDescription' => $result['descriptionParametrage'] ?? null,
@@ -262,7 +265,7 @@ final readonly class EligibleObjectService implements ServiceInterface
                 'details' => [
                     'beneficiaryName' => $result['nomBeneficiaire'] ?? null,
                     'beneficiaryFirstname' => $result['prenomBeneficiaire'] ?? null,
-                    'beneficiaryBirthdate' => $result['dateNaissanceBeneficiaire'] ?? null,
+                    'beneficiaryBirthdate' => !empty($result['dateNaissanceBeneficiaire']) ? $this->formatDate($result['dateNaissanceBeneficiaire']) : null,
                     'socialSecurityNumber' => $result['numeroSecuriteSociale'] ?? null
                 ]
             ];

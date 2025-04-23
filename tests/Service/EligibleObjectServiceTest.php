@@ -8,6 +8,7 @@ use App\Provider\UiConfigProvider;
 use App\Service\EligibleObjectService;
 use DateMalformedStringException;
 use Drenso\OidcBundle\Exception\OidcException;
+use LogicException;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -54,7 +55,7 @@ class EligibleObjectServiceTest extends TestCase
 
         $this->uiConfigProviderMock = $this->getMockBuilder(UiConfigProvider::class)
             ->disableOriginalConstructor()
-            ->onlyMethods(['convertFieldName', 'getPropertyLabels', 'getColumnsConfig', 'getAdvancedSearchConfig'])
+            ->onlyMethods(['isThemeValid', 'convertFieldName', 'getPropertyLabels', 'getColumnsConfig', 'getAdvancedSearchConfig'])
             ->getMock();
 
         $this->instance = new EligibleObjectService(
@@ -106,6 +107,11 @@ class EligibleObjectServiceTest extends TestCase
             ->method('convertFieldName')
             ->with(ObjectType::ELIGIBLE, 'COTISATIONS_ELIGIBLE', 'name')
             ->willReturn('nom');
+
+        $this->uiConfigProviderMock->expects($this->once())
+             ->method('isThemeValid')
+             ->with('COTISATIONS_ELIGIBLE')
+             ->willReturn(true);
 
         $this->uiConfigProviderMock->expects($this->once())
             ->method('getPropertyLabels')
@@ -325,6 +331,11 @@ class EligibleObjectServiceTest extends TestCase
             ->method('convertFieldName')
             ->with(ObjectType::ELIGIBLE, 'PRESTATIONS_SANTE_ELIGIBLE', 'name')
             ->willReturn('nom');
+
+        $this->uiConfigProviderMock->expects($this->once())
+            ->method('isThemeValid')
+            ->with('PRESTATIONS_SANTE_ELIGIBLE')
+            ->willReturn(true);
 
         $this->uiConfigProviderMock->expects($this->once())
             ->method('getPropertyLabels')
@@ -550,6 +561,11 @@ class EligibleObjectServiceTest extends TestCase
             ->method('convertFieldName')
             ->with(ObjectType::ELIGIBLE, 'PRESTATIONS_PREVOYANCE_ELIGIBLE', 'name')
             ->willReturn('nom');
+
+        $this->uiConfigProviderMock->expects($this->once())
+            ->method('isThemeValid')
+            ->with('PRESTATIONS_PREVOYANCE_ELIGIBLE')
+            ->willReturn(true);
 
         $this->uiConfigProviderMock->expects($this->once())
             ->method('getPropertyLabels')
@@ -793,6 +809,11 @@ class EligibleObjectServiceTest extends TestCase
             ->willReturn('nom');
 
         $this->uiConfigProviderMock->expects($this->once())
+            ->method('isThemeValid')
+            ->with('CONTRATS_OPTIONS_LIEN_SALARIAL_ELIGIBLE')
+            ->willReturn(true);
+
+        $this->uiConfigProviderMock->expects($this->once())
             ->method('getPropertyLabels')
             ->with(ObjectType::ELIGIBLE, 'CONTRATS_OPTIONS_LIEN_SALARIAL_ELIGIBLE')
             ->willReturn([
@@ -942,6 +963,184 @@ class EligibleObjectServiceTest extends TestCase
         );
     }
 
+    public function testBuildIndividualResults() : void
+    {
+        $requestMock = $this->getMockBuilder(Request::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['get'])
+            ->getMock();
+
+        $requestMock->expects($this->exactly(12))
+            ->method('get')
+            ->willReturnCallback(function ($parameter) {
+                static $invocationCount = 0;
+                $consecutiveArgs = [
+                    'theme', 'environment', 'page', 'sortOrder',
+                    'sortField', 'sortOrder', 'dateFrom', 'dateFrom',
+                    'dateTo', 'dateTo', 'membershipNumber', 'membershipNumber',
+                ];
+                $consecutiveResults = [
+                    'INDIVIDUS_ELIGIBLE', 'MERCERWA', 1, '1',
+                    'name', '1', '2025-04-01', '2025-04-01',
+                    '2025-04-30', '2025-04-30', '12345', '12345'
+                ];
+
+                $this->assertEquals($consecutiveArgs[$invocationCount], $parameter);
+
+                return $consecutiveResults[$invocationCount++];
+            });
+
+        $this->uiConfigProviderMock->expects($this->once())
+            ->method('convertFieldName')
+            ->with(ObjectType::ELIGIBLE, 'INDIVIDUS_ELIGIBLE', 'name')
+            ->willReturn('nom');
+
+        $this->uiConfigProviderMock->expects($this->once())
+            ->method('isThemeValid')
+            ->with('INDIVIDUS_ELIGIBLE')
+            ->willReturn(true);
+
+        $this->uiConfigProviderMock->expects($this->once())
+            ->method('getPropertyLabels')
+            ->with(ObjectType::ELIGIBLE, 'INDIVIDUS_ELIGIBLE')
+            ->willReturn([
+                'membershipNumber' => 'Numéro adhérent',
+                'familyLink' => 'Lien familial'
+            ]);
+
+        $this->uiConfigProviderMock->expects($this->once())
+            ->method('getColumnsConfig')
+            ->with(ObjectType::ELIGIBLE, 'INDIVIDUS_ELIGIBLE')
+            ->willReturn([
+                'membershipNumber' => [
+                    'sortable' => true
+                ],
+                'familyLink' => [
+                    'sortable' => false
+                ]
+            ]);
+
+        $this->uiConfigProviderMock->expects($this->once())
+            ->method('getAdvancedSearchConfig')
+            ->with(ObjectType::ELIGIBLE, 'INDIVIDUS_ELIGIBLE')
+            ->willReturn([
+                [
+                    'fields' => [
+                        [
+                            'name' => 'membershipNumber',
+                            'type' => 'text'
+                        ]
+                    ],
+                    'label' => 'Par numéro d\'adhérent'
+                ]
+            ]);
+
+        $this->clientMock->expects($this->once())
+            ->method('doRequest')
+            ->with('/url/api-rgpd/v1/eligibles', [
+                'environnement' => 'MERCERWA',
+                'theme' => 'INDIVIDUS_ELIGIBLE',
+                'pageable' => [
+                    'sort' => [
+                        [
+                            'direction' => 'ASC',
+                            'property' => 'nom'
+                        ]
+                    ],
+                    'page' => 1,
+                    'size' => 10
+                ],
+                'debutPeriode' => '2025-04-01',
+                'finPeriode' => '2025-04-30',
+                'numAdherent' => '12345'
+            ], Request::METHOD_POST)
+            ->willReturn([
+                'content' => '{"content": [
+                    {
+                            "numAdherent": "07000020",
+                            "nomBeneficiaire": "ASS20",
+                            "prenomBeneficiaire": "CHRISTIAN",
+                            "dateNaissanceBeneficiaire": "1960-10-08",
+                    }],
+                    "page": {
+                        "totalElements": 1
+                    }
+                }',
+                'headers' => []
+            ]);
+
+        $this->jsonDecoderMock->expects($this->once())
+            ->method('decode')
+            ->with('{"content": [
+                    {
+                            "numAdherent": "07000020",
+                            "nomBeneficiaire": "ASS20",
+                            "prenomBeneficiaire": "CHRISTIAN",
+                            "dateNaissanceBeneficiaire": "1960-10-08",
+                    }],
+                    "page": {
+                        "totalElements": 1
+                    }
+                }')
+            ->willReturn([
+                'content' => [
+                    [
+                        "numAdherent" => "07000020",
+                        "nomBeneficiaire" => "ASS20",
+                        "prenomBeneficiaire" => "CHRISTIAN",
+                        "dateNaissanceBeneficiaire" => "1960-10-08"
+                    ]
+                ],
+                'page' => [
+                    'totalElements' => 1
+                ]
+            ]);
+
+        $this->assertEquals([
+            'columns' => [
+                'labels' => [
+                    'membershipNumber' => 'Numéro adhérent',
+                    'familyLink' => 'Lien familial'
+                ],
+                'config' => [
+                    'membershipNumber' => [
+                        'sortable' => true
+                    ],
+                    'familyLink' => [
+                        'sortable' => false
+                    ]
+                ]
+            ],
+            'advancedSearch' => [
+                [
+                    'fields' => [
+                        [
+                            'name' => 'membershipNumber',
+                            'type' => 'text'
+                        ]
+                    ],
+                    'label' => 'Par numéro d\'adhérent'
+                ]
+            ],
+            'eligibleObjects' => [[
+                'key' => 0,
+                'familyLink' => null,
+                'membershipNumber' => '07000020',
+                'conservationTime' => null,
+                'settingsDescription' => null,
+                'details' => [
+                    'beneficiaryName' => 'ASS20',
+                    'beneficiaryFirstname' => 'CHRISTIAN',
+                    'beneficiaryBirthdate' => '08/10/1960',
+                    'socialSecurityNumber' => null
+                ]
+            ]],
+            'total' => 1
+        ],
+            $this->instance->find($requestMock)
+        );
+    }
+
     public function testFindWithNoResult(): void
     {
         $requestMock = $this->getMockBuilder(Request::class)
@@ -974,6 +1173,10 @@ class EligibleObjectServiceTest extends TestCase
             ->with(ObjectType::ELIGIBLE, 'COTISATIONS_ELIGIBLE', 'name')
             ->willReturn('nom');
 
+        $this->uiConfigProviderMock->expects($this->once())
+            ->method('isThemeValid')
+            ->with('COTISATIONS_ELIGIBLE')
+            ->willReturn(true);
 
         $this->clientMock->expects($this->once())
             ->method('doRequest')
@@ -1002,5 +1205,143 @@ class EligibleObjectServiceTest extends TestCase
         $this->assertEquals(['eligibleObjects' => []], $this->instance->find($requestMock));
     }
 
+    /**
+     * @return void
+     */
+    public function testFindWithUnknownTheme(): void
+    {
+        $requestMock = $this->getMockBuilder(Request::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['get'])
+            ->getMock();
 
+        $requestMock->expects($this->exactly(12))
+            ->method('get')
+            ->willReturnCallback(function ($parameter) {
+                static $invocationCount = 0;
+                $consecutiveArgs = [
+                    'theme', 'environment', 'page', 'sortOrder',
+                    'sortField', 'sortOrder', 'dateFrom', 'dateFrom',
+                    'dateTo', 'dateTo', 'membershipNumber', 'membershipNumber',
+                ];
+                $consecutiveResults = [
+                    'THEME_INCONNU', 'MERCERWA', 1, '1',
+                    'name', '1', '2025-04-01', '2025-04-01',
+                    '2025-04-30', '2025-04-30', '12345', '12345'
+                ];
+
+                $this->assertEquals($consecutiveArgs[$invocationCount], $parameter);
+
+                return $consecutiveResults[$invocationCount++];
+            });
+
+        $this->uiConfigProviderMock->expects($this->once())
+            ->method('convertFieldName')
+            ->with(ObjectType::ELIGIBLE, 'THEME_INCONNU', 'name')
+            ->willReturn('THEME_INCONNU');
+
+        $this->uiConfigProviderMock->expects($this->once())
+            ->method('isThemeValid')
+            ->with('THEME_INCONNU')
+            ->willReturn(false);
+
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('Unsupported theme: THEME_INCONNU');
+
+        $this->assertEquals(['eligibleObjects' => []], $this->instance->find($requestMock));
+    }
+
+    /**
+     * @return void
+     * @throws ClientExceptionInterface
+     * @throws DateMalformedStringException
+     * @throws OidcException
+     * @throws RedirectionExceptionInterface
+     * @throws ServerExceptionInterface
+     * @throws TransportExceptionInterface
+     */
+    public function testFindToExport() : void
+    {
+        $requestMock = $this->getMockBuilder(Request::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['get'])
+            ->getMock();
+
+        $requestMock->expects($this->exactly(11))
+            ->method('get')
+            ->willReturnCallback(function ($parameter) {
+                static $invocationCount = 0;
+                $consecutiveArgs = [
+                    'theme', 'environment', 'sortOrder',
+                    'sortField', 'sortOrder', 'dateFrom', 'dateFrom',
+                    'dateTo', 'dateTo', 'membershipNumber', 'membershipNumber',
+                ];
+                $consecutiveResults = [
+                    'COTISATIONS_ELIGIBLE', 'MERCERWA', '1',
+                    'name', '1', '2025-04-01', '2025-04-01',
+                    '2025-04-30', '2025-04-30', '12345', '12345'
+                ];
+
+                $this->assertEquals($consecutiveArgs[$invocationCount], $parameter);
+
+                return $consecutiveResults[$invocationCount++];
+            });
+
+        $this->uiConfigProviderMock->expects($this->once())
+            ->method('convertFieldName')
+            ->with(ObjectType::ELIGIBLE, 'COTISATIONS_ELIGIBLE', 'name')
+            ->willReturn('nom');
+
+        $this->clientMock->expects($this->once())
+            ->method('doRequest')
+            ->with('/url/api-rgpd/v1/exporter/eligibles', [
+                'environnement' => 'MERCERWA',
+                'theme' => 'COTISATIONS_ELIGIBLE',
+                'pageable' => [
+                    'sort' => [
+                        [
+                            'direction' => 'ASC',
+                            'property' => 'nom'
+                        ]
+                    ]
+                ],
+                'debutPeriode' => '2025-04-01',
+                'finPeriode' => '2025-04-30',
+                'numAdherent' => '12345'
+            ], Request::METHOD_POST)
+            ->willReturn([
+                'content' => 'content',
+                'headers' => []
+            ]);
+
+        $this->assertEquals([
+            'content' => 'content',
+            'headers' => []
+        ], $this->instance->findToExport($requestMock));
+    }
+
+    /**
+     * @return void
+     */
+    public function testMakeExport(): void
+    {
+        $this->assertEquals([
+            '/tmp/eligible_objects_' . date('Y-m-d') . '.csv',
+            'eligible_objects_' . date('Y-m-d') . '.csv'
+        ], $this->instance->makeExport('test', [
+            'content-type' => [
+                'text/csv'
+            ],
+        ]));
+
+        $this->assertFileExists('/tmp/eligible_objects_' . date('Y-m-d') . '.csv');;
+    }
+
+    /**
+     * @return void
+     */
+    public function tearDown(): void
+    {
+        @unlink('/tmp/eligible_objects_' . date('Y-m-d') . '.csv');
+    }
 }
