@@ -226,7 +226,7 @@ final readonly class EligibleObjectService implements ServiceInterface
                 'contractType' => $result[''] ?? null,
                 'subcontractType' => $result[''] ?? null,
                 'optionTop' => $result[''] ?? null,
-                'cancellingContractDate' => $result[''] ?? null,
+                'cancellingContractDate' => !empty($result['']) ? $this->formatDate($result['']) : null,
                 'cancellingContractReason' => $result[''] ?? null,
                 'conservationTime' => $result['delaiConservation'] ?? null,
                 'settingsDescription' => $result['descriptionParametrage'] ?? null,
@@ -234,7 +234,7 @@ final readonly class EligibleObjectService implements ServiceInterface
                     // beneficiary details
                     'beneficiaryName' => $result['nomBeneficiaire'] ?? null,
                     'beneficiaryFirstname' => $result['prenomBeneficiaire'] ?? null,
-                    'beneficiaryBirthdate' => $result['dateNaissanceBeneficiaire'] ?? null,
+                    'beneficiaryBirthdate' => !empty($result['dateNaissanceBeneficiaire']) ? $this->formatDate($result['dateNaissanceBeneficiaire']) : null,
                     'socialSecurityNumber' => $result['numeroSecuriteSociale'] ?? null
                 ]
             ];

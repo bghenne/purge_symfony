@@ -139,7 +139,7 @@ class EligibleObjectServiceTest extends TestCase
                             'type' => 'date'
                         ]
                     ],
-                    'labels' => 'Par date de paiement'
+                    'label' => 'Par date de paiement'
                 ]
             ]);
 
@@ -235,52 +235,52 @@ class EligibleObjectServiceTest extends TestCase
             ]);
 
         $this->assertEquals([
-                'columns' => [
-                    'labels' => [
-                        'membershipNumber' => 'Numéro adhérent',
-                        'contributionPaymentDate' => 'Date de dernier paiement de la cotisation'
+            'columns' => [
+                'labels' => [
+                    'membershipNumber' => 'Numéro adhérent',
+                    'contributionPaymentDate' => 'Date de dernier paiement de la cotisation'
+                ],
+                'config' => [
+                    'membershipNumber' => [
+                        'sortable' => false
                     ],
-                    'config' => [
-                        'membershipNumber' => [
-                            'sortable' => false
-                        ],
-                        'contributionPaymentDate' => [
-                            'sortable' => true
-                        ]
+                    'contributionPaymentDate' => [
+                        'sortable' => true
                     ]
-                ],
-                'advancedSearch' => [
-                    [
-                        'fields' => [
-                            [
-                                'name' => 'dateFrom',
-                                'label' => 'DU',
-                                'type' => 'date'
-                            ]
-                        ],
-                        'labels' => 'Par date de paiement'
-                    ]
-                ],
-                'eligibleObjects' => [[
-                    'key' => 0,
-                    'campaignDate' => '01/01/2025',
-                    'clientName' => 'MERCER',
-                    'environment' => 'MERCERWA',
-                    'membershipNumber' => '01000005',
-                    'contributionPaymentDate' => '30/03/2018',
-                    'contributionCallPeriod' => 'T1',
-                    'contributionCallYear' => 2018,
-                    'conservationTime' => 5,
-                    'purgeRuleLabel' => null,
-                    'details' => [
-                        'beneficiaryName' => 'ASS5',
-                        'beneficiaryFirstname' => 'LOUIS',
-                        'beneficiaryBirthdate' => '18/05/1920',
-                        'socialSecurityNumber' => '1200578999995'
-                    ]
-                ]],
-                'total' => 1
+                ]
             ],
+            'advancedSearch' => [
+                [
+                    'fields' => [
+                        [
+                            'name' => 'dateFrom',
+                            'label' => 'DU',
+                            'type' => 'date'
+                        ]
+                    ],
+                    'label' => 'Par date de paiement'
+                ]
+            ],
+            'eligibleObjects' => [[
+                'key' => 0,
+                'campaignDate' => '01/01/2025',
+                'clientName' => 'MERCER',
+                'environment' => 'MERCERWA',
+                'membershipNumber' => '01000005',
+                'contributionPaymentDate' => '30/03/2018',
+                'contributionCallPeriod' => 'T1',
+                'contributionCallYear' => 2018,
+                'conservationTime' => 5,
+                'purgeRuleLabel' => null,
+                'details' => [
+                    'beneficiaryName' => 'ASS5',
+                    'beneficiaryFirstname' => 'LOUIS',
+                    'beneficiaryBirthdate' => '18/05/1920',
+                    'socialSecurityNumber' => '1200578999995'
+                ]
+            ]],
+            'total' => 1
+        ],
             $this->instance->find($requestMock)
         );
     }
@@ -358,7 +358,7 @@ class EligibleObjectServiceTest extends TestCase
                             'type' => 'date'
                         ]
                     ],
-                    'labels' => 'Par date de paiement sur une période'
+                    'label' => 'Par date de paiement sur une période'
                 ]
             ]);
 
@@ -480,7 +480,7 @@ class EligibleObjectServiceTest extends TestCase
                             'type' => 'date'
                         ]
                     ],
-                    'labels' => 'Par date de paiement sur une période'
+                    'label' => 'Par date de paiement sur une période'
                 ]
             ],
             'eligibleObjects' => [[
@@ -510,7 +510,16 @@ class EligibleObjectServiceTest extends TestCase
         );
     }
 
-    public function testBuildDisabilityBenefitsResults() : void
+    /**
+     * @return void
+     * @throws ClientExceptionInterface
+     * @throws DateMalformedStringException
+     * @throws OidcException
+     * @throws RedirectionExceptionInterface
+     * @throws ServerExceptionInterface
+     * @throws TransportExceptionInterface
+     */
+    public function testBuildDisabilityBenefitsResults(): void
     {
         $requestMock = $this->getMockBuilder(Request::class)
             ->disableOriginalConstructor()
@@ -574,7 +583,7 @@ class EligibleObjectServiceTest extends TestCase
                             'type' => 'date'
                         ]
                     ],
-                    'labels' => 'Par date de paiement sur la période'
+                    'label' => 'Par date de paiement sur la période'
                 ]
             ]);
 
@@ -714,7 +723,7 @@ class EligibleObjectServiceTest extends TestCase
                             'type' => 'date'
                         ]
                     ],
-                    'labels' => 'Par date de paiement sur la période'
+                    'label' => 'Par date de paiement sur la période'
                 ]
             ],
             'eligibleObjects' => [[
@@ -742,7 +751,198 @@ class EligibleObjectServiceTest extends TestCase
         );
     }
 
-    public function testFindWithNoResult() : void
+    /**
+     * @return void
+     * @throws ClientExceptionInterface
+     * @throws DateMalformedStringException
+     * @throws OidcException
+     * @throws RedirectionExceptionInterface
+     * @throws ServerExceptionInterface
+     * @throws TransportExceptionInterface
+     */
+    public function testBuildContractResults(): void
+    {
+        $requestMock = $this->getMockBuilder(Request::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['get'])
+            ->getMock();
+
+        $requestMock->expects($this->exactly(12))
+            ->method('get')
+            ->willReturnCallback(function ($parameter) {
+                static $invocationCount = 0;
+                $consecutiveArgs = [
+                    'theme', 'environment', 'page', 'sortOrder',
+                    'sortField', 'sortOrder', 'dateFrom', 'dateFrom',
+                    'dateTo', 'dateTo', 'membershipNumber', 'membershipNumber',
+                ];
+                $consecutiveResults = [
+                    'CONTRATS_OPTIONS_LIEN_SALARIAL_ELIGIBLE', 'MERCERWA', 1, '1',
+                    'name', '1', '2025-04-01', '2025-04-01',
+                    '2025-04-30', '2025-04-30', '12345', '12345'
+                ];
+
+                $this->assertEquals($consecutiveArgs[$invocationCount], $parameter);
+
+                return $consecutiveResults[$invocationCount++];
+            });
+
+        $this->uiConfigProviderMock->expects($this->once())
+            ->method('convertFieldName')
+            ->with(ObjectType::ELIGIBLE, 'CONTRATS_OPTIONS_LIEN_SALARIAL_ELIGIBLE', 'name')
+            ->willReturn('nom');
+
+        $this->uiConfigProviderMock->expects($this->once())
+            ->method('getPropertyLabels')
+            ->with(ObjectType::ELIGIBLE, 'CONTRATS_OPTIONS_LIEN_SALARIAL_ELIGIBLE')
+            ->willReturn([
+                'membershipNumber' => 'Numéro adhérent',
+                'beneficiaryName' => 'Nom'
+            ]);
+
+        $this->uiConfigProviderMock->expects($this->once())
+            ->method('getColumnsConfig')
+            ->with(ObjectType::ELIGIBLE, 'CONTRATS_OPTIONS_LIEN_SALARIAL_ELIGIBLE')
+            ->willReturn([
+                'membershipNumber' => [
+                    'sortable' => true
+                ],
+                'beneficiaryName' => [
+                    'sortable' => false
+                ]
+            ]);
+
+        $this->uiConfigProviderMock->expects($this->once())
+            ->method('getAdvancedSearchConfig')
+            ->with(ObjectType::ELIGIBLE, 'CONTRATS_OPTIONS_LIEN_SALARIAL_ELIGIBLE')
+            ->willReturn([
+                [
+                    'fields' => [
+                        [
+                            'emptyOption' => 'Sélection en cours',
+                            'name' => 'typology',
+                            'type' => 'select',
+                            'options' => ["Contrat Santé", "Contrat Prévoyance"]
+                        ]
+                    ],
+                    'label' => 'Par typologie'
+                ]
+            ]);
+
+        $this->clientMock->expects($this->once())
+            ->method('doRequest')
+            ->with('/url/api-rgpd/v1/eligibles', [
+                'environnement' => 'MERCERWA',
+                'theme' => 'CONTRATS_OPTIONS_LIEN_SALARIAL_ELIGIBLE',
+                'pageable' => [
+                    'sort' => [
+                        [
+                            'direction' => 'ASC',
+                            'property' => 'nom'
+                        ]
+                    ],
+                    'page' => 1,
+                    'size' => 10
+                ],
+                'debutPeriode' => '2025-04-01',
+                'finPeriode' => '2025-04-30',
+                'numAdherent' => '12345'
+            ], Request::METHOD_POST)
+            ->willReturn([
+                'content' => '{"content": [
+                    {
+                            "numAdherent": "07000020",
+                            "nomBeneficiaire": "ASS20",
+                            "prenomBeneficiaire": "CHRISTIAN",
+                            "dateNaissanceBeneficiaire": "1960-10-08",
+                    }],
+                    "page": {
+                        "totalElements": 1
+                    }
+                }',
+                'headers' => []
+            ]);
+
+        $this->jsonDecoderMock->expects($this->once())
+            ->method('decode')
+            ->with('{"content": [
+                    {
+                            "numAdherent": "07000020",
+                            "nomBeneficiaire": "ASS20",
+                            "prenomBeneficiaire": "CHRISTIAN",
+                            "dateNaissanceBeneficiaire": "1960-10-08",
+                    }],
+                    "page": {
+                        "totalElements": 1
+                    }
+                }')
+            ->willReturn([
+                'content' => [
+                    [
+                            "numAdherent" => "07000020",
+                            "nomBeneficiaire" => "ASS20",
+                            "prenomBeneficiaire" => "CHRISTIAN",
+                            "dateNaissanceBeneficiaire" => "1960-10-08"
+                    ]
+                ],
+                'page' => [
+                    'totalElements' => 1
+                ]
+            ]);
+
+        $this->assertEquals([
+            'columns' => [
+                'labels' => [
+                    'membershipNumber' => 'Numéro adhérent',
+                    'beneficiaryName' => 'Nom'
+                ],
+                'config' => [
+                    'membershipNumber' => [
+                        'sortable' => true
+                    ],
+                    'beneficiaryName' => [
+                        'sortable' => false
+                    ]
+                ]
+            ],
+            'advancedSearch' => [
+                [
+                    'fields' => [
+                        [
+                            'emptyOption' => 'Sélection en cours',
+                            'name' => 'typology',
+                            'type' => 'select',
+                            'options' => ["Contrat Santé", "Contrat Prévoyance"]
+                        ]
+                    ],
+                    'label' => 'Par typologie'
+                ]
+            ],
+            'eligibleObjects' => [[
+                'key' => 0,
+                'membershipNumber' => '07000020',
+                'openContractIdentifier' => null,
+                'contractType' => null,
+                'subcontractType' => null,
+                'optionTop' => null,
+                'cancellingContractDate' => null,
+                'cancellingContractReason' => null,
+                'conservationTime' => null,
+                'settingsDescription' => null,
+                'details' => [
+                    'beneficiaryName' => 'ASS20',
+                    'beneficiaryFirstname' => 'CHRISTIAN',
+                    'beneficiaryBirthdate' => '08/10/1960',
+                    'socialSecurityNumber' => null
+                ]
+            ]],
+            'total' => 1
+        ],
+            $this->instance->find($requestMock)
+        );
+    }
+
+    public function testFindWithNoResult(): void
     {
         $requestMock = $this->getMockBuilder(Request::class)
             ->disableOriginalConstructor()
@@ -799,9 +999,8 @@ class EligibleObjectServiceTest extends TestCase
                 'headers' => []
             ]);
 
-        $this->assertEquals(['eligibleObjects' => []], $this->instance->find($requestMock));;
+        $this->assertEquals(['eligibleObjects' => []], $this->instance->find($requestMock));
     }
-
 
 
 }
