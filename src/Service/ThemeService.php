@@ -17,6 +17,9 @@ use LogicException;
  */
 readonly class ThemeService
 {
+    /**
+     * @param string $projectDir
+     */
     public function __construct(private string $projectDir)
     {
     }
@@ -45,7 +48,7 @@ readonly class ThemeService
         $themes = $themesJsonFileContent[$objectType];
 
         if (empty($themes)) {
-            throw new InvalidArgumentException("No theme fond for $objectType");
+            throw new InvalidArgumentException("No theme found for $objectType object type.");
         }
 
         $themesList = [];
